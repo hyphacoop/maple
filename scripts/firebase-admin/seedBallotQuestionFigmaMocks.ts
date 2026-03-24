@@ -4,6 +4,7 @@ import { Script } from "./types"
 const ballotQuestionId = "25-15"
 const court = 192
 const billId = "H10"
+const electionYear = new Date().getFullYear()
 
 const title =
   "Limited Legalization and Regulation of Certain Natural Psychedelic Substances"
@@ -67,7 +68,14 @@ export const script: Script = async ({ db }) => {
 
   await ballotQuestionRef.set(
     {
+      id: ballotQuestionId,
+      billId,
+      court,
+      electionYear,
+      type: "initiative_statute",
+      ballotStatus: "ballot",
       ballotQuestionNumber: 4,
+      relatedBillIds: [billId],
       description,
       atAGlance: [
         { label: "Who", value: "Adults 21 and older" },
@@ -85,7 +93,8 @@ export const script: Script = async ({ db }) => {
           value: "Licensed facilitators, state regulation, and taxation"
         }
       ],
-      fullSummary
+      fullSummary,
+      pdfUrl: null
     },
     { merge: true }
   )
