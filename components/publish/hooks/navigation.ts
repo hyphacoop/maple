@@ -73,7 +73,12 @@ export const useSyncRouterAndStore = () => {
 
   useEffect(() => {
     dispatch(routeChanged())
-  }, [router.query.billId, router.query.ballotQuestionId, dispatch, router.query.step])
+  }, [
+    router.query.billId,
+    router.query.ballotQuestionId,
+    dispatch,
+    router.query.step
+  ])
 
   useEffect(() => {
     dispatch(storeChanged())

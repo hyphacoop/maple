@@ -1,18 +1,9 @@
 import { Container } from "components/bootstrap"
 import { dbService } from "components/db"
-import {
-  BrowseBallotQuestions
-} from "components/ballotquestions/BrowseBallotQuestions"
-import type {
-  BallotQuestionBrowseItem
-} from "components/ballotquestions/BrowseBallotQuestions"
+import { BrowseBallotQuestions } from "components/ballotquestions/BrowseBallotQuestions"
+import type { BallotQuestionBrowseItem } from "components/ballotquestions/BrowseBallotQuestions"
 import { createPage } from "components/page"
-import {
-  collectionGroup,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
+import { collectionGroup, getDocs, query, where } from "firebase/firestore"
 import type { BallotQuestion } from "components/db"
 import type { Testimony } from "components/db/testimony"
 import { firestore } from "components/firebase"
@@ -63,7 +54,9 @@ export const getServerSideProps: GetServerSideProps<
         id: ballotQuestion.id,
         title:
           bill?.content.Title ??
-          `Question ${ballotQuestion.ballotQuestionNumber ?? ballotQuestion.id}`,
+          `Question ${
+            ballotQuestion.ballotQuestionNumber ?? ballotQuestion.id
+          }`,
         electionYear: ballotQuestion.electionYear,
         ...counts
       }

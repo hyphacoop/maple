@@ -29,47 +29,50 @@ const MainPanel = styled(
   ({
     variant = "default",
     ...rest
-  }: { variant?: "default" | "ballotQuestion"; className?: string }) => {
-  const { t } = useTranslation("testimony")
-  const { draft, deleteTestimony, publication } = usePublishService() ?? {}
-  const unpublishedDraft = hasDraftChanged(draft, publication)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const { bill, ballotQuestionId } = usePublishState()
-  const showHeader = variant !== "ballotQuestion"
-  if (!bill) return null
+  }: {
+    variant?: "default" | "ballotQuestion"
+    className?: string
+  }) => {
+    const { t } = useTranslation("testimony")
+    const { draft, deleteTestimony, publication } = usePublishService() ?? {}
+    const unpublishedDraft = hasDraftChanged(draft, publication)
+    const [showConfirm, setShowConfirm] = useState(false)
+    const { bill, ballotQuestionId } = usePublishState()
+    const showHeader = variant !== "ballotQuestion"
+    if (!bill) return null
 
-  return (
-    <div {...rest}>
-      {showHeader ? (
-        <>
-          <div className="d-flex">
-            <span className="title">{t("yourTestimony.title")}</span>
-            <EditTestimonyButton
-              className="me-1"
-              billId={bill.id}
-              court={bill.court}
-              ballotQuestionId={ballotQuestionId}
-            />
-            {/*Delete testimony removed until ready */}
-            {/* <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} /> */}
-          </div>
-          {/*Delete testimony confirmation-dropdown removed until ready */}
-          {/* <ArchiveTestimonyConfirmation
+    return (
+      <div {...rest}>
+        {showHeader ? (
+          <>
+            <div className="d-flex">
+              <span className="title">{t("yourTestimony.title")}</span>
+              <EditTestimonyButton
+                className="me-1"
+                billId={bill.id}
+                court={bill.court}
+                ballotQuestionId={ballotQuestionId}
+              />
+              {/*Delete testimony removed until ready */}
+              {/* <ArchiveTestimonyButton onClick={() => setShowConfirm(s => !s)} /> */}
+            </div>
+            {/*Delete testimony confirmation-dropdown removed until ready */}
+            {/* <ArchiveTestimonyConfirmation
             className="mt-2"
             show={showConfirm}
             onHide={() => setShowConfirm(false)}
             archiveTestimony={deleteTestimony}
           /> */}
-          <div className="divider mt-3 mb-3" />
-        </>
-      ) : null}
-      <TestimonyPreview type="draft" className="mb-2" />
-      {unpublishedDraft && (
-        <div className="draft-badge">{t("yourTestimony.draft")}</div>
-      )}
-    </div>
-  )
-}
+            <div className="divider mt-3 mb-3" />
+          </>
+        ) : null}
+        <TestimonyPreview type="draft" className="mb-2" />
+        {unpublishedDraft && (
+          <div className="draft-badge">{t("yourTestimony.draft")}</div>
+        )}
+      </div>
+    )
+  }
 )`
   --previewPadding: 1rem;
   background-color: white;

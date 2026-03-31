@@ -17,7 +17,12 @@ export const BallotQuestionNav = ({
     enabled: boolean
   }> = [
     { id: "overview", label: "Overview", enabled: true },
-    { id: "testimonies", label: "Testimonies", enabled: true, badge: testimonyCount },
+    {
+      id: "testimonies",
+      label: "Testimonies",
+      enabled: true,
+      badge: testimonyCount
+    },
     { id: "synthesis", label: "Synthesis & Insights", enabled: false },
     { id: "for_against", label: "For & Against", enabled: false },
     { id: "news", label: "News & Media", enabled: false },

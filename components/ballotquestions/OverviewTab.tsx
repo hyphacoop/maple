@@ -30,9 +30,7 @@ export const OverviewTab = ({
           <Image src="/speaker-with-thumbs.svg" alt="" width={22} height={22} />
         </div>
         <div>
-          <h2 className="h4 mb-1 text-secondary">
-            Overview
-          </h2>
+          <h2 className="h4 mb-1 text-secondary">Overview</h2>
           <p className="text-body-secondary small mb-0">
             The ballot question at a high-level.
           </p>
@@ -74,7 +72,9 @@ export const OverviewTab = ({
       {ballotQuestion.fullSummary && (
         <section className="mb-4">
           <h3 className="h6 fw-semibold mb-3">Final Summary</h3>
-          <p className="small lh-lg mb-0" style={{ whiteSpace: "pre-wrap" }}>{ballotQuestion.fullSummary}</p>
+          <p className="small lh-lg mb-0" style={{ whiteSpace: "pre-wrap" }}>
+            {ballotQuestion.fullSummary}
+          </p>
         </section>
       )}
 
