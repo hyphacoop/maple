@@ -20,22 +20,14 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
   })
 
   return (
-    <div
-      className="rounded-4 border p-3 p-lg-4"
-      style={{
-        backgroundColor: "white",
-        borderColor: "rgba(15, 23, 42, 0.08)"
-      }}
-    >
+    <div className="ballot-question-surface rounded-4 p-3 p-lg-4">
       <div className="d-flex flex-column flex-xl-row align-items-xl-start justify-content-between gap-4 gap-xl-4">
         <div className="d-flex gap-4 align-items-start flex-grow-1">
           <div
-            className="rounded-4 border p-3 d-flex align-items-center justify-content-center flex-shrink-0"
+            className="ballot-question-icon-chip rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               width: "5rem",
-              height: "5rem",
-              backgroundColor: "rgba(94, 114, 228, 0.06)",
-              borderColor: "rgba(94, 114, 228, 0.18)"
+              height: "5rem"
             }}
           >
             <Image
@@ -62,11 +54,8 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
         {hearingId ? (
           <Internal
             href={`/hearing/${hearingId}`}
-            className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
+            className="ballot-question-pill-link d-inline-flex align-items-center justify-content-center gap-2 rounded-pill px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
             style={{
-              borderColor: "rgba(94, 114, 228, 0.18)",
-              backgroundColor: "rgba(248, 250, 255, 1)",
-              color: "var(--bs-secondary)",
               minHeight: "3.25rem",
               whiteSpace: "nowrap"
             }}

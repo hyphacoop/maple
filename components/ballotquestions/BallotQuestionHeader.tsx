@@ -44,15 +44,7 @@ export const BallotQuestionHeader = ({
 
   return (
     <Container fluid="xl" className="mt-4">
-      <div
-        className="rounded-4 border px-4 py-4 px-lg-5 py-lg-5 shadow-sm"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 255, 1) 100%)",
-          borderColor: "rgba(15, 23, 42, 0.08)",
-          boxShadow: "0 0.75rem 2rem rgba(15, 23, 42, 0.07)"
-        }}
-      >
+      <div className="ballot-question-surface ballot-question-surface-gradient rounded-4 px-4 py-4 px-lg-5 py-lg-5 shadow-sm">
         <Row className="g-4 align-items-start">
           <Col lg={8}>
             <Link
@@ -79,7 +71,7 @@ export const BallotQuestionHeader = ({
                     height: "0.6rem",
                     borderRadius: "999px",
                     backgroundColor: "var(--bs-secondary)",
-                    boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                    boxShadow: "0 0 0 4px var(--bq-accent-fill)"
                   }}
                 />
                 {statusLabel}
@@ -132,20 +124,10 @@ export const BallotQuestionHeader = ({
           </Col>
 
           <Col lg={4}>
-            <div
-              className="h-100 rounded-4 border p-4"
-              style={{
-                backgroundColor: "rgba(248, 250, 252, 0.92)",
-                borderColor: "rgba(15, 23, 42, 0.08)"
-              }}
-            >
+            <div className="ballot-question-muted-surface h-100 rounded-4 p-4">
               <div
-                className="text-uppercase fw-semibold mb-3"
-                style={{
-                  fontSize: "0.75rem",
-                  letterSpacing: "0.08em",
-                  color: "#64748b"
-                }}
+                className="ballot-question-label mb-3"
+                style={{ fontSize: "0.75rem" }}
               >
                 Take part
               </div>
@@ -168,12 +150,7 @@ export const BallotQuestionHeader = ({
                 href={ballotQuestion.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ballot-question-pdf-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
-                style={{
-                  color: "var(--bs-secondary)",
-                  borderColor: "rgba(94, 114, 228, 0.18)",
-                  backgroundColor: "rgba(255, 255, 255, 0.85)"
-                }}
+                className="ballot-question-pdf-link ballot-question-pill-link d-inline-flex align-items-center gap-2 rounded-pill px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
               >
                 <span aria-hidden="true">↗</span>
                 <span>Read petition PDF</span>
@@ -194,19 +171,10 @@ function MetaFact({ label, value }: { label: string; value: string }) {
         minWidth: "6.5rem"
       }}
     >
-      <span
-        className="text-uppercase fw-semibold"
-        style={{
-          fontSize: "0.72rem",
-          letterSpacing: "0.08em",
-          color: "#64748b"
-        }}
-      >
-        {label}
-      </span>
+      <span className="ballot-question-label">{label}</span>
       <span
         style={{
-          color: "#334155",
+          color: "var(--bq-body-text)",
           fontSize: "1.05rem",
           fontWeight: 650,
           lineHeight: 1.3

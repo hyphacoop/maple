@@ -22,18 +22,6 @@ export type BallotQuestionBrowseItem = {
   opposeCount: number
 }
 
-const BROWSE_SHADOWS = {
-  soft: "0 0.25rem 1rem rgba(15, 23, 42, 0.06)",
-  card: "0 0.3rem 1rem rgba(15, 23, 42, 0.06)",
-  hover: "0 0.65rem 1.35rem rgba(15, 23, 42, 0.12)"
-}
-
-const BROWSE_BORDERS = {
-  chrome: "#d9e2ec",
-  muted: "#dce5ee",
-  hover: "#bfd0e2"
-}
-
 const STATUS_STYLES: Record<
   BallotQuestionStatus,
   { background: string; color: string; border: string }
@@ -66,9 +54,9 @@ const Controls = styled.section<{ $expanded: boolean }>`
     var(--bs-white) 0%,
     var(--bs-body-bg) 100%
   );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  border: 1px solid var(--bq-surface-border);
   border-radius: var(--bs-border-radius-xl);
-  box-shadow: ${BROWSE_SHADOWS.soft};
+  box-shadow: var(--bq-surface-shadow-soft);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -186,9 +174,9 @@ const StyledCard = styled(Card)`
     var(--bs-white) 0%,
     var(--bs-body-bg) 100%
   );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  border: 1px solid var(--bq-surface-border);
   border-radius: var(--bs-border-radius-xl);
-  box-shadow: ${BROWSE_SHADOWS.card};
+  box-shadow: var(--bq-surface-shadow-soft);
   height: 100%;
   overflow: hidden;
   transition: transform 0.16s ease, box-shadow 0.16s ease,
@@ -211,8 +199,8 @@ const CardLink = styled(Link)`
   text-decoration: none;
 
   &:hover ${StyledCard} {
-    border-color: ${BROWSE_BORDERS.hover};
-    box-shadow: ${BROWSE_SHADOWS.hover};
+    border-color: var(--bq-accent-border-strong);
+    box-shadow: var(--bq-surface-shadow-hover);
     transform: translateY(-2px);
   }
 
@@ -293,7 +281,7 @@ const MetaStack = styled.div`
 
 const MetaItem = styled.span`
   background: var(--bs-body-bg);
-  border: 1px solid ${BROWSE_BORDERS.muted};
+  border: 1px solid var(--bq-surface-border);
   border-radius: 999px;
   color: var(--bs-gray-700);
   font-size: 0.8rem;
@@ -319,7 +307,7 @@ const SentimentRow = styled.div`
 const SentimentStat = styled.span`
   align-items: center;
   background: var(--bs-body-bg);
-  border: 1px solid ${BROWSE_BORDERS.muted};
+  border: 1px solid var(--bq-surface-border);
   border-radius: 999px;
   color: var(--bs-blue);
   display: inline-flex;
@@ -340,9 +328,9 @@ const EmptyState = styled.div`
     var(--bs-white) 0%,
     var(--bs-body-bg) 100%
   );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  border: 1px solid var(--bq-surface-border);
   border-radius: 1rem;
-  box-shadow: ${BROWSE_SHADOWS.soft};
+  box-shadow: var(--bq-surface-shadow-soft);
   color: var(--bs-gray-700);
   padding: 1rem;
 `

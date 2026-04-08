@@ -27,11 +27,10 @@ export const OverviewTab = ({
       <SectionCard>
         <div className="d-flex align-items-start gap-3 mb-0">
           <div
-            className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
+            className="ballot-question-icon-chip rounded-4 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               width: "3rem",
               height: "3rem",
-              borderColor: "rgba(94, 114, 228, 0.16)",
               background:
                 "linear-gradient(180deg, rgba(94, 114, 228, 0.16) 0%, rgba(226, 232, 240, 0.55) 100%)"
             }}
@@ -53,26 +52,11 @@ export const OverviewTab = ({
           <Row className="g-3">
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
-                <div
-                  className="rounded-4 border h-100 px-3 py-3"
-                  style={{
-                    backgroundColor: "rgba(248, 250, 252, 0.9)",
-                    borderColor: "rgba(15, 23, 42, 0.08)"
-                  }}
-                >
-                  <div
-                    className="text-uppercase fw-semibold mb-2"
-                    style={{
-                      fontSize: "0.72rem",
-                      letterSpacing: "0.08em",
-                      color: "#64748b"
-                    }}
-                  >
-                    {item.label}
-                  </div>
+                <div className="ballot-question-muted-surface rounded-4 h-100 px-3 py-3">
+                  <div className="ballot-question-label mb-2">{item.label}</div>
                   <div
                     style={{
-                      color: "#1e293b",
+                      color: "var(--bq-strong-text)",
                       fontSize: "0.98rem",
                       lineHeight: 1.5
                     }}
@@ -187,13 +171,7 @@ function BallotGlyph() {
 
 function SectionCard({ children }: { children: ReactNode }) {
   return (
-    <section
-      className="rounded-4 border bg-white px-4 py-4 shadow-sm"
-      style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
-      }}
-    >
+    <section className="ballot-question-surface rounded-4 bg-white px-4 py-4 shadow-sm">
       {children}
     </section>
   )

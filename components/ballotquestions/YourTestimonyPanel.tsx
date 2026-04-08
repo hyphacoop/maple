@@ -34,12 +34,7 @@ export const YourTestimonyPanel = ({
   return (
     <div className="h-100">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div
-          className="fw-semibold text-secondary"
-          style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
-        >
-          Your Perspective
-        </div>
+        <div className="ballot-question-panel-title">Your Perspective</div>
         {showInlineEditButton && bill ? (
           <EditTestimonyButton
             billId={bill.id}
@@ -50,13 +45,7 @@ export const YourTestimonyPanel = ({
       </div>
       {isExpectedOnBallotPhase && bill ? (
         <div>
-          <div
-            className="rounded border px-3 py-3 small text-body-secondary mb-3"
-            style={{
-              backgroundColor: "var(--bs-blue-100)",
-              borderColor: "var(--bs-blue-300)"
-            }}
-          >
+          <div className="ballot-question-info-note rounded px-3 py-3 small mb-3">
             This question is expected on the ballot. Submit testimony on the
             related bill for this phase.
           </div>
@@ -76,23 +65,11 @@ export const YourTestimonyPanel = ({
           />
         </>
       ) : isTerminalPhase ? (
-        <div
-          className="rounded border px-3 py-3 small text-body-secondary"
-          style={{
-            backgroundColor: "var(--bs-blue-100)",
-            borderColor: "var(--bs-blue-300)"
-          }}
-        >
+        <div className="ballot-question-info-note rounded px-3 py-3 small">
           Perspectives are no longer being accepted for this ballot question.
         </div>
       ) : (
-        <div
-          className="rounded border px-3 py-3 small text-body-secondary"
-          style={{
-            backgroundColor: "var(--bs-blue-100)",
-            borderColor: "var(--bs-blue-300)"
-          }}
-        >
+        <div className="ballot-question-info-note rounded px-3 py-3 small">
           Perspectives are not available for this ballot question yet.
         </div>
       )}

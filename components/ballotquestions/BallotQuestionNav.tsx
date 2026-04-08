@@ -70,21 +70,11 @@ export const BallotQuestionNav = ({
   }
 
   return (
-    <div
-      className="rounded-4 border bg-white p-3 p-lg-4 shadow-sm"
-      style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
-      }}
-    >
+    <div className="ballot-question-surface rounded-4 bg-white p-3 p-lg-4 shadow-sm">
       <div className="mb-3 mb-lg-4">
         <div
-          className="text-uppercase fw-semibold mb-1"
-          style={{
-            fontSize: "0.75rem",
-            letterSpacing: "0.08em",
-            color: "#64748b"
-          }}
+          className="ballot-question-label mb-1"
+          style={{ fontSize: "0.75rem" }}
         >
           Explore
         </div>
