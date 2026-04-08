@@ -22,20 +22,18 @@ export const BallotQuestion = Record({
     L("advisory")
   ),
   ballotStatus: Union(
-    L("legislature"),
-    L("qualifying"),
-    L("certified"),
-    L("ballot"),
-    L("enacted"),
-    L("failed"),
-    L("withdrawn")
+    L("expectedOnBallot"),
+    L("failedToAppear"),
+    L("rejected"),
+    L("accepted")
   ),
   ballotQuestionNumber: Union(Number, Null),
   relatedBillIds: Array(String),
   description: Union(String, Null),
   atAGlance: Union(Array(Record({ label: String, value: String })), Null),
   fullSummary: Union(String, Null),
-  pdfUrl: Union(String, Null)
+  pdfUrl: Union(String, Null),
+  title: Union(String, Null)
 })
 
 export type BallotQuestion = Static<typeof BallotQuestion>
