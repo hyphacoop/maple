@@ -1,7 +1,8 @@
 import * as fs from "fs"
 import * as path from "path"
 import * as yaml from "js-yaml"
-import { BallotQuestion } from "../../functions/src/ballotQuestions/types"
+import { FieldValue } from "firebase-admin/firestore"
+import { BallotQuestionYaml } from "../../functions/src/ballotQuestions/types"
 import { Script } from "./types"
 
 export const script: Script = async ({ db, args }) => {
@@ -24,9 +25,20 @@ export const script: Script = async ({ db, args }) => {
 
   for (const file of files) {
     const raw = yaml.load(fs.readFileSync(path.join(dir, file), "utf8"))
-    const doc = BallotQuestion.check(raw)
+    const doc = BallotQuestionYaml.check(raw)
     const ref = db.collection("ballotQuestions").doc(doc.id)
-    batch.set(ref, doc)
+    batch.set(
+      ref,
+      {
+        ...doc,
+        title: doc.title ?? null,
+        testimonyCount: FieldValue.increment(0),
+        endorseCount: FieldValue.increment(0),
+        neutralCount: FieldValue.increment(0),
+        opposeCount: FieldValue.increment(0)
+      },
+      { merge: true }
+    )
     console.log(`Queued upsert: ballotQuestions/${doc.id}`)
   }
 

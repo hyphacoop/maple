@@ -378,6 +378,19 @@ describe("publishTestimony", () => {
         .set({ id: "bq-test-1" })
     })
 
+    beforeEach(async () => {
+      await testDb.collection("ballotQuestions").doc("bq-test-1").set(
+        {
+          id: "bq-test-1",
+          testimonyCount: 0,
+          endorseCount: 0,
+          neutralCount: 0,
+          opposeCount: 0
+        },
+        { merge: true }
+      )
+    })
+
     afterAll(async () => {
       await testDb.collection("ballotQuestions").doc("bq-test-1").delete()
     })
@@ -387,6 +400,25 @@ describe("publishTestimony", () => {
       const res = await publishTestimony({ draftId })
       const publication = await getPublication(uid, res.data.publicationId)
       expect(publication.ballotQuestionId).toBe("bq-test-1")
+    })
+
+    it("Updates ballot question metadata without changing bill metadata", async () => {
+      const { draftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      const res = await publishTestimony({ draftId })
+      const bill = await getBill(billId)
+      const ballotQuestion = await getBallotQuestion("bq-test-1")
+
+      expect(ballotQuestion.testimonyCount).toBe(1)
+      expect(ballotQuestion.endorseCount).toBe(1)
+      expect(ballotQuestion.neutralCount).toBe(0)
+      expect(ballotQuestion.opposeCount).toBe(0)
+      expect(bill.testimonyCount).toBe(0)
+      expect(bill.endorseCount).toBe(0)
+      expect(bill.latestTestimonyId).toBeUndefined()
+      expect(bill.latestTestimonyAt).toBeUndefined()
+      expect(
+        (await getPublication(uid, res.data.publicationId)).ballotQuestionId
+      ).toBe("bq-test-1")
     })
 
     it("Ballot question testimony does not overwrite existing regular bill testimony", async () => {
@@ -554,6 +586,43 @@ describe("deleteTestimony", () => {
       ).resolves.toBeFalsy()
     })
   })
+
+  it("Updates ballot question metadata when deleting ballot question testimony", async () => {
+    const ballotQuestionId = "bq-delete-test"
+    await testDb.collection("ballotQuestions").doc(ballotQuestionId).set({
+      id: ballotQuestionId,
+      testimonyCount: 0,
+      endorseCount: 0,
+      neutralCount: 0,
+      opposeCount: 0
+    })
+
+    const normalUid = uid
+    const { draftId } = await createDraft(
+      normalUid,
+      billId,
+      undefined,
+      ballotQuestionId
+    )
+    const res = await publishTestimony({ draftId })
+
+    expect((await getBallotQuestion(ballotQuestionId)).testimonyCount).toBe(1)
+
+    await getSignedInAdmin()
+    await deleteTestimony({
+      uid: normalUid,
+      publicationId: res.data.publicationId
+    })
+
+    const ballotQuestion = await getBallotQuestion(ballotQuestionId)
+    const bill = await getBill(billId)
+    expect(ballotQuestion.testimonyCount).toBe(0)
+    expect(ballotQuestion.endorseCount).toBe(0)
+    expect(bill.testimonyCount).toBe(0)
+    expect(bill.endorseCount).toBe(0)
+
+    await testDb.collection("ballotQuestions").doc(ballotQuestionId).delete()
+  })
 })
 
 async function getPublicationAndAttachments(uid: string, id: string) {
@@ -579,6 +648,11 @@ async function getPublicationAndAttachments(uid: string, id: string) {
 
 async function getPublication(uid: string, id: string): Promise<Testimony> {
   const doc = await testDb.doc(`/users/${uid}/publishedTestimony/${id}`).get()
+  return doc.data() as any
+}
+
+async function getBallotQuestion(id: string) {
+  const doc = await testDb.doc(`/ballotQuestions/${id}`).get()
   return doc.data() as any
 }
 

@@ -48,7 +48,7 @@ yarn firebase-admin run-script backfillTestimonyBallotQuestionId --env prod
 
 #### `syncBallotQuestions`
 
-Upserts ballot question records from local YAML files into the `ballotQuestions` Firestore collection. Each file is validated against the `BallotQuestion` type before being written; invalid files abort with an error. All writes are committed atomically in a single Firestore batch.
+Upserts ballot question records from local YAML files into the `ballotQuestions` Firestore collection. Each file is validated against the YAML-authored ballot question type before being written; invalid files abort with an error. Runtime-managed testimony counters are initialized when missing and preserved when present. All writes are committed atomically in a single Firestore batch.
 
 ```sh
 # Uses ./ballotQuestions/ directory by default
@@ -58,7 +58,21 @@ yarn firebase-admin run-script syncBallotQuestions --env local
 yarn firebase-admin run-script syncBallotQuestions --env dev -- --dir /path/to/yaml-dir
 ```
 
-YAML files must export a document whose shape matches the `BallotQuestion` type defined in `functions/src/ballotQuestions/types.ts`, including a top-level `id` field used as the Firestore document ID.
+YAML files must export a document whose shape matches the `BallotQuestionYaml` type defined in `functions/src/ballotQuestions/types.ts`, including a top-level `id` field used as the Firestore document ID.
+
+---
+
+#### `backfillBallotQuestionTestimonySummary`
+
+Recomputes `testimonyCount`, `endorseCount`, `neutralCount`, and `opposeCount` on every ballot question from `publishedTestimony` documents whose `ballotQuestionId` matches that ballot question.
+
+**When to run:** Once against each environment after deploying materialized ballot-question testimony counters. Safe to re-run; it overwrites the summary fields with values derived from current published testimony. If ballot-question testimony existed before this deployment, also re-run `backfillTestimonyCounts` so bill counters exclude ballot-question-scoped testimony.
+
+```sh
+yarn firebase-admin run-script backfillBallotQuestionTestimonySummary --env local
+yarn firebase-admin run-script backfillBallotQuestionTestimonySummary --env dev
+yarn firebase-admin run-script backfillBallotQuestionTestimonySummary --env prod
+```
 
 ---
 

@@ -1,19 +1,25 @@
-import { Bill } from "../bills/types"
 import { countsByPositions, Testimony } from "./types"
 
-type FieldUpdate = Pick<
-  Bill,
-  "opposeCount" | "neutralCount" | "endorseCount" | "testimonyCount"
->
+export type TestimonyCountFields = {
+  testimonyCount: number
+  endorseCount: number
+  neutralCount: number
+  opposeCount: number
+}
 
-/** Updates bill fields that track testimony counts based on changes to the
- * user's testimony. */
+/** Updates fields that track testimony counts based on changes to the user's
+ * testimony. */
 export function updateTestimonyCounts(
-  { testimonyCount, endorseCount, neutralCount, opposeCount }: Bill,
+  {
+    testimonyCount,
+    endorseCount,
+    neutralCount,
+    opposeCount
+  }: TestimonyCountFields,
   currentPublication?: Testimony,
   newPublication?: Testimony
-): FieldUpdate {
-  const update: FieldUpdate = {
+): TestimonyCountFields {
+  const update: TestimonyCountFields = {
     testimonyCount,
     endorseCount,
     neutralCount,

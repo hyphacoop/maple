@@ -24,6 +24,33 @@ it("syncs YAML files to Firestore", async () => {
   expect(snap.data()?.atAGlance).toBeInstanceOf(Array)
   expect(snap.data()?.pdfUrl).toMatch(/^https?:\/\//)
   expect(snap.data()?.fullSummary).toBeTruthy()
+  expect(snap.data()?.testimonyCount).toBe(0)
+  expect(snap.data()?.endorseCount).toBe(0)
+  expect(snap.data()?.neutralCount).toBe(0)
+  expect(snap.data()?.opposeCount).toBe(0)
+})
+
+it("preserves runtime-managed testimony counters when syncing YAML", async () => {
+  await testDb.collection("ballotQuestions").doc(TEST_ID).set(
+    {
+      testimonyCount: 7,
+      endorseCount: 4,
+      neutralCount: 2,
+      opposeCount: 1
+    },
+    { merge: true }
+  )
+
+  await script({
+    db: testDb,
+    args: { env: "local", argv: [], dir: FIXTURES_DIR }
+  } as any)
+
+  const snap = await testDb.collection("ballotQuestions").doc(TEST_ID).get()
+  expect(snap.data()?.testimonyCount).toBe(7)
+  expect(snap.data()?.endorseCount).toBe(4)
+  expect(snap.data()?.neutralCount).toBe(2)
+  expect(snap.data()?.opposeCount).toBe(1)
 })
 
 it("can query by electionYear", async () => {

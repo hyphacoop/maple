@@ -2,6 +2,8 @@ import { DocumentReference, DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { nanoid } from "nanoid"
 import { Record } from "runtypes"
+import { getBallotQuestionSummary } from "../ballotQuestions/summary"
+import { BallotQuestionSummary } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
 import { checkAuth, checkRequest, DocUpdate, fail, Id } from "../common"
 import { db, FieldValue, Timestamp } from "../firebase"
@@ -61,6 +63,8 @@ class PublishTestimonyTransaction {
   private bqId!: string | null
   private billSnap!: DocumentSnapshot
   private bill!: Bill
+  private bqSnap?: DocumentSnapshot
+  private bqSummary?: BallotQuestionSummary
   private publicationRef!: DocumentReference
   private currentPublication?: Testimony
   private profile?: any
@@ -114,7 +118,9 @@ class PublishTestimonyTransaction {
     this.setPublication(newPublication)
     this.createArchive(newPublication)
     this.updateDraft(newPublication)
-    this.updateBill(newPublication)
+    this.bqId === null
+      ? this.updateBill(newPublication)
+      : this.updateBallotQuestion(newPublication)
 
     return {
       publicationId: this.publicationRef.id,
@@ -155,6 +161,24 @@ class PublishTestimonyTransaction {
     this.t.update(this.billSnap.ref, billTestimonyFields)
   }
 
+  private updateBallotQuestion(newPublication: Testimony) {
+    if (!this.bqSnap || !this.bqSummary) {
+      throw fail(
+        "failed-precondition",
+        `Draft testimony has invalid ballotQuestionId ${this.bqId}`
+      )
+    }
+
+    this.t.update(
+      this.bqSnap.ref,
+      updateTestimonyCounts(
+        this.bqSummary,
+        this.currentPublication,
+        newPublication
+      )
+    )
+  }
+
   private async resolveDraft() {
     const ref = db.doc(`/users/${this.uid}/draftTestimony/${this.draftId}`),
       draftSnap = await this.t.get(ref)
@@ -174,12 +198,12 @@ class PublishTestimonyTransaction {
 
     await this.checkValidCourt(draft.court)
 
-    const bqId = draft.ballotQuestionId ?? null
+    const bqId = draft.ballotQuestionId ?? null,
+      billRef = db.doc(`/generalCourts/${draft.court}/bills/${draft.billId}`),
+      bqRef = bqId !== null ? db.doc(`/ballotQuestions/${bqId}`) : null
     const [billSnap, bqSnap] = await Promise.all([
-      db.doc(`/generalCourts/${draft.court}/bills/${draft.billId}`).get(),
-      bqId !== null
-        ? db.doc(`/ballotQuestions/${bqId}`).get()
-        : Promise.resolve(null)
+      this.t.get(billRef),
+      bqRef ? this.t.get(bqRef) : Promise.resolve(null)
     ])
 
     if (!billSnap.exists) {
@@ -200,6 +224,10 @@ class PublishTestimonyTransaction {
     this.draftSnap = draftSnap
     this.billSnap = billSnap
     this.bill = Bill.checkWithDefaults(billSnap.data())
+    if (bqSnap) {
+      this.bqSnap = bqSnap
+      this.bqSummary = getBallotQuestionSummary(bqSnap)
+    }
   }
 
   private async resolveProfile() {

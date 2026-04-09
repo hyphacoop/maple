@@ -1,14 +1,6 @@
 import { dbService } from "components/db/api"
-import { Testimony } from "components/db/testimony"
 import { firestore } from "components/firebase"
-import {
-  collectionGroup,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where
-} from "firebase/firestore"
+import { doc, getDoc } from "firebase/firestore"
 import { GetServerSideProps } from "next"
 import { z } from "zod"
 import { BallotQuestionDetails } from "../../components/ballotquestions/BallotQuestionDetails"
@@ -74,9 +66,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   let bill: Bill | null = null
   let hearings: Hearing[] = []
-  const testimonySummary = await getBallotQuestionTestimonySummary(
-    query.data.id
-  )
+  const testimonySummary = getBallotQuestionTestimonySummary(ballotQuestion)
 
   if (ballotQuestion.billId) {
     bill =
@@ -109,32 +99,13 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   }
 }
 
-async function getBallotQuestionTestimonySummary(
-  ballotQuestionId: string
-): Promise<BallotQuestionTestimonySummary> {
-  const result = await getDocs(
-    query(
-      collectionGroup(firestore, "publishedTestimony"),
-      where("ballotQuestionId", "==", ballotQuestionId)
-    )
-  )
-
-  return result.docs.reduce<BallotQuestionTestimonySummary>(
-    (summary, snap) => {
-      const testimony = snap.data() as Testimony
-      summary.testimonyCount += 1
-
-      if (testimony.position === "endorse") summary.endorseCount += 1
-      if (testimony.position === "neutral") summary.neutralCount += 1
-      if (testimony.position === "oppose") summary.opposeCount += 1
-
-      return summary
-    },
-    {
-      testimonyCount: 0,
-      endorseCount: 0,
-      neutralCount: 0,
-      opposeCount: 0
-    }
-  )
+function getBallotQuestionTestimonySummary(
+  ballotQuestion: BallotQuestion
+): BallotQuestionTestimonySummary {
+  return {
+    testimonyCount: ballotQuestion.testimonyCount ?? 0,
+    endorseCount: ballotQuestion.endorseCount ?? 0,
+    neutralCount: ballotQuestion.neutralCount ?? 0,
+    opposeCount: ballotQuestion.opposeCount ?? 0
+  }
 }

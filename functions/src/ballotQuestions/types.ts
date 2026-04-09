@@ -3,13 +3,29 @@ import {
   Literal as L,
   Null,
   Number,
+  Optional,
   Record,
   Static,
   String,
   Union
 } from "runtypes"
+import { withDefaults } from "../common"
 
-export const BallotQuestion = Record({
+const BallotQuestionStatus = Union(
+  L("legislature"),
+  L("qualifying"),
+  L("certified"),
+  L("ballot"),
+  L("enacted"),
+  L("failed"),
+  L("withdrawn"),
+  L("expectedOnBallot"),
+  L("failedToAppear"),
+  L("rejected"),
+  L("accepted")
+)
+
+export const BallotQuestionYaml = Record({
   id: String,
   billId: Union(String, Null),
   court: Number,
@@ -21,19 +37,34 @@ export const BallotQuestion = Record({
     L("constitutional_amendment"),
     L("advisory")
   ),
-  ballotStatus: Union(
-    L("expectedOnBallot"),
-    L("failedToAppear"),
-    L("rejected"),
-    L("accepted")
-  ),
+  ballotStatus: BallotQuestionStatus,
   ballotQuestionNumber: Union(Number, Null),
   relatedBillIds: Array(String),
   description: Union(String, Null),
   atAGlance: Union(Array(Record({ label: String, value: String })), Null),
   fullSummary: Union(String, Null),
   pdfUrl: Union(String, Null),
-  title: Union(String, Null)
+  title: Optional(Union(String, Null))
 })
 
 export type BallotQuestion = Static<typeof BallotQuestion>
+export const BallotQuestion = withDefaults(
+  BallotQuestionYaml.extend({
+    testimonyCount: Number,
+    endorseCount: Number,
+    neutralCount: Number,
+    opposeCount: Number
+  }),
+  {
+    title: null,
+    testimonyCount: 0,
+    endorseCount: 0,
+    neutralCount: 0,
+    opposeCount: 0
+  }
+)
+
+export type BallotQuestionSummary = Pick<
+  BallotQuestion,
+  "testimonyCount" | "endorseCount" | "neutralCount" | "opposeCount"
+>

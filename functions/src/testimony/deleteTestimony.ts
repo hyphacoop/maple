@@ -1,6 +1,8 @@
 import { DocumentSnapshot } from "@google-cloud/firestore"
 import { https, logger } from "firebase-functions"
 import { Record } from "runtypes"
+import { getBallotQuestionSummary } from "../ballotQuestions/summary"
+import { BallotQuestionSummary } from "../ballotQuestions/types"
 import { Bill } from "../bills/types"
 import {
   checkAuth,
@@ -63,6 +65,8 @@ class DeleteTestimonyTransaction {
   private publication!: Testimony
   private billSnap!: DocumentSnapshot
   private bill!: Bill
+  private bqSnap?: DocumentSnapshot
+  private bqSummary?: BallotQuestionSummary
   private draftSnap?: DocumentSnapshot
 
   constructor(
@@ -78,19 +82,20 @@ class DeleteTestimonyTransaction {
   async run(): Promise<TransactionOutput> {
     await this.loadPublication()
     if (!this.publicationSnap.exists) return { deleted: false }
-    await this.loadBill()
+    this.publication.ballotQuestionId
+      ? await this.loadBallotQuestion()
+      : await this.loadBill()
     await this.loadDraft()
-
-    const billUpdate: DocUpdate<Bill> = {
-      ...(await this.resolveNewLatestTestimony()),
-      ...updateTestimonyCounts(this.bill, this.publication, undefined)
-    }
 
     const draftUpdate: DocUpdate<DraftTestimony> = {
       publishedVersion: FieldValue.delete()
     }
 
-    this.t.update(this.billSnap.ref, billUpdate)
+    if (this.publication.ballotQuestionId) {
+      this.updateBallotQuestion()
+    } else {
+      await this.updateBill()
+    }
     this.t.delete(this.publicationSnap.ref)
     if (this.draftSnap) this.t.update(this.draftSnap.ref, draftUpdate)
 
@@ -120,11 +125,25 @@ class DeleteTestimonyTransaction {
     this.bill = Bill.checkWithDefaults(this.billSnap.data())
   }
 
+  private async loadBallotQuestion() {
+    this.bqSnap = await this.t.get(
+      db.doc(`/ballotQuestions/${this.publication.ballotQuestionId}`)
+    )
+    if (this.bqSnap.exists) {
+      this.bqSummary = getBallotQuestionSummary(this.bqSnap)
+    }
+  }
+
   private async loadDraft() {
     const result = await this.t.get(
       db
         .collection(`users/${this.uid}/draftTestimony`)
         .where("billId", "==", this.publication.billId)
+        .where(
+          "ballotQuestionId",
+          "==",
+          this.publication.ballotQuestionId ?? null
+        )
     )
 
     if (result.docs.length === 1) {
@@ -138,6 +157,7 @@ class DeleteTestimonyTransaction {
         .collectionGroup("publishedTestimony")
         .where("billId", "==", this.publication.billId)
         .where("court", "==", this.publication.court)
+        .where("ballotQuestionId", "==", null)
         .orderBy("publishedAt", "desc")
         .limit(2)
     )
@@ -155,5 +175,22 @@ class DeleteTestimonyTransaction {
         latestTestimonyId: latestDoc.id
       }
     }
+  }
+
+  private async updateBill() {
+    const billUpdate: DocUpdate<Bill> = {
+      ...(await this.resolveNewLatestTestimony()),
+      ...updateTestimonyCounts(this.bill, this.publication, undefined)
+    }
+
+    this.t.update(this.billSnap.ref, billUpdate)
+  }
+
+  private updateBallotQuestion() {
+    if (!this.bqSnap?.exists || !this.bqSummary) return
+    this.t.update(
+      this.bqSnap.ref,
+      updateTestimonyCounts(this.bqSummary, this.publication, undefined)
+    )
   }
 }
