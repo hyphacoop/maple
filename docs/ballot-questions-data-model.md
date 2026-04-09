@@ -12,7 +12,7 @@ The ballot question feature adds a thin `/ballotQuestions` collection that gives
 
 The document ID is the **petition number** (e.g. `25-14`), which is what mass.gov and voters recognize.
 
-````typescript
+```typescript
 interface BallotQuestion {
   id: string // petition number: "25-14"
   billId: string | null // H-bill in the existing bills collection: "H5004"; null for pre-legislature (future)
@@ -38,16 +38,16 @@ interface BallotQuestion {
   // Manually curated voter-facing content (all optional until ready)
   description: string | null // "What this question would do" — short voter-friendly prose
   atAGlance: { label: string; value: string }[] | null // "Key Details" bullet list
-	  fullSummary: string | null // "Final Summary" — voter guide quality language
-	  pdfUrl: string | null // Link to the initiative petition PDF
+  fullSummary: string | null // "Final Summary" — voter guide quality language
+  pdfUrl: string | null // Link to the initiative petition PDF
 
-	  // Runtime-managed testimony counters
-	  testimonyCount: number
-	  endorseCount: number
-	  neutralCount: number
-	  opposeCount: number
-	}
-	```
+  // Runtime-managed testimony counters
+  testimonyCount: number
+  endorseCount: number
+  neutralCount: number
+  opposeCount: number
+}
+```
 
 ### Manually curated content
 
@@ -84,12 +84,10 @@ The page at `/ballotQuestions/[id]` fetches both this document **and** the bill 
 
 Committee `SJ42` is stable across General Courts:
 
-````
-
+```
 GET /GeneralCourts/{court}/Committees/SJ42
 → DocumentsBeforeCommittee active petitions (current session)
 → ReportedOutDocuments petitions the legislature has acted on
-
 ```
 
 Both sets should have ballot question docs — past petitions remain discoverable.
@@ -115,12 +113,10 @@ All fields are admin-controlled. With ~11 petitions per 2-year cycle this is min
 Ballot question documents are defined as YAML files committed to the repo:
 
 ```
-
 ballotQuestions/
 25-14.yaml
 ...
-
-````
+```
 
 ```yaml
 # ballotQuestions/25-14.yaml
@@ -136,7 +132,7 @@ description: null
 atAGlance: null
 fullSummary: null
 pdfUrl: null
-````
+```
 
 A sync script (`scripts/firebase-admin/syncBallotQuestions.ts`) upserts these to Firestore. Git history is the audit trail; PRs provide review before changes go live.
 

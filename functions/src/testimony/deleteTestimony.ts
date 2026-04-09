@@ -135,19 +135,34 @@ class DeleteTestimonyTransaction {
   }
 
   private async loadDraft() {
+    const draftQuery = db
+      .collection(`users/${this.uid}/draftTestimony`)
+      .where("billId", "==", this.publication.billId)
     const result = await this.t.get(
-      db
-        .collection(`users/${this.uid}/draftTestimony`)
-        .where("billId", "==", this.publication.billId)
-        .where(
-          "ballotQuestionId",
-          "==",
-          this.publication.ballotQuestionId ?? null
-        )
+      draftQuery.where(
+        "ballotQuestionId",
+        "==",
+        this.publication.ballotQuestionId ?? null
+      )
     )
 
     if (result.docs.length === 1) {
       this.draftSnap = result.docs[0]
+      return
+    }
+
+    if (result.docs.length > 0 || this.publication.ballotQuestionId) {
+      return
+    }
+
+    const legacyResult = await this.t.get(draftQuery)
+    const legacyRegularDrafts = legacyResult.docs.filter(doc => {
+      const ballotQuestionId = doc.data().ballotQuestionId
+      return ballotQuestionId === undefined || ballotQuestionId === null
+    })
+
+    if (legacyRegularDrafts.length === 1) {
+      this.draftSnap = legacyRegularDrafts[0]
     }
   }
 

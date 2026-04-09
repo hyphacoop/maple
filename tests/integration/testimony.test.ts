@@ -1,6 +1,13 @@
 import { currentGeneralCourt } from "functions/src/shared"
 import { signOut, User } from "firebase/auth"
-import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore"
+import {
+  deleteField,
+  doc,
+  getDoc,
+  setDoc,
+  Timestamp,
+  updateDoc
+} from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { ref, uploadBytes } from "firebase/storage"
 import { nanoid } from "nanoid"
@@ -519,6 +526,10 @@ describe("deleteTestimony", () => {
 
     // Publish as user 1
     let res = await publishTestimony({ draftId })
+    // Legacy regular testimony drafts predate explicit ballotQuestionId: null.
+    await updateDoc(refs.draftTestimony(normalUid, draftId), {
+      ballotQuestionId: deleteField()
+    })
 
     // Delete as admin
     await getSignedInAdmin()
