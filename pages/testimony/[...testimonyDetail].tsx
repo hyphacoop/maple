@@ -1,4 +1,4 @@
-import { Testimony } from "components/db"
+import { BallotQuestion, Testimony } from "components/db"
 import { dbService } from "components/db/api"
 import { wrapper } from "components/store"
 import {
@@ -113,6 +113,7 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
     court: number,
     authorUid: string,
     ballotQuestionId: string | undefined,
+    ballotQuestion: BallotQuestion | null,
     archive: Testimony[],
     testimony: Testimony
 
@@ -145,12 +146,16 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
     return
   }
 
+  ballotQuestion = ballotQuestionId
+    ? (await db.getBallotQuestion({ id: ballotQuestionId })) ?? null
+    : null
+
   const bill = await db.getBill({ billId, court }),
     author = await db.getProfile({ uid: authorUid })
 
   if (!bill) return
 
-  return { bill, author, archive, testimony }
+  return { ballotQuestion, bill, author, archive, testimony }
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -190,6 +195,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       pageDataLoaded({
         testimony: docs.testimony,
         bill: docs.bill,
+        ballotQuestion: docs.ballotQuestion,
         author: docs.author ?? null,
         archive: docs.archive,
         version: q.version
