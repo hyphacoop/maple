@@ -404,6 +404,7 @@ describe("publishTestimony", () => {
 
     it("Updates ballot question metadata without changing bill metadata", async () => {
       const { draftId } = await createDraft(uid, billId, undefined, "bq-test-1")
+      const billBefore = await getBill(billId)
       const res = await publishTestimony({ draftId })
       const bill = await getBill(billId)
       const ballotQuestion = await getBallotQuestion("bq-test-1")
@@ -412,10 +413,12 @@ describe("publishTestimony", () => {
       expect(ballotQuestion.endorseCount).toBe(1)
       expect(ballotQuestion.neutralCount).toBe(0)
       expect(ballotQuestion.opposeCount).toBe(0)
-      expect(bill.testimonyCount).toBe(0)
-      expect(bill.endorseCount).toBe(0)
-      expect(bill.latestTestimonyId).toBeUndefined()
-      expect(bill.latestTestimonyAt).toBeUndefined()
+      expect(bill.testimonyCount).toBe(billBefore.testimonyCount)
+      expect(bill.endorseCount).toBe(billBefore.endorseCount)
+      expect(bill.neutralCount).toBe(billBefore.neutralCount)
+      expect(bill.opposeCount).toBe(billBefore.opposeCount)
+      expect(bill.latestTestimonyId).toBe(billBefore.latestTestimonyId)
+      expect(bill.latestTestimonyAt).toEqual(billBefore.latestTestimonyAt)
       expect(
         (await getPublication(uid, res.data.publicationId)).ballotQuestionId
       ).toBe("bq-test-1")
