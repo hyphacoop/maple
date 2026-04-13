@@ -14,7 +14,7 @@ export const DescriptionBox = ({ description }: { description: string }) => {
           style={{
             width: "2.5rem",
             height: "2.5rem",
-            backgroundColor: "rgba(94, 114, 228, 0.12)",
+            backgroundColor: "var(--bq-accent-fill)",
             color: "var(--maple-brand-primary)",
             fontWeight: 700
           }}

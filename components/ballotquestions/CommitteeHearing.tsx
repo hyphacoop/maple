@@ -33,7 +33,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
             style={{
               width: "5rem",
               height: "5rem",
-              backgroundColor: "rgba(94, 114, 228, 0.06)",
+              backgroundColor: "var(--maple-surface-accent)",
               borderColor: "var(--maple-border-accent)"
             }}
           >
@@ -66,7 +66,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
             className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
             style={{
               borderColor: "var(--maple-border-accent)",
-              backgroundColor: "rgba(248, 250, 255, 1)",
+              backgroundColor: "var(--maple-surface-base)",
               color: "var(--maple-brand-primary)",
               minHeight: "3.25rem",
               whiteSpace: "nowrap"

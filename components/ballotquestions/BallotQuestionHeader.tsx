@@ -78,7 +78,7 @@ export const BallotQuestionHeader = ({
                     height: "0.6rem",
                     borderRadius: "var(--maple-radius-pill)",
                     backgroundColor: "var(--maple-brand-primary)",
-                    boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
+                    boxShadow: "0 0 0 4px var(--bq-accent-fill)"
                   }}
                 />
                 {statusLabel}
@@ -171,7 +171,7 @@ export const BallotQuestionHeader = ({
                 style={{
                   color: "var(--maple-brand-primary)",
                   borderColor: "var(--maple-border-accent)",
-                  backgroundColor: "rgba(255, 255, 255, 0.85)"
+                  backgroundColor: "var(--maple-surface-base)"
                 }}
               >
                 <span aria-hidden="true">↗</span>

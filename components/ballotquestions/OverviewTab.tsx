@@ -31,7 +31,7 @@ export const OverviewTab = ({
             style={{
               width: "3rem",
               height: "3rem",
-              borderColor: "rgba(94, 114, 228, 0.16)",
+              borderColor: "var(--maple-border-accent)",
               background:
                 "linear-gradient(180deg, rgba(94, 114, 228, 0.16) 0%, rgba(226, 232, 240, 0.55) 100%)"
             }}

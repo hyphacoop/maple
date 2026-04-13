@@ -363,13 +363,13 @@
 
 .ballot-question-pdf-link:hover {
   transform: translateY(-1px);
-  border-color: rgba(94, 114, 228, 0.32) !important;
-  background-color: rgba(255, 255, 255, 1) !important;
-  box-shadow: 0 0.5rem 1.25rem rgba(94, 114, 228, 0.12);
+  border-color: var(--bq-accent-border-strong) !important;
+  background-color: var(--maple-surface-base) !important;
+  box-shadow: var(--maple-shadow-md);
 }
 
 .ballot-question-pdf-link:focus-visible {
-  outline: 3px solid rgba(94, 114, 228, 0.35);
+  outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
 }
 
@@ -406,44 +406,45 @@
 
 .ballot-question-nav-link:hover {
   transform: translateY(-1px);
-  border-color: rgba(94, 114, 228, 0.24) !important;
-  background-color: rgba(94, 114, 228, 0.04) !important;
+  border-color: var(--maple-border-accent-strong) !important;
+  background-color: var(--maple-surface-accent) !important;
   color: var(--bs-secondary);
-  box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.08);
+  box-shadow: var(--maple-shadow-md);
 }
 
 .ballot-question-nav-link:focus-visible {
-  outline: 3px solid rgba(94, 114, 228, 0.35);
+  outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
 }
 
 .ballot-question-nav-link.is-active {
-  background-color: rgba(94, 114, 228, 0.08);
-  border-color: rgba(94, 114, 228, 0.35);
+  background-color: var(--maple-surface-accent);
+  border-color: var(--maple-focus-ring);
   color: var(--bs-secondary);
 }
 
 .ballot-question-nav-link.is-active:hover {
-  background-color: rgba(94, 114, 228, 0.12) !important;
-  border-color: rgba(94, 114, 228, 0.42) !important;
+  background-color: var(--bq-accent-fill) !important;
+  border-color: var(--bq-accent-ring) !important;
 }
 
 .ballot-question-nav-badge {
   min-width: 1.5rem;
   font-weight: 600;
-  background-color: rgba(15, 23, 42, 0.08);
-  color: #334155;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  background-color: var(--maple-surface-border);
+  color: var(--maple-text-body);
+  transition: background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast);
 }
 
 .ballot-question-nav-link:hover .ballot-question-nav-badge {
-  background-color: rgba(94, 114, 228, 0.14);
+  background-color: var(--bq-accent-fill);
   color: var(--bs-secondary);
 }
 
 .ballot-question-nav-badge.is-active {
   background-color: var(--bs-secondary);
-  color: white;
+  color: var(--maple-text-inverse);
 }
 
 /* Custom style in "In The News" Page */

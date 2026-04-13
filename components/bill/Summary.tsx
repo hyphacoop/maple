@@ -369,9 +369,9 @@ function HearingsModal({
 
 const HearingRow = styled.div`
   &:nth-child(odd) {
-    background-color: #eae7e7;
+    background-color: var(--maple-surface-page);
   &:nth-child(even) {
-    background-color: white;
+    background-color: var(--maple-surface-base);
   }
 `
 
