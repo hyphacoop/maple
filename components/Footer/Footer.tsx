@@ -48,13 +48,13 @@ const BrowseHeader = styled(NavLink)`
 `
 
 const StyledInternalLink = styled(NavLink)`
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--maple-text-inverse-muted);
   letter-spacing: -0.63px;
   padding-top: 4;
   margin: 5px 0;
 
   &:hover {
-    color: white;
+    color: var(--maple-text-inverse);
     text-decoration: none;
   }
 `

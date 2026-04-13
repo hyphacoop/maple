@@ -23,6 +23,7 @@
   --maple-text-body: #334155;
   --maple-text-muted: #64748b;
   --maple-text-inverse: #ffffff;
+  --maple-text-inverse-muted: rgba(255, 255, 255, 0.55);
   --maple-surface-base: #ffffff;
   /* Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group. */
   --maple-surface-page: #eae7e7;

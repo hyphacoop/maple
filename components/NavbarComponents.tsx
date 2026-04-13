@@ -456,7 +456,11 @@ export const NavbarLinkViewProfile: React.FC<
 
   if (dropdown && !isMobile) {
     return (
-      <NavbarDropdownLink href={userLink} other={other}>
+      <NavbarDropdownLink
+        href={userLink}
+        handleClick={handleClick}
+        other={other}
+      >
         {t("navigation.viewProfile")}
       </NavbarDropdownLink>
     )
