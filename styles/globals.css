@@ -162,17 +162,13 @@
   width: fit-content;
 }
 
-.btn {
-  padding: 1rem;
-}
-
 .offcanvas {
   background-color: var(--bs-body-bg) !important;
 }
 
 .btn-disabled {
-  background-color: #c3bebe;
-  color: black;
+  background-color: var(--maple-surface-page);
+  color: var(--maple-text-body);
   border: none;
 }
 
@@ -204,7 +200,7 @@
 .form-navigation-btn {
   min-width: 10rem;
   line-height: 2.5rem;
-  padding: 0 0.5rem 0 0.5rem;
+  padding: 0 var(--maple-space-sm);
 }
 
 .tooltip-inner {

@@ -62,14 +62,17 @@ $tooltip-arrow-color: $blue;
 $enable-negative-margins: true;
 
 // Font size adjustments
-// $font-size-base: 16px; // default is 1rem. initially using exact px values but may go back to rem etc
+// Tighten heading hierarchy while keeping the current scale broadly intact.
+$font-size-base: 1rem;
+$line-height-base: 1.5;
+$headings-line-height: 1.2;
 
-$h1-font-size: 40px;
-$h2-font-size: 32px;
-$h3-font-size: 28px;
-$h4-font-size: 24px;
-$h5-font-size: 20px;
-$h6-font-size: 16px;
+$h1-font-size: 3rem;
+$h2-font-size: 2.375rem;
+$h3-font-size: 1.875rem;
+$h4-font-size: 1.5rem;
+$h5-font-size: 1.25rem;
+$h6-font-size: 1rem;
 
 $font-sizes: (
   1: $h1-font-size,
@@ -100,6 +103,19 @@ $utilities: (
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
+}
+
+.btn {
+  --bs-btn-border-radius: var(--maple-radius-md);
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem var(--maple-focus-ring);
+  --bs-btn-font-weight: 700;
+  --bs-btn-padding-x: var(--maple-space-xl);
+  --bs-btn-padding-y: var(--maple-space-sm);
+  transition: background-color var(--maple-transition-fast),
+    border-color var(--maple-transition-fast),
+    color var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    transform var(--maple-transition-fast);
 }
 
 @mixin button-contrast($color-a, $color-b) {
