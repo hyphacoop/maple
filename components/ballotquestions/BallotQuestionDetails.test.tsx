@@ -62,8 +62,8 @@ const mockGetDoc = jest.fn(() => new Promise(() => {}))
 const mockDoc = jest.fn(() => ({}))
 
 jest.mock("firebase/firestore", () => ({
-  doc: (...args: unknown[]) => mockDoc(...args),
-  getDoc: (...args: unknown[]) => mockGetDoc(...args)
+  doc: mockDoc,
+  getDoc: mockGetDoc
 }))
 
 const defaultProps = {
