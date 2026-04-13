@@ -14,6 +14,56 @@
 :root {
   --mobile-nav-link-color: rgba(255, 255, 255, 0.92);
   --mobile-nav-link-color-active: rgba(255, 255, 255, 1);
+  --maple-brand-primary: #1a3185;
+  --maple-brand-primary-strong: #12266f;
+  --maple-brand-accent: #ff8600;
+  --maple-brand-danger: #c71e32;
+  --maple-brand-dark: #0b0a3e;
+  --maple-text-strong: #1e293b;
+  --maple-text-body: #334155;
+  --maple-text-muted: #64748b;
+  --maple-text-inverse: #ffffff;
+  --maple-surface-base: #ffffff;
+  /* Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group. */
+  --maple-surface-page: #eae7e7;
+  /* Provisional: accent family comes from ballot-question work and may remain app-wide or become scoped later. */
+  --maple-surface-muted: rgba(248, 250, 252, 0.9);
+  --maple-surface-accent: rgba(94, 114, 228, 0.08);
+  --maple-surface-border: rgba(15, 23, 42, 0.08);
+  --maple-border-default: rgba(15, 23, 42, 0.15);
+  --maple-border-accent: rgba(94, 114, 228, 0.18);
+  --maple-border-accent-strong: rgba(94, 114, 228, 0.24);
+  --maple-focus-ring: rgba(94, 114, 228, 0.35);
+  --maple-shadow-sm: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
+  --maple-shadow-md: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.06);
+  --maple-shadow-hover: 0 0.65rem 1.35rem rgba(15, 23, 42, 0.12);
+  --maple-radius-sm: 4px;
+  --maple-radius-md: 8px;
+  --maple-radius-lg: 10px;
+  --maple-radius-xl: 16px;
+  --maple-radius-pill: 999px;
+  --maple-space-xs: 0.25rem;
+  --maple-space-sm: 0.5rem;
+  --maple-space-md: 0.75rem;
+  --maple-space-lg: 1rem;
+  --maple-space-xl: 1.5rem;
+  --maple-space-2xl: 2rem;
+  --maple-space-3xl: 3rem;
+  --maple-transition-fast: 0.15s ease;
+  --maple-transition-base: 0.2s ease;
+  --bq-surface-border: var(--maple-surface-border);
+  --bq-surface-shadow-soft: var(--maple-shadow-sm);
+  --bq-surface-shadow: var(--maple-shadow-md);
+  --bq-surface-shadow-hover: var(--maple-shadow-hover);
+  --bq-accent-border: var(--maple-border-accent);
+  --bq-accent-border-strong: var(--maple-border-accent-strong);
+  --bq-accent-fill-soft: var(--maple-surface-accent);
+  --bq-accent-fill: rgba(94, 114, 228, 0.12);
+  --bq-accent-ring: var(--maple-focus-ring);
+  --bq-muted-surface: var(--maple-surface-muted);
+  --bq-subtle-text: var(--maple-text-muted);
+  --bq-body-text: var(--maple-text-body);
+  --bq-strong-text: var(--maple-text-strong);
 }
 
 .navLink-primary {
@@ -42,10 +92,10 @@
 }
 
 .skip-link {
-  background: #ffffff;
-  border: 2px solid #12266f;
+  background: var(--maple-surface-base);
+  border: 2px solid var(--maple-brand-primary-strong);
   border-radius: 999px;
-  color: #12266f;
+  color: var(--maple-brand-primary-strong);
   font-weight: 700;
   left: 1rem;
   padding: 0.75rem 1rem;
@@ -62,7 +112,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  color: white;
+  color: var(--maple-text-inverse);
   display: inline-flex;
   justify-content: center;
   padding: 0;
@@ -70,7 +120,7 @@
 
 .mobile-nav-trigger:focus-visible {
   border-radius: 999px;
-  outline: 2px solid white;
+  outline: 2px solid var(--maple-text-inverse);
   outline-offset: 4px;
 }
 
@@ -128,7 +178,7 @@
 
 .modal-header {
   background-color: var(--bs-blue);
-  color: white;
+  color: var(--maple-text-inverse);
 }
 
 .modal-content {
@@ -136,7 +186,7 @@
 }
 
 .whitebackground {
-  background-color: white;
+  background-color: var(--maple-surface-base);
 }
 
 .bg-endorse {
@@ -257,9 +307,10 @@
   padding: 7px, 8px, 7px, 8px;
 }
 
-<.ballot-question-back-link {
-  color: #475569;
-  transition: color 0.15s ease, transform 0.15s ease;
+.ballot-question-back-link {
+  color: var(--maple-text-muted);
+  transition: color var(--maple-transition-fast),
+    transform var(--maple-transition-fast);
 }
 
 .ballot-question-back-link:hover {
@@ -268,9 +319,9 @@
 }
 
 .ballot-question-back-link:focus-visible {
-  outline: 3px solid rgba(94, 114, 228, 0.35);
+  outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
-  border-radius: 999px;
+  border-radius: var(--maple-radius-pill);
 }
 
 .ballot-question-pdf-link {
@@ -311,11 +362,14 @@
 
 .ballot-question-nav-link {
   cursor: pointer;
-  background-color: #f8fafc;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  color: #334155;
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  background-color: var(--maple-surface-muted);
+  border: 1px solid var(--maple-surface-border);
+  color: var(--maple-text-body);
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast),
+    background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast);
 }
 
 .ballot-question-nav-link:hover {

@@ -10,6 +10,9 @@ $green: #3d9922;
 $gray-700: #495057;
 $pantone-blue: #d1d6e7;
 
+// Keep current page background and semantic bootstrap palette stable in PR 1.
+// Visual-system refinement happens via semantic CSS tokens in styles/globals.css;
+// revisit $body-bg / $primary only after token adoption and blast-radius testing.
 $body-bg: #eae7e7;
 
 $primary: $red;
