@@ -113,7 +113,7 @@ export const NavbarLinkBills: React.FC<
         className={
           isMobile
             ? "navLink-primary"
-            : "desktop-navbar-link text-white rounded px-3 py-1"
+            : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/bills"
         {...other}
@@ -138,7 +138,7 @@ export const NavbarLinkBallotQuestions: React.FC<
         className={
           isMobile
             ? "navLink-primary"
-            : "desktop-navbar-link text-white rounded px-3 py-1"
+            : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/ballotQuestions"
         {...other}
@@ -163,7 +163,7 @@ export const NavbarLinkHearings: React.FC<
         className={
           isMobile
             ? "navLink-primary"
-            : "desktop-navbar-link text-white rounded px-3 py-1"
+            : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/hearings"
         {...other}
@@ -312,7 +312,7 @@ export const NavbarLinkNewsfeed: React.FC<
         className={
           isMobile
             ? "navLink-primary"
-            : "desktop-navbar-link text-white rounded px-3 py-1"
+            : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/newsfeed"
         {...other}
@@ -431,7 +431,7 @@ export const NavbarLinkTestimony: React.FC<
         className={
           isMobile
             ? "navLink-primary"
-            : "desktop-navbar-link text-white rounded px-3 py-1"
+            : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/testimony"
         {...other}

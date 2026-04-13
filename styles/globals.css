@@ -31,6 +31,7 @@
   --maple-surface-accent: rgba(94, 114, 228, 0.08);
   --maple-surface-border: rgba(15, 23, 42, 0.08);
   --maple-border-default: rgba(15, 23, 42, 0.15);
+  --maple-border-inverse-soft: rgba(255, 255, 255, 0.75);
   --maple-border-accent: rgba(94, 114, 228, 0.18);
   --maple-border-accent-strong: rgba(94, 114, 228, 0.24);
   --maple-focus-ring: rgba(94, 114, 228, 0.35);
@@ -124,9 +125,44 @@
   outline-offset: 4px;
 }
 
+.desktop-navbar-link {
+  color: var(--maple-text-inverse) !important;
+  border-radius: var(--maple-radius-md);
+  transition: background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast);
+}
+
+.desktop-navbar-link:hover,
+.desktop-navbar-link:focus-visible {
+  color: var(--maple-text-inverse) !important;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.desktop-navbar-dropdown {
+  border-radius: var(--maple-radius-md) !important;
+}
+
+.desktop-navbar-dropdown.btn-secondary {
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-bg: rgba(255, 255, 255, 0.08);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: rgba(255, 255, 255, 0.12);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-color: var(--maple-text-inverse);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-active-color: var(--maple-text-inverse);
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.18);
+}
+
+.desktop-navbar-dropdown.btn-secondary:focus-visible {
+  outline: 2px solid var(--maple-text-inverse);
+  outline-offset: 3px;
+}
+
 @media (min-width: 766px) and (max-width: 1020px) {
   .desktop-navbar {
-    gap: 0.25rem !important;
+    gap: var(--maple-space-xs) !important;
   }
 
   .desktop-navbar .me-auto img {
@@ -136,15 +172,15 @@
 
   .desktop-navbar-link {
     font-size: 0.95rem;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: var(--maple-space-sm) !important;
+    padding-right: var(--maple-space-sm) !important;
     white-space: nowrap;
   }
 
   .desktop-navbar-dropdown {
     font-size: 0.95rem;
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-left: var(--maple-space-sm) !important;
+    padding-right: var(--maple-space-sm) !important;
   }
 }
 
