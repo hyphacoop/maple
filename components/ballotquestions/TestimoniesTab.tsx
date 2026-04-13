@@ -29,8 +29,8 @@ export const TestimoniesTab = ({
       <div
         className="rounded-4 border bg-white p-4 shadow-sm"
         style={{
-          borderColor: "rgba(15, 23, 42, 0.08)",
-          boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
+          borderColor: "var(--maple-surface-border)",
+          boxShadow: "var(--maple-shadow-md)"
         }}
       >
         <div className="d-flex flex-wrap justify-content-between gap-3 mb-4">
@@ -40,8 +40,8 @@ export const TestimoniesTab = ({
               style={{
                 width: "2.75rem",
                 height: "2.75rem",
-                borderColor: "rgba(94, 114, 228, 0.18)",
-                backgroundColor: "rgba(94, 114, 228, 0.08)"
+                borderColor: "var(--maple-border-accent)",
+                backgroundColor: "var(--maple-surface-accent)"
               }}
             >
               <Image src="/bill-thank-you.svg" alt="" width={22} height={18} />
@@ -70,7 +70,7 @@ export const TestimoniesTab = ({
 
         <div
           className="border-top pt-4"
-          style={{ borderColor: "rgba(15, 23, 42, 0.08)" }}
+          style={{ borderColor: "var(--maple-surface-border)" }}
         >
           <div className="row g-3">
             <div className="col-md-4">
@@ -127,8 +127,8 @@ function SummaryItem({
     <div
       className="rounded-4 border h-100 px-3 py-3"
       style={{
-        backgroundColor: "rgba(248, 250, 252, 0.9)",
-        borderColor: "rgba(15, 23, 42, 0.08)"
+        backgroundColor: "var(--maple-surface-muted)",
+        borderColor: "var(--maple-surface-border)"
       }}
     >
       <div className="d-flex align-items-center justify-content-between gap-3">
@@ -138,7 +138,7 @@ function SummaryItem({
             style={{
               fontSize: "0.72rem",
               letterSpacing: "0.08em",
-              color: "#64748b"
+              color: "var(--maple-text-muted)"
             }}
           >
             {label}
@@ -155,8 +155,8 @@ function SummaryItem({
           style={{
             width: "2.5rem",
             height: "2.5rem",
-            backgroundColor: "white",
-            border: "1px solid rgba(15, 23, 42, 0.08)"
+            backgroundColor: "var(--maple-surface-base)",
+            border: "1px solid var(--maple-surface-border)"
           }}
         >
           <Image src={icon} alt="" width={18} height={18} />

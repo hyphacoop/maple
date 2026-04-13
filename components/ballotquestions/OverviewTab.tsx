@@ -16,7 +16,7 @@ export const OverviewTab = ({
 }) => {
   const sortedHearings = [...hearings].sort((a, b) => b.startsAt - a.startsAt)
   const sectionCopyStyle = {
-    color: "#334155",
+    color: "var(--maple-text-body)",
     fontSize: "0.98rem",
     lineHeight: 1.8,
     maxWidth: "75ch"
@@ -56,8 +56,8 @@ export const OverviewTab = ({
                 <div
                   className="rounded-4 border h-100 px-3 py-3"
                   style={{
-                    backgroundColor: "rgba(248, 250, 252, 0.9)",
-                    borderColor: "rgba(15, 23, 42, 0.08)"
+                    backgroundColor: "var(--maple-surface-muted)",
+                    borderColor: "var(--maple-surface-border)"
                   }}
                 >
                   <div
@@ -65,14 +65,14 @@ export const OverviewTab = ({
                     style={{
                       fontSize: "0.72rem",
                       letterSpacing: "0.08em",
-                      color: "#64748b"
+                      color: "var(--maple-text-muted)"
                     }}
                   >
                     {item.label}
                   </div>
                   <div
                     style={{
-                      color: "#1e293b",
+                      color: "var(--maple-text-strong)",
                       fontSize: "0.98rem",
                       lineHeight: 1.5
                     }}
@@ -190,8 +190,8 @@ function SectionCard({ children }: { children: ReactNode }) {
     <section
       className="rounded-4 border bg-white px-4 py-4 shadow-sm"
       style={{
-        borderColor: "rgba(15, 23, 42, 0.08)",
-        boxShadow: "0 0.5rem 1.5rem rgba(15, 23, 42, 0.06)"
+        borderColor: "var(--maple-surface-border)",
+        boxShadow: "var(--maple-shadow-md)"
       }}
     >
       {children}

@@ -47,9 +47,9 @@ export const BallotQuestionHeader = ({
         className="rounded-4 border px-4 py-4 px-lg-5 py-lg-5 shadow-sm"
         style={{
           background:
-            "linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 255, 1) 100%)",
-          borderColor: "rgba(15, 23, 42, 0.08)",
-          boxShadow: "0 0.75rem 2rem rgba(15, 23, 42, 0.07)"
+            "linear-gradient(180deg, var(--maple-surface-base) 0%, rgba(248, 250, 255, 1) 100%)",
+          borderColor: "var(--maple-surface-border)",
+          boxShadow: "var(--maple-shadow-md)"
         }}
       >
         <Row className="g-4 align-items-start">
@@ -66,7 +66,7 @@ export const BallotQuestionHeader = ({
               <span
                 className="d-inline-flex align-items-center gap-2 fw-semibold"
                 style={{
-                  color: "var(--bs-secondary)",
+                  color: "var(--maple-brand-primary)",
                   fontSize: "0.95rem",
                   lineHeight: 1.2
                 }}
@@ -76,8 +76,8 @@ export const BallotQuestionHeader = ({
                   style={{
                     width: "0.6rem",
                     height: "0.6rem",
-                    borderRadius: "999px",
-                    backgroundColor: "var(--bs-secondary)",
+                    borderRadius: "var(--maple-radius-pill)",
+                    backgroundColor: "var(--maple-brand-primary)",
                     boxShadow: "0 0 0 4px rgba(94, 114, 228, 0.12)"
                   }}
                 />
@@ -134,8 +134,8 @@ export const BallotQuestionHeader = ({
             <div
               className="h-100 rounded-4 border p-4"
               style={{
-                backgroundColor: "rgba(248, 250, 252, 0.92)",
-                borderColor: "rgba(15, 23, 42, 0.08)"
+                backgroundColor: "var(--maple-surface-muted)",
+                borderColor: "var(--maple-surface-border)"
               }}
             >
               <div
@@ -143,7 +143,7 @@ export const BallotQuestionHeader = ({
                 style={{
                   fontSize: "0.75rem",
                   letterSpacing: "0.08em",
-                  color: "#64748b"
+                  color: "var(--maple-text-muted)"
                 }}
               >
                 Take part
@@ -169,8 +169,8 @@ export const BallotQuestionHeader = ({
                 rel="noopener noreferrer"
                 className="ballot-question-pdf-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small text-decoration-none fw-semibold mt-3 mt-lg-0"
                 style={{
-                  color: "var(--bs-secondary)",
-                  borderColor: "rgba(94, 114, 228, 0.18)",
+                  color: "var(--maple-brand-primary)",
+                  borderColor: "var(--maple-border-accent)",
                   backgroundColor: "rgba(255, 255, 255, 0.85)"
                 }}
               >
@@ -189,23 +189,23 @@ function MetaFact({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="d-flex flex-column"
-      style={{
-        minWidth: "6.5rem"
-      }}
+        style={{
+          minWidth: "6.5rem"
+        }}
     >
       <span
         className="text-uppercase fw-semibold"
         style={{
           fontSize: "0.72rem",
           letterSpacing: "0.08em",
-          color: "#64748b"
+          color: "var(--maple-text-muted)"
         }}
       >
         {label}
       </span>
       <span
         style={{
-          color: "#334155",
+          color: "var(--maple-text-body)",
           fontSize: "1.05rem",
           fontWeight: 650,
           lineHeight: 1.3

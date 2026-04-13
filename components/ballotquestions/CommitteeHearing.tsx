@@ -22,8 +22,8 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
     <div
       className="rounded-4 border p-3 p-lg-4"
       style={{
-        backgroundColor: "white",
-        borderColor: "rgba(15, 23, 42, 0.08)"
+        backgroundColor: "var(--maple-surface-base)",
+        borderColor: "var(--maple-surface-border)"
       }}
     >
       <div className="d-flex flex-column flex-xl-row align-items-xl-start justify-content-between gap-4 gap-xl-4">
@@ -34,7 +34,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
               width: "5rem",
               height: "5rem",
               backgroundColor: "rgba(94, 114, 228, 0.06)",
-              borderColor: "rgba(94, 114, 228, 0.18)"
+              borderColor: "var(--maple-border-accent)"
             }}
           >
             <Image
@@ -65,9 +65,9 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
             rel="noopener noreferrer"
             className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
             style={{
-              borderColor: "rgba(94, 114, 228, 0.18)",
+              borderColor: "var(--maple-border-accent)",
               backgroundColor: "rgba(248, 250, 255, 1)",
-              color: "var(--bs-secondary)",
+              color: "var(--maple-brand-primary)",
               minHeight: "3.25rem",
               whiteSpace: "nowrap"
             }}

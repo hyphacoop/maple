@@ -5,7 +5,7 @@ export const DescriptionBox = ({ description }: { description: string }) => {
       style={{
         background:
           "linear-gradient(180deg, rgba(237, 242, 255, 0.95) 0%, rgba(248, 250, 255, 1) 100%)",
-        borderColor: "rgba(94, 114, 228, 0.18)"
+        borderColor: "var(--maple-border-accent)"
       }}
     >
       <div className="d-flex align-items-start gap-3">
@@ -15,7 +15,7 @@ export const DescriptionBox = ({ description }: { description: string }) => {
             width: "2.5rem",
             height: "2.5rem",
             backgroundColor: "rgba(94, 114, 228, 0.12)",
-            color: "var(--bs-secondary)",
+            color: "var(--maple-brand-primary)",
             fontWeight: 700
           }}
           aria-hidden="true"
@@ -29,7 +29,7 @@ export const DescriptionBox = ({ description }: { description: string }) => {
           <p
             className="mb-0"
             style={{
-              color: "#4b5563",
+              color: "var(--maple-text-body)",
               fontSize: "0.96rem",
               lineHeight: 1.6,
               maxWidth: "62ch"
