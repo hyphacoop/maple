@@ -44,7 +44,7 @@
 .skip-link {
   background: var(--maple-surface-base);
   border: 2px solid var(--maple-brand-primary-strong);
-  border-radius: 999px;
+  border-radius: var(--maple-radius-pill);
   color: var(--maple-brand-primary-strong);
   font-weight: 700;
   left: 1rem;
@@ -69,7 +69,7 @@
 }
 
 .mobile-nav-trigger:focus-visible {
-  border-radius: 999px;
+  border-radius: var(--maple-radius-pill);
   outline: 2px solid var(--maple-text-inverse);
   outline-offset: 4px;
 }
@@ -84,7 +84,7 @@
 .desktop-navbar-link:hover,
 .desktop-navbar-link:focus-visible {
   color: var(--maple-text-inverse) !important;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--maple-overlay-inverse-subtle);
 }
 
 .desktop-navbar-dropdown {
@@ -94,14 +94,14 @@
 .desktop-navbar-dropdown.btn-secondary {
   --bs-btn-bg: transparent;
   --bs-btn-border-color: transparent;
-  --bs-btn-hover-bg: rgba(255, 255, 255, 0.08);
+  --bs-btn-hover-bg: var(--maple-overlay-inverse-subtle);
   --bs-btn-hover-border-color: transparent;
-  --bs-btn-active-bg: rgba(255, 255, 255, 0.12);
+  --bs-btn-active-bg: var(--maple-overlay-inverse-medium);
   --bs-btn-active-border-color: transparent;
   --bs-btn-color: var(--maple-text-inverse);
   --bs-btn-hover-color: var(--maple-text-inverse);
   --bs-btn-active-color: var(--maple-text-inverse);
-  --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.18);
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem var(--maple-overlay-inverse-focus);
 }
 
 .desktop-navbar-dropdown.btn-secondary:focus-visible {
@@ -208,21 +208,21 @@
   border-bottom: 3px solid;
   border-color: #0000001a;
 }
-.our-team-tab .nav-item .nav-link:hover {
-  color: #c71e32;
+.our-team-tab .nav-item .nav-link:hover,
+.our-team-tab .nav-item .nav-link.active {
+  color: var(--maple-brand-danger);
 }
 .our-team-tab .nav-item .nav-link.active {
-  color: #c71e32;
-  border-color: #c71e32;
+  border-color: var(--maple-brand-danger);
 }
 
 .our-team-dropdown-button {
   width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
+  padding: 7px 8px;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
-  border-color: #12266f;
+  border-color: var(--maple-brand-primary-strong);
   font-family: Nunito;
   font-size: 16px;
   font-weight: 500;
@@ -230,62 +230,41 @@
   letter-spacing: 0.015em;
   text-align: right;
 }
-/* .our-team-dropdown-button::after {
-  display: none !important; 
-} */
-.our-team-dropdown-button.btn-primary:focus {
-  width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
-  color: white;
-  border-color: #12266f;
-  box-shadow: none;
-}
 
-.our-team-dropdown-button.btn-primary:checked {
-  width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
-  color: white;
-  border-color: #12266f;
-}
-.our-team-dropdown-button.btn-primary:active {
-  width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
-  color: white;
-  border-color: #12266f;
-}
+.our-team-dropdown-button.btn-primary:focus,
+.our-team-dropdown-button.btn-primary:checked,
+.our-team-dropdown-button.btn-primary:active,
 .our-team-dropdown-button.btn-primary:hover {
   width: 100%;
-  padding: 7px, 8px, 7px, 8px;
-  border-radius: 8px;
-  background: #12266f;
+  padding: 7px 8px;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
-  border-color: #12266f;
+  border-color: var(--maple-brand-primary-strong);
+}
+
+.our-team-dropdown-button.btn-primary:focus {
+  box-shadow: none;
 }
 
 .our-team-dropdown .dropdown-menu {
   width: 100%;
-  border-radius: 8px;
-  background: #12266f;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
 }
 
 .our-team-dropdown .dropdown-item {
   width: 100%;
-  border-radius: 8px;
-  background: #12266f;
+  border-radius: var(--maple-radius-md);
+  background: var(--maple-brand-primary-strong);
   color: white;
   font-family: Nunito;
   font-size: 16px;
   font-weight: 500;
   line-height: 20px;
   letter-spacing: 0.015em;
-  padding: 7px, 8px, 7px, 8px;
+  padding: 7px 8px;
 }
 
 .maple-surface {

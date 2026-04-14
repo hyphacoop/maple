@@ -4,11 +4,7 @@ import { Hearing } from "./types"
 
 export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
   const startsAt = new Date(hearing.startsAt)
-  const now = new Date()
-  const isOccurred = startsAt < now
-  const status = isOccurred ? "Occurred" : "Scheduled"
   const hearingId = hearing.id.replace(/^hearing-/, "")
-  const dateBadge = DateTime.fromJSDate(startsAt).toFormat("MMM d")
 
   const dateStr = DateTime.fromJSDate(startsAt).toLocaleString({
     year: "numeric",

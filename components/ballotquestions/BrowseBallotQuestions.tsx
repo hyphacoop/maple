@@ -27,59 +27,59 @@ const STATUS_STYLES: Record<
   { background: string; color: string; border: string }
 > = {
   legislature: {
-    background: "#fff4db",
-    color: "#7a4b00",
-    border: "#f6d58a"
+    background: "var(--maple-status-legislature-bg)",
+    color: "var(--maple-status-legislature-text)",
+    border: "var(--maple-status-legislature-border)"
   },
   qualifying: {
-    background: "#eef7ff",
-    color: "#16537e",
-    border: "#b9ddf8"
+    background: "var(--maple-status-qualifying-bg)",
+    color: "var(--maple-status-qualifying-text)",
+    border: "var(--maple-status-qualifying-border)"
   },
   certified: {
-    background: "#e9f8ef",
-    color: "#17633a",
-    border: "#bee8cd"
+    background: "var(--maple-status-certified-bg)",
+    color: "var(--maple-status-certified-text)",
+    border: "var(--maple-status-certified-border)"
   },
   ballot: {
-    background: "#e8efff",
-    color: "#1d3f8a",
-    border: "#c9d8ff"
+    background: "var(--maple-status-ballot-bg)",
+    color: "var(--maple-status-ballot-text)",
+    border: "var(--maple-status-ballot-border)"
   },
   enacted: {
-    background: "#e8f6ea",
-    color: "#1d5d2d",
-    border: "#c8e7cf"
+    background: "var(--maple-status-enacted-bg)",
+    color: "var(--maple-status-enacted-text)",
+    border: "var(--maple-status-enacted-border)"
   },
   failed: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "#f4bfd0"
+    background: "var(--maple-status-failed-bg)",
+    color: "var(--maple-status-failed-text)",
+    border: "var(--maple-status-failed-border)"
   },
   withdrawn: {
-    background: "#f1f5f9",
-    color: "#475569",
-    border: "#d7e0ea"
+    background: "var(--maple-status-neutral-bg)",
+    color: "var(--maple-status-neutral-text)",
+    border: "var(--maple-status-neutral-border)"
   },
   expectedOnBallot: {
-    background: "#e8efff",
-    color: "#1d3f8a",
-    border: "#c9d8ff"
+    background: "var(--maple-status-ballot-bg)",
+    color: "var(--maple-status-ballot-text)",
+    border: "var(--maple-status-ballot-border)"
   },
   failedToAppear: {
-    background: "#f1f5f9",
-    color: "#475569",
-    border: "#d7e0ea"
+    background: "var(--maple-status-neutral-bg)",
+    color: "var(--maple-status-neutral-text)",
+    border: "var(--maple-status-neutral-border)"
   },
   rejected: {
-    background: "#fde8ef",
-    color: "#902141",
-    border: "#f4bfd0"
+    background: "var(--maple-status-failed-bg)",
+    color: "var(--maple-status-failed-text)",
+    border: "var(--maple-status-failed-border)"
   },
   accepted: {
-    background: "#e8f6ea",
-    color: "#1d5d2d",
-    border: "#c8e7cf"
+    background: "var(--maple-status-enacted-bg)",
+    color: "var(--maple-status-enacted-text)",
+    border: "var(--maple-status-enacted-border)"
   }
 }
 
