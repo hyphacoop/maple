@@ -226,6 +226,7 @@ $utilities: (
 
   --maple-brand-primary: #{$maple-brand-primary};
   --maple-brand-primary-strong: #{$maple-brand-primary-strong};
+  --maple-brand-accent: #{$maple-brand-accent};
   --maple-brand-danger: #{$maple-brand-danger};
   --maple-brand-dark: #{$maple-brand-dark};
 
@@ -271,8 +272,10 @@ $utilities: (
   --maple-space-lg: #{$maple-space-lg};
   --maple-space-xl: #{$maple-space-xl};
   --maple-space-2xl: #{$maple-space-2xl};
+  --maple-space-3xl: #{$maple-space-3xl};
 
   --maple-transition-fast: #{$maple-transition-fast};
+  --maple-transition-base: #{$maple-transition-base};
 
   --maple-status-legislature-bg: #{$maple-status-legislature-bg};
   --maple-status-legislature-text: #{$maple-status-legislature-text};
@@ -302,8 +305,7 @@ $utilities: (
   --bs-btn-focus-box-shadow: 0 0 0 0.25rem var(--maple-focus-ring);
   transition: background-color var(--maple-transition-fast),
     border-color var(--maple-transition-fast),
-    color var(--maple-transition-fast),
-    box-shadow var(--maple-transition-fast),
+    color var(--maple-transition-fast), box-shadow var(--maple-transition-fast),
     transform var(--maple-transition-fast);
 }
 

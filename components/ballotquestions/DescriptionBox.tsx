@@ -1,8 +1,6 @@
 export const DescriptionBox = ({ description }: { description: string }) => {
   return (
-    <div
-      className="maple-accent-surface rounded-4 px-4 py-4"
-    >
+    <div className="maple-accent-surface rounded-4 px-4 py-4">
       <div className="d-flex align-items-start gap-3">
         <div
           className="maple-icon-chip rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"

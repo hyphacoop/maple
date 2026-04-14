@@ -51,9 +51,7 @@ export const OverviewTab = ({
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
                 <div className="maple-muted-surface rounded-4 h-100 px-3 py-3">
-                  <div className="maple-eyebrow mb-2">
-                    {item.label}
-                  </div>
+                  <div className="maple-eyebrow mb-2">{item.label}</div>
                   <div
                     style={{
                       color: "var(--maple-text-strong)",
@@ -171,8 +169,6 @@ function BallotGlyph() {
 
 function SectionCard({ children }: { children: ReactNode }) {
   return (
-    <section className="maple-surface rounded-4 px-4 py-4">
-      {children}
-    </section>
+    <section className="maple-surface rounded-4 px-4 py-4">{children}</section>
   )
 }

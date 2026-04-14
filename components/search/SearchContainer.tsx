@@ -151,8 +151,7 @@ export const SearchContainer = styled.div`
     background-color: var(--maple-surface-base);
     border: 1px solid var(--maple-surface-border);
     box-shadow: var(--maple-shadow-sm);
-    padding: var(--maple-space-sm) var(--maple-space-lg)
-      var(--maple-space-lg);
+    padding: var(--maple-space-sm) var(--maple-space-lg) var(--maple-space-lg);
     border-radius: var(--maple-radius-sm);
     margin-bottom: var(--maple-space-xl);
     max-height: 250px;

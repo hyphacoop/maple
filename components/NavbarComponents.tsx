@@ -111,9 +111,7 @@ export const NavbarLinkBills: React.FC<
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={
-          isMobile
-            ? "navLink-primary"
-            : "desktop-navbar-link rounded px-3 py-1"
+          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/bills"
         {...other}
@@ -136,9 +134,7 @@ export const NavbarLinkBallotQuestions: React.FC<
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={
-          isMobile
-            ? "navLink-primary"
-            : "desktop-navbar-link rounded px-3 py-1"
+          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/ballotQuestions"
         {...other}
@@ -161,9 +157,7 @@ export const NavbarLinkHearings: React.FC<
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={
-          isMobile
-            ? "navLink-primary"
-            : "desktop-navbar-link rounded px-3 py-1"
+          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/hearings"
         {...other}
@@ -310,9 +304,7 @@ export const NavbarLinkNewsfeed: React.FC<
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={
-          isMobile
-            ? "navLink-primary"
-            : "desktop-navbar-link rounded px-3 py-1"
+          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/newsfeed"
         {...other}
@@ -429,9 +421,7 @@ export const NavbarLinkTestimony: React.FC<
     <Nav.Item onClick={handleClick}>
       <NavLink
         className={
-          isMobile
-            ? "navLink-primary"
-            : "desktop-navbar-link rounded px-3 py-1"
+          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
         }
         href="/testimony"
         {...other}

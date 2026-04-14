@@ -72,9 +72,7 @@ export const BallotQuestionNav = ({
   return (
     <div className="maple-surface rounded-4 p-3 p-lg-4">
       <div className="mb-3 mb-lg-4">
-        <div className="maple-eyebrow mb-1">
-          Explore
-        </div>
+        <div className="maple-eyebrow mb-1">Explore</div>
         <p className="mb-0 small text-body-secondary">
           Move between the question overview and public perspectives.
         </p>

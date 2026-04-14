@@ -119,9 +119,7 @@ function SummaryItem({
     <div className="maple-muted-surface rounded-4 h-100 px-3 py-3">
       <div className="d-flex align-items-center justify-content-between gap-3">
         <div>
-          <div className="maple-eyebrow mb-1">
-            {label}
-          </div>
+          <div className="maple-eyebrow mb-1">{label}</div>
           <div
             className="fw-semibold"
             style={{ color, fontSize: "1.75rem", lineHeight: 1 }}

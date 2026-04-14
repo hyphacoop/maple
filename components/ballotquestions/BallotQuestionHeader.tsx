@@ -43,9 +43,7 @@ export const BallotQuestionHeader = ({
 
   return (
     <Container fluid="xl" className="mt-4">
-      <div
-        className="maple-surface-gradient rounded-4 px-4 py-4 px-lg-5 py-lg-5"
-      >
+      <div className="maple-surface-gradient rounded-4 px-4 py-4 px-lg-5 py-lg-5">
         <Row className="g-4 align-items-start">
           <Col lg={8}>
             <Link
@@ -72,8 +70,7 @@ export const BallotQuestionHeader = ({
                     height: "0.6rem",
                     borderRadius: "var(--maple-radius-pill)",
                     backgroundColor: "var(--maple-brand-primary)",
-                    boxShadow:
-                      "0 0 0 4px var(--maple-surface-accent-strong)"
+                    boxShadow: "0 0 0 4px var(--maple-surface-accent-strong)"
                   }}
                 />
                 {statusLabel}
@@ -127,9 +124,7 @@ export const BallotQuestionHeader = ({
 
           <Col lg={4}>
             <div className="h-100 maple-muted-surface rounded-4 p-4">
-              <div className="maple-eyebrow mb-3">
-                Take part
-              </div>
+              <div className="maple-eyebrow mb-3">Take part</div>
               <div className="mb-3">
                 {notifications && user && (
                   <FollowBallotQuestionButton ballotQuestion={ballotQuestion} />
@@ -171,15 +166,11 @@ function MetaFact({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="d-flex flex-column"
-        style={{
-          minWidth: "6.5rem"
-        }}
+      style={{
+        minWidth: "6.5rem"
+      }}
     >
-      <span
-        className="maple-eyebrow"
-      >
-        {label}
-      </span>
+      <span className="maple-eyebrow">{label}</span>
       <span
         style={{
           color: "var(--maple-text-body)",
