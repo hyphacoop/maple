@@ -22,18 +22,6 @@ export type BallotQuestionBrowseItem = {
   opposeCount: number
 }
 
-const BROWSE_SHADOWS = {
-  soft: "0 0.25rem 1rem rgba(15, 23, 42, 0.06)",
-  card: "0 0.3rem 1rem rgba(15, 23, 42, 0.06)",
-  hover: "0 0.65rem 1.35rem rgba(15, 23, 42, 0.12)"
-}
-
-const BROWSE_BORDERS = {
-  chrome: "#d9e2ec",
-  muted: "#dce5ee",
-  hover: "#bfd0e2"
-}
-
 const STATUS_STYLES: Record<
   BallotQuestionStatus,
   { background: string; color: string; border: string }
@@ -96,14 +84,10 @@ const STATUS_STYLES: Record<
 }
 
 const Controls = styled.section<{ $expanded: boolean }>`
-  background: linear-gradient(
-    180deg,
-    var(--bs-white) 0%,
-    var(--bs-body-bg) 100%
-  );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
-  box-shadow: ${BROWSE_SHADOWS.soft};
+  box-shadow: var(--maple-shadow-sm);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -154,7 +138,7 @@ const ControlsButton = styled(Button)`
   width: fit-content;
 
   &:focus-visible {
-    outline: 2px solid var(--bs-blue);
+    outline: 2px solid var(--maple-focus-ring);
     outline-offset: 2px;
   }
 `
@@ -216,14 +200,10 @@ const ListItem = styled.div.attrs({ role: "listitem" })`
 `
 
 const StyledCard = styled(Card)`
-  background: linear-gradient(
-    180deg,
-    var(--bs-white) 0%,
-    var(--bs-body-bg) 100%
-  );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
   border-radius: var(--bs-border-radius-xl);
-  box-shadow: ${BROWSE_SHADOWS.card};
+  box-shadow: var(--maple-shadow-sm);
   height: 100%;
   overflow: hidden;
   transition: transform 0.16s ease, box-shadow 0.16s ease,
@@ -246,14 +226,14 @@ const CardLink = styled(Link)`
   text-decoration: none;
 
   &:hover ${StyledCard} {
-    border-color: ${BROWSE_BORDERS.hover};
-    box-shadow: ${BROWSE_SHADOWS.hover};
+    border-color: var(--maple-border-accent-strong);
+    box-shadow: var(--maple-shadow-hover);
     transform: translateY(-2px);
   }
 
   &:focus-visible {
     border-radius: 1rem;
-    outline: 3px solid var(--bs-blue);
+    outline: 3px solid var(--maple-focus-ring);
     outline-offset: 4px;
   }
 `
@@ -328,8 +308,8 @@ const MetaStack = styled.div`
 `
 
 const MetaItem = styled.span`
-  background: var(--bs-body-bg);
-  border: 1px solid ${BROWSE_BORDERS.muted};
+  background: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
   border-radius: 999px;
   color: var(--bs-gray-700);
   font-size: 0.8rem;
@@ -354,8 +334,8 @@ const SentimentRow = styled.div`
 
 const SentimentStat = styled.span`
   align-items: center;
-  background: var(--bs-body-bg);
-  border: 1px solid ${BROWSE_BORDERS.muted};
+  background: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
   border-radius: 999px;
   color: var(--bs-blue);
   display: inline-flex;
@@ -371,14 +351,10 @@ const SentimentStat = styled.span`
 `
 
 const EmptyState = styled.div`
-  background: linear-gradient(
-    180deg,
-    var(--bs-white) 0%,
-    var(--bs-body-bg) 100%
-  );
-  border: 1px solid ${BROWSE_BORDERS.chrome};
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
   border-radius: 1rem;
-  box-shadow: ${BROWSE_SHADOWS.soft};
+  box-shadow: var(--maple-shadow-sm);
   color: var(--bs-gray-700);
   padding: 1rem;
 `
@@ -459,7 +435,7 @@ export const BrowseBallotQuestions = ({
           variant="info"
           dismissible
           onClose={() => setShowInfo(false)}
-          className="mb-3 rounded-4 ballot-question-info-alert"
+          className="maple-info-alert mb-3 rounded-4"
         >
           {questionNumberDisclaimer}
         </Alert>

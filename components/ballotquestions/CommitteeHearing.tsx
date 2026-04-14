@@ -19,22 +19,14 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
   })
 
   return (
-    <div
-      className="rounded-4 border p-3 p-lg-4"
-      style={{
-        backgroundColor: "var(--maple-surface-base)",
-        borderColor: "var(--maple-surface-border)"
-      }}
-    >
+    <div className="maple-surface rounded-4 p-3 p-lg-4">
       <div className="d-flex flex-column flex-xl-row align-items-xl-start justify-content-between gap-4 gap-xl-4">
         <div className="d-flex gap-4 align-items-start flex-grow-1">
           <div
-            className="rounded-4 border p-3 d-flex align-items-center justify-content-center flex-shrink-0"
+            className="maple-icon-chip rounded-4 p-3 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               width: "5rem",
-              height: "5rem",
-              backgroundColor: "var(--maple-surface-accent)",
-              borderColor: "var(--maple-border-accent)"
+              height: "5rem"
             }}
           >
             <Image
@@ -63,7 +55,7 @@ export const CommitteeHearing = ({ hearing }: { hearing: Hearing }) => {
             href={`/hearing/${hearingId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
+            className="maple-pill-link d-inline-flex align-items-center justify-content-center gap-2 rounded-pill border px-3 py-2 px-lg-4 align-self-start small fw-semibold text-decoration-none flex-shrink-0"
             style={{
               borderColor: "var(--maple-border-accent)",
               backgroundColor: "var(--maple-surface-base)",

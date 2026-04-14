@@ -26,22 +26,14 @@ export const TestimoniesTab = ({
 
   return (
     <div className="d-grid gap-4">
-      <div
-        className="rounded-4 border bg-white p-4 shadow-sm"
-        style={{
-          borderColor: "var(--maple-surface-border)",
-          boxShadow: "var(--maple-shadow-md)"
-        }}
-      >
+      <div className="maple-surface rounded-4 p-4">
         <div className="d-flex flex-wrap justify-content-between gap-3 mb-4">
           <div className="d-flex align-items-start gap-3">
             <div
-              className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
+              className="maple-icon-chip rounded-4 d-flex align-items-center justify-content-center flex-shrink-0"
               style={{
                 width: "2.75rem",
-                height: "2.75rem",
-                borderColor: "var(--maple-border-accent)",
-                backgroundColor: "var(--maple-surface-accent)"
+                height: "2.75rem"
               }}
             >
               <Image src="/bill-thank-you.svg" alt="" width={22} height={18} />
@@ -124,23 +116,10 @@ function SummaryItem({
   color: string
 }) {
   return (
-    <div
-      className="rounded-4 border h-100 px-3 py-3"
-      style={{
-        backgroundColor: "var(--maple-surface-muted)",
-        borderColor: "var(--maple-surface-border)"
-      }}
-    >
+    <div className="maple-muted-surface rounded-4 h-100 px-3 py-3">
       <div className="d-flex align-items-center justify-content-between gap-3">
         <div>
-          <div
-            className="text-uppercase fw-semibold mb-1"
-            style={{
-              fontSize: "0.72rem",
-              letterSpacing: "0.08em",
-              color: "var(--maple-text-muted)"
-            }}
-          >
+          <div className="maple-eyebrow mb-1">
             {label}
           </div>
           <div

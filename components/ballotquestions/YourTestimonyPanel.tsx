@@ -31,10 +31,7 @@ export const YourTestimonyPanel = ({
   return (
     <div className="h-100">
       <div className="d-flex align-items-center justify-content-between mb-3">
-        <div
-          className="fw-semibold text-secondary"
-          style={{ letterSpacing: "0.01em", fontSize: "1.45rem" }}
-        >
+        <div className="maple-panel-title">
           Your Perspective
         </div>
         {showInlineEditButton && bill ? (
@@ -54,23 +51,11 @@ export const YourTestimonyPanel = ({
           />
         </>
       ) : isTerminalPhase ? (
-        <div
-          className="rounded border px-3 py-3 small text-body-secondary"
-          style={{
-            backgroundColor: "var(--bs-blue-100)",
-            borderColor: "var(--bs-blue-300)"
-          }}
-        >
+        <div className="maple-info-note rounded px-3 py-3 small">
           Perspectives are no longer being accepted for this ballot question.
         </div>
       ) : (
-        <div
-          className="rounded border px-3 py-3 small text-body-secondary"
-          style={{
-            backgroundColor: "var(--bs-blue-100)",
-            borderColor: "var(--bs-blue-300)"
-          }}
-        >
+        <div className="maple-info-note rounded px-3 py-3 small">
           Perspectives are not available for this ballot question yet.
         </div>
       )}

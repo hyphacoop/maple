@@ -11,8 +11,8 @@ $gray-700: #495057;
 $pantone-blue: #d1d6e7;
 
 // Keep current page background and semantic bootstrap palette stable in PR 1.
-// Visual-system refinement happens via semantic CSS tokens in styles/globals.css;
-// revisit $body-bg / $primary only after token adoption and blast-radius testing.
+// Revisit $body-bg / $primary only after the maple token migration settles and
+// the broader visual-system blast radius has been tested.
 $body-bg: #eae7e7;
 
 $primary: $red;
@@ -55,10 +55,20 @@ $maple-text-inverse-muted: rgba(255, 255, 255, 0.55);
 $maple-surface-base: #ffffff;
 // Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group.
 $maple-surface-page: #eae7e7;
-// Provisional: accent family comes from ballot-question work and may remain app-wide or become scoped later.
 $maple-surface-muted: rgba(248, 250, 252, 0.9);
 $maple-surface-accent: rgba(94, 114, 228, 0.08);
+$maple-surface-accent-strong: rgba(94, 114, 228, 0.12);
 $maple-surface-border: rgba(15, 23, 42, 0.08);
+$maple-surface-gradient: linear-gradient(
+  180deg,
+  #ffffff 0%,
+  var(--bs-body-bg) 100%
+);
+$maple-accent-gradient: linear-gradient(
+  180deg,
+  rgba(237, 242, 255, 0.95) 0%,
+  rgba(248, 250, 255, 1) 100%
+);
 
 // Borders
 $maple-border-default: rgba(15, 23, 42, 0.15);
@@ -94,21 +104,6 @@ $maple-space-3xl: 3rem;
 // Transitions
 $maple-transition-fast: 0.15s ease;
 $maple-transition-base: 0.2s ease;
-
-// Ballot-question scoped aliases (static references to maple tokens)
-$bq-surface-border: $maple-surface-border;
-$bq-surface-shadow-soft: $maple-shadow-sm;
-$bq-surface-shadow: $maple-shadow-md;
-$bq-surface-shadow-hover: $maple-shadow-hover;
-$bq-accent-border: $maple-border-accent;
-$bq-accent-border-strong: $maple-border-accent-strong;
-$bq-accent-fill-soft: $maple-surface-accent;
-$bq-accent-fill: rgba(94, 114, 228, 0.12);
-$bq-accent-ring: $maple-focus-ring;
-$bq-muted-surface: $maple-surface-muted;
-$bq-subtle-text: $maple-text-muted;
-$bq-body-text: $maple-text-body;
-$bq-strong-text: $maple-text-strong;
 
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
 $font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
@@ -211,7 +206,10 @@ $utilities: (
   --maple-surface-page: #{$maple-surface-page};
   --maple-surface-muted: #{$maple-surface-muted};
   --maple-surface-accent: #{$maple-surface-accent};
+  --maple-surface-accent-strong: #{$maple-surface-accent-strong};
   --maple-surface-border: #{$maple-surface-border};
+  --maple-surface-gradient: #{$maple-surface-gradient};
+  --maple-accent-gradient: #{$maple-accent-gradient};
 
   --maple-border-default: #{$maple-border-default};
   --maple-border-inverse-soft: #{$maple-border-inverse-soft};
@@ -241,20 +239,6 @@ $utilities: (
 
   --maple-transition-fast: #{$maple-transition-fast};
   --maple-transition-base: #{$maple-transition-base};
-
-  --bq-surface-border: #{$bq-surface-border};
-  --bq-surface-shadow-soft: #{$bq-surface-shadow-soft};
-  --bq-surface-shadow: #{$bq-surface-shadow};
-  --bq-surface-shadow-hover: #{$bq-surface-shadow-hover};
-  --bq-accent-border: #{$bq-accent-border};
-  --bq-accent-border-strong: #{$bq-accent-border-strong};
-  --bq-accent-fill-soft: #{$bq-accent-fill-soft};
-  --bq-accent-fill: #{$bq-accent-fill};
-  --bq-accent-ring: #{$bq-accent-ring};
-  --bq-muted-surface: #{$bq-muted-surface};
-  --bq-subtle-text: #{$bq-subtle-text};
-  --bq-body-text: #{$bq-body-text};
-  --bq-strong-text: #{$bq-strong-text};
 }
 
 .btn {

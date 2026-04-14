@@ -27,13 +27,10 @@ export const OverviewTab = ({
       <SectionCard>
         <div className="d-flex align-items-start gap-3 mb-0">
           <div
-            className="rounded-4 border d-flex align-items-center justify-content-center flex-shrink-0"
+            className="maple-icon-chip rounded-4 d-flex align-items-center justify-content-center flex-shrink-0"
             style={{
               width: "3rem",
-              height: "3rem",
-              borderColor: "var(--maple-border-accent)",
-              background:
-                "linear-gradient(180deg, rgba(94, 114, 228, 0.16) 0%, rgba(226, 232, 240, 0.55) 100%)"
+              height: "3rem"
             }}
           >
             <BallotGlyph />
@@ -53,21 +50,8 @@ export const OverviewTab = ({
           <Row className="g-3">
             {ballotQuestion.atAGlance.map((item, idx) => (
               <Col key={idx} md={6}>
-                <div
-                  className="rounded-4 border h-100 px-3 py-3"
-                  style={{
-                    backgroundColor: "var(--maple-surface-muted)",
-                    borderColor: "var(--maple-surface-border)"
-                  }}
-                >
-                  <div
-                    className="text-uppercase fw-semibold mb-2"
-                    style={{
-                      fontSize: "0.72rem",
-                      letterSpacing: "0.08em",
-                      color: "var(--maple-text-muted)"
-                    }}
-                  >
+                <div className="maple-muted-surface rounded-4 h-100 px-3 py-3">
+                  <div className="maple-eyebrow mb-2">
                     {item.label}
                   </div>
                   <div
@@ -187,13 +171,7 @@ function BallotGlyph() {
 
 function SectionCard({ children }: { children: ReactNode }) {
   return (
-    <section
-      className="rounded-4 border bg-white px-4 py-4 shadow-sm"
-      style={{
-        borderColor: "var(--maple-surface-border)",
-        boxShadow: "var(--maple-shadow-md)"
-      }}
-    >
+    <section className="maple-surface rounded-4 px-4 py-4">
       {children}
     </section>
   )

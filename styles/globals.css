@@ -11,7 +11,7 @@
   font-weight: bold;
 }
 
-/* Design tokens (--maple-*, --bq-*, --mobile-nav-link-*) are defined in
+/* Design tokens (--maple-*, --mobile-nav-link-*) are defined in
    styles/bootstrap.scss as SCSS variables and emitted to :root there.
    This keeps Bootstrap's compile-time Sass and runtime CSS custom properties
    structurally linked — edit the SCSS variable, not the custom property. */
@@ -288,60 +288,113 @@
   padding: 7px, 8px, 7px, 8px;
 }
 
-.ballot-question-back-link {
+.maple-surface {
+  background-color: var(--maple-surface-base);
+  border: 1px solid var(--maple-surface-border);
+  box-shadow: var(--maple-shadow-md);
+}
+
+.maple-surface-gradient {
+  background: var(--maple-surface-gradient);
+  border: 1px solid var(--maple-surface-border);
+  box-shadow: var(--maple-shadow-md);
+}
+
+.maple-muted-surface {
+  background-color: var(--maple-surface-muted);
+  border: 1px solid var(--maple-surface-border);
+}
+
+.maple-accent-surface {
+  background: var(--maple-accent-gradient);
+  border: 1px solid var(--maple-border-accent);
+}
+
+.maple-icon-chip {
+  background-color: var(--maple-surface-accent-strong);
+  border: 1px solid var(--maple-border-accent);
+  color: var(--maple-brand-primary);
+}
+
+.maple-eyebrow {
+  color: var(--maple-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.maple-panel-title {
+  color: var(--bs-secondary);
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+
+.maple-info-note {
+  background-color: var(--bs-blue-100);
+  border: 1px solid var(--bs-blue-300);
+  color: var(--bs-secondary-color);
+}
+
+.maple-back-link {
   color: var(--maple-text-muted);
   transition: color var(--maple-transition-fast),
     transform var(--maple-transition-fast);
 }
 
-.ballot-question-back-link:hover {
+.maple-back-link:hover {
   color: var(--bs-secondary);
   transform: translateX(-2px);
 }
 
-.ballot-question-back-link:focus-visible {
+.maple-back-link:focus-visible {
   outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
   border-radius: var(--maple-radius-pill);
 }
 
-.ballot-question-pdf-link {
-  transition: transform 0.15s ease, box-shadow 0.15s ease,
-    border-color 0.15s ease, background-color 0.15s ease;
+.maple-pill-link {
+  transition: transform var(--maple-transition-fast),
+    box-shadow var(--maple-transition-fast),
+    border-color var(--maple-transition-fast),
+    background-color var(--maple-transition-fast);
 }
 
-.ballot-question-pdf-link:hover {
+.maple-pill-link:hover {
   transform: translateY(-1px);
-  border-color: var(--bq-accent-border-strong) !important;
+  border-color: var(--maple-border-accent-strong) !important;
   background-color: var(--maple-surface-base) !important;
   box-shadow: var(--maple-shadow-md);
 }
 
-.ballot-question-pdf-link:focus-visible {
+.maple-pill-link:focus-visible {
   outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
 }
 
-.ballot-question-info-alert {
+.maple-info-alert {
   --bs-btn-close-color: var(--bs-secondary);
 }
 
-.ballot-question-info-alert .btn-close {
+.maple-info-alert .btn-close {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231a3185'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e");
   opacity: 1;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform var(--maple-transition-fast),
+    opacity var(--maple-transition-fast);
 }
 
-.ballot-question-info-alert .btn-close:hover {
+.maple-info-alert .btn-close:hover {
   transform: rotate(90deg);
 }
 
-.ballot-question-info-alert .btn-close:hover,
-.ballot-question-info-alert .btn-close:focus {
+.maple-info-alert .btn-close:hover,
+.maple-info-alert .btn-close:focus {
   opacity: 1;
 }
 
-.ballot-question-nav-link {
+.maple-nav-link {
   cursor: pointer;
   background-color: var(--maple-surface-muted);
   border: 1px solid var(--maple-surface-border);
@@ -353,7 +406,7 @@
     color var(--maple-transition-fast);
 }
 
-.ballot-question-nav-link:hover {
+.maple-nav-link:hover {
   transform: translateY(-1px);
   border-color: var(--maple-border-accent-strong) !important;
   background-color: var(--maple-surface-accent) !important;
@@ -361,23 +414,23 @@
   box-shadow: var(--maple-shadow-md);
 }
 
-.ballot-question-nav-link:focus-visible {
+.maple-nav-link:focus-visible {
   outline: 3px solid var(--maple-focus-ring);
   outline-offset: 3px;
 }
 
-.ballot-question-nav-link.is-active {
+.maple-nav-link.is-active {
   background-color: var(--maple-surface-accent);
   border-color: var(--maple-focus-ring);
   color: var(--bs-secondary);
 }
 
-.ballot-question-nav-link.is-active:hover {
-  background-color: var(--bq-accent-fill) !important;
-  border-color: var(--bq-accent-ring) !important;
+.maple-nav-link.is-active:hover {
+  background-color: var(--maple-surface-accent-strong) !important;
+  border-color: var(--maple-focus-ring) !important;
 }
 
-.ballot-question-nav-badge {
+.maple-nav-badge {
   min-width: 1.5rem;
   font-weight: 600;
   background-color: var(--maple-surface-border);
@@ -386,12 +439,12 @@
     color var(--maple-transition-fast);
 }
 
-.ballot-question-nav-link:hover .ballot-question-nav-badge {
-  background-color: var(--bq-accent-fill);
+.maple-nav-link:hover .maple-nav-badge {
+  background-color: var(--maple-surface-accent-strong);
   color: var(--bs-secondary);
 }
 
-.ballot-question-nav-badge.is-active {
+.maple-nav-badge.is-active {
   background-color: var(--bs-secondary);
   color: var(--maple-text-inverse);
 }

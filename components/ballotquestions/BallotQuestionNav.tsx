@@ -70,22 +70,9 @@ export const BallotQuestionNav = ({
   }
 
   return (
-    <div
-      className="rounded-4 border bg-white p-3 p-lg-4 shadow-sm"
-      style={{
-        borderColor: "var(--maple-surface-border)",
-        boxShadow: "var(--maple-shadow-md)"
-      }}
-    >
+    <div className="maple-surface rounded-4 p-3 p-lg-4">
       <div className="mb-3 mb-lg-4">
-        <div
-          className="text-uppercase fw-semibold mb-1"
-          style={{
-            fontSize: "0.75rem",
-            letterSpacing: "0.08em",
-            color: "var(--maple-text-muted)"
-          }}
-        >
+        <div className="maple-eyebrow mb-1">
           Explore
         </div>
         <p className="mb-0 small text-body-secondary">
