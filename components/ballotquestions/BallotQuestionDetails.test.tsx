@@ -58,8 +58,8 @@ jest.mock("../firebase", () => ({
   firestore: {}
 }))
 
-const mockGetDoc = jest.fn(() => new Promise(() => {}))
-const mockDoc = jest.fn(() => ({}))
+const mockGetDoc = jest.fn((..._args: unknown[]) => new Promise(() => {}))
+const mockDoc = jest.fn((..._args: unknown[]) => ({}))
 
 jest.mock("firebase/firestore", () => ({
   doc: (...args: unknown[]) => mockDoc(...args),
