@@ -26,6 +26,90 @@ $link-color: $secondary;
 
 $line-height-0: 0;
 
+// -----------------------------------------------------------------------------
+// Maple design tokens — single source of truth.
+// Defined as SCSS variables so Bootstrap's compile-time Sass can consume them,
+// then emitted as CSS custom properties in the :root block below @import.
+// Do NOT redefine these in globals.css.
+// -----------------------------------------------------------------------------
+
+// Mobile nav
+$mobile-nav-link-color: rgba(255, 255, 255, 0.92);
+$mobile-nav-link-color-active: rgba(255, 255, 255, 1);
+
+// Brand
+$maple-brand-primary: #1a3185;
+$maple-brand-primary-strong: #12266f;
+$maple-brand-accent: #ff8600;
+$maple-brand-danger: #c71e32;
+$maple-brand-dark: #0b0a3e;
+
+// Text
+$maple-text-strong: #1e293b;
+$maple-text-body: #334155;
+$maple-text-muted: #64748b;
+$maple-text-inverse: #ffffff;
+$maple-text-inverse-muted: rgba(255, 255, 255, 0.55);
+
+// Surfaces
+$maple-surface-base: #ffffff;
+// Provisional: keep the current page background in PR 1 and retune later with surface contrast as a group.
+$maple-surface-page: #eae7e7;
+// Provisional: accent family comes from ballot-question work and may remain app-wide or become scoped later.
+$maple-surface-muted: rgba(248, 250, 252, 0.9);
+$maple-surface-accent: rgba(94, 114, 228, 0.08);
+$maple-surface-border: rgba(15, 23, 42, 0.08);
+
+// Borders
+$maple-border-default: rgba(15, 23, 42, 0.15);
+$maple-border-inverse-soft: rgba(255, 255, 255, 0.75);
+$maple-border-accent: rgba(94, 114, 228, 0.18);
+$maple-border-accent-strong: rgba(94, 114, 228, 0.24);
+
+// Focus
+$maple-focus-ring: rgba(94, 114, 228, 0.35);
+$maple-focus-border: rgba(94, 114, 228, 0.5);
+
+// Shadows
+$maple-shadow-sm: 0 0.25rem 1rem rgba(15, 23, 42, 0.06);
+$maple-shadow-md: 0 0.5rem 1.5rem rgba(15, 23, 42, 0.06);
+$maple-shadow-hover: 0 0.65rem 1.35rem rgba(15, 23, 42, 0.12);
+
+// Radius
+$maple-radius-sm: 4px;
+$maple-radius-md: 8px;
+$maple-radius-lg: 10px;
+$maple-radius-xl: 16px;
+$maple-radius-pill: 999px;
+
+// Spacing
+$maple-space-xs: 0.25rem;
+$maple-space-sm: 0.5rem;
+$maple-space-md: 0.75rem;
+$maple-space-lg: 1rem;
+$maple-space-xl: 1.5rem;
+$maple-space-2xl: 2rem;
+$maple-space-3xl: 3rem;
+
+// Transitions
+$maple-transition-fast: 0.15s ease;
+$maple-transition-base: 0.2s ease;
+
+// Ballot-question scoped aliases (static references to maple tokens)
+$bq-surface-border: $maple-surface-border;
+$bq-surface-shadow-soft: $maple-shadow-sm;
+$bq-surface-shadow: $maple-shadow-md;
+$bq-surface-shadow-hover: $maple-shadow-hover;
+$bq-accent-border: $maple-border-accent;
+$bq-accent-border-strong: $maple-border-accent-strong;
+$bq-accent-fill-soft: $maple-surface-accent;
+$bq-accent-fill: rgba(94, 114, 228, 0.12);
+$bq-accent-ring: $maple-focus-ring;
+$bq-muted-surface: $maple-surface-muted;
+$bq-subtle-text: $maple-text-muted;
+$bq-body-text: $maple-text-body;
+$bq-strong-text: $maple-text-strong;
+
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
 $font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
   "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
@@ -42,10 +126,11 @@ $modal-inner-padding: 2rem;
 
 $modal-lg: 650px;
 
-// Input overrides
+// Input overrides — use maple focus tokens so inputs and buttons share one ring.
 $input-bg: #fff;
-$input-focus-border-color: rgba($gray-700, 0.75);
-$input-btn-focus-color: rgba($gray-700, 0.25);
+$input-focus-border-color: $maple-focus-border;
+$input-btn-focus-color: $maple-focus-ring;
+$input-btn-focus-box-shadow: 0 0 0 0.25rem $maple-focus-ring;
 
 // Close button overrides
 $btn-close-color: #fff;
@@ -103,6 +188,73 @@ $utilities: (
   --bs-blue-300: #{$blue-300};
   --bs-red-100: #{$red-100};
   --bs-dark-blue: #0b0a3e;
+
+  // Maple design tokens — emitted from the SCSS variables defined above so
+  // the compile-time (Bootstrap) and runtime (app components) layers stay
+  // structurally linked. Edit the SCSS variable, not the custom property.
+  --mobile-nav-link-color: #{$mobile-nav-link-color};
+  --mobile-nav-link-color-active: #{$mobile-nav-link-color-active};
+
+  --maple-brand-primary: #{$maple-brand-primary};
+  --maple-brand-primary-strong: #{$maple-brand-primary-strong};
+  --maple-brand-accent: #{$maple-brand-accent};
+  --maple-brand-danger: #{$maple-brand-danger};
+  --maple-brand-dark: #{$maple-brand-dark};
+
+  --maple-text-strong: #{$maple-text-strong};
+  --maple-text-body: #{$maple-text-body};
+  --maple-text-muted: #{$maple-text-muted};
+  --maple-text-inverse: #{$maple-text-inverse};
+  --maple-text-inverse-muted: #{$maple-text-inverse-muted};
+
+  --maple-surface-base: #{$maple-surface-base};
+  --maple-surface-page: #{$maple-surface-page};
+  --maple-surface-muted: #{$maple-surface-muted};
+  --maple-surface-accent: #{$maple-surface-accent};
+  --maple-surface-border: #{$maple-surface-border};
+
+  --maple-border-default: #{$maple-border-default};
+  --maple-border-inverse-soft: #{$maple-border-inverse-soft};
+  --maple-border-accent: #{$maple-border-accent};
+  --maple-border-accent-strong: #{$maple-border-accent-strong};
+
+  --maple-focus-ring: #{$maple-focus-ring};
+  --maple-focus-border: #{$maple-focus-border};
+
+  --maple-shadow-sm: #{$maple-shadow-sm};
+  --maple-shadow-md: #{$maple-shadow-md};
+  --maple-shadow-hover: #{$maple-shadow-hover};
+
+  --maple-radius-sm: #{$maple-radius-sm};
+  --maple-radius-md: #{$maple-radius-md};
+  --maple-radius-lg: #{$maple-radius-lg};
+  --maple-radius-xl: #{$maple-radius-xl};
+  --maple-radius-pill: #{$maple-radius-pill};
+
+  --maple-space-xs: #{$maple-space-xs};
+  --maple-space-sm: #{$maple-space-sm};
+  --maple-space-md: #{$maple-space-md};
+  --maple-space-lg: #{$maple-space-lg};
+  --maple-space-xl: #{$maple-space-xl};
+  --maple-space-2xl: #{$maple-space-2xl};
+  --maple-space-3xl: #{$maple-space-3xl};
+
+  --maple-transition-fast: #{$maple-transition-fast};
+  --maple-transition-base: #{$maple-transition-base};
+
+  --bq-surface-border: #{$bq-surface-border};
+  --bq-surface-shadow-soft: #{$bq-surface-shadow-soft};
+  --bq-surface-shadow: #{$bq-surface-shadow};
+  --bq-surface-shadow-hover: #{$bq-surface-shadow-hover};
+  --bq-accent-border: #{$bq-accent-border};
+  --bq-accent-border-strong: #{$bq-accent-border-strong};
+  --bq-accent-fill-soft: #{$bq-accent-fill-soft};
+  --bq-accent-fill: #{$bq-accent-fill};
+  --bq-accent-ring: #{$bq-accent-ring};
+  --bq-muted-surface: #{$bq-muted-surface};
+  --bq-subtle-text: #{$bq-subtle-text};
+  --bq-body-text: #{$bq-body-text};
+  --bq-strong-text: #{$bq-strong-text};
 }
 
 .btn {
