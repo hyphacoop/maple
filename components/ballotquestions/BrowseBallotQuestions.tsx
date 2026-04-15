@@ -26,60 +26,25 @@ const STATUS_STYLES: Record<
   BallotQuestionStatus,
   { background: string; color: string; border: string }
 > = {
-  legislature: {
-    background: "var(--maple-status-legislature-bg)",
-    color: "var(--maple-status-legislature-text)",
-    border: "var(--maple-status-legislature-border)"
-  },
-  qualifying: {
-    background: "var(--maple-status-qualifying-bg)",
-    color: "var(--maple-status-qualifying-text)",
-    border: "var(--maple-status-qualifying-border)"
-  },
-  certified: {
-    background: "var(--maple-status-certified-bg)",
-    color: "var(--maple-status-certified-text)",
-    border: "var(--maple-status-certified-border)"
-  },
-  ballot: {
-    background: "var(--maple-status-ballot-bg)",
-    color: "var(--maple-status-ballot-text)",
-    border: "var(--maple-status-ballot-border)"
-  },
-  enacted: {
-    background: "var(--maple-status-enacted-bg)",
-    color: "var(--maple-status-enacted-text)",
-    border: "var(--maple-status-enacted-border)"
-  },
-  failed: {
-    background: "var(--maple-status-failed-bg)",
-    color: "var(--maple-status-failed-text)",
-    border: "var(--maple-status-failed-border)"
-  },
-  withdrawn: {
-    background: "var(--maple-status-neutral-bg)",
-    color: "var(--maple-status-neutral-text)",
-    border: "var(--maple-status-neutral-border)"
-  },
   expectedOnBallot: {
-    background: "var(--maple-status-ballot-bg)",
-    color: "var(--maple-status-ballot-text)",
-    border: "var(--maple-status-ballot-border)"
-  },
-  failedToAppear: {
-    background: "var(--maple-status-neutral-bg)",
-    color: "var(--maple-status-neutral-text)",
-    border: "var(--maple-status-neutral-border)"
-  },
-  rejected: {
-    background: "var(--maple-status-failed-bg)",
-    color: "var(--maple-status-failed-text)",
-    border: "var(--maple-status-failed-border)"
+    background: "var(--maple-status-expectedonballot-bg)",
+    color: "var(--maple-status-expectedonballot-text)",
+    border: "var(--maple-status-expectedonballot-border)"
   },
   accepted: {
-    background: "var(--maple-status-enacted-bg)",
-    color: "var(--maple-status-enacted-text)",
-    border: "var(--maple-status-enacted-border)"
+    background: "var(--maple-status-accepted-bg)",
+    color: "var(--maple-status-accepted-text)",
+    border: "var(--maple-status-accepted-border)"
+  },
+  rejected: {
+    background: "var(--maple-status-rejected-bg)",
+    color: "var(--maple-status-rejected-text)",
+    border: "var(--maple-status-rejected-border)"
+  },
+  failedToAppear: {
+    background: "var(--maple-status-failedtoappear-bg)",
+    color: "var(--maple-status-failedtoappear-text)",
+    border: "var(--maple-status-failedtoappear-border)"
   }
 }
 
