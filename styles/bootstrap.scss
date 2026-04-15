@@ -34,8 +34,8 @@ $line-height-0: 0;
 // -----------------------------------------------------------------------------
 
 // Mobile nav
-$mobile-nav-link-color: rgba(255, 255, 255, 0.92);
-$mobile-nav-link-color-active: rgba(255, 255, 255, 1);
+$maple-nav-link-color: rgba(255, 255, 255, 0.92);
+$maple-nav-link-color-active: rgba(255, 255, 255, 1);
 
 // Brand
 $maple-brand-primary: #1a3185;
@@ -110,34 +110,39 @@ $maple-space-3xl: 3rem;
 $maple-transition-fast: 0.15s ease;
 $maple-transition-base: 0.2s ease;
 
-// Ballot question status palettes
-$maple-status-legislature-bg: #fff4db;
-$maple-status-legislature-text: #7a4b00;
-$maple-status-legislature-border: #f6d58a;
+// Semantic color palette — reusable subtle tints, usable anywhere in the app
+$maple-color-blue-subtle-bg:     #e8efff;
+$maple-color-blue-subtle-text:   #1d3f8a;
+$maple-color-blue-subtle-border: #c9d8ff;
 
-$maple-status-qualifying-bg: #eef7ff;
-$maple-status-qualifying-text: #16537e;
-$maple-status-qualifying-border: #b9ddf8;
+$maple-color-green-subtle-bg:     #e8f6ea;
+$maple-color-green-subtle-text:   #1d5d2d;
+$maple-color-green-subtle-border: #c8e7cf;
 
-$maple-status-certified-bg: #e9f8ef;
-$maple-status-certified-text: #17633a;
-$maple-status-certified-border: #bee8cd;
+$maple-color-red-subtle-bg:     #fde8ef;
+$maple-color-red-subtle-text:   #902141;
+$maple-color-red-subtle-border: #f4bfd0;
 
-$maple-status-ballot-bg: #e8efff;
-$maple-status-ballot-text: #1d3f8a;
-$maple-status-ballot-border: #c9d8ff;
+$maple-color-gray-subtle-bg:     #f1f5f9;
+$maple-color-gray-subtle-text:   #475569;
+$maple-color-gray-subtle-border: #d7e0ea;
 
-$maple-status-enacted-bg: #e8f6ea;
-$maple-status-enacted-text: #1d5d2d;
-$maple-status-enacted-border: #c8e7cf;
+// Ballot question status palettes — aliases of the semantic color palette
+$maple-status-expectedonballot-bg:     $maple-color-blue-subtle-bg;
+$maple-status-expectedonballot-text:   $maple-color-blue-subtle-text;
+$maple-status-expectedonballot-border: $maple-color-blue-subtle-border;
 
-$maple-status-failed-bg: #fde8ef;
-$maple-status-failed-text: #902141;
-$maple-status-failed-border: #f4bfd0;
+$maple-status-accepted-bg:     $maple-color-green-subtle-bg;
+$maple-status-accepted-text:   $maple-color-green-subtle-text;
+$maple-status-accepted-border: $maple-color-green-subtle-border;
 
-$maple-status-neutral-bg: #f1f5f9;
-$maple-status-neutral-text: #475569;
-$maple-status-neutral-border: #d7e0ea;
+$maple-status-rejected-bg:     $maple-color-red-subtle-bg;
+$maple-status-rejected-text:   $maple-color-red-subtle-text;
+$maple-status-rejected-border: $maple-color-red-subtle-border;
+
+$maple-status-failedtoappear-bg:     $maple-color-gray-subtle-bg;
+$maple-status-failedtoappear-text:   $maple-color-gray-subtle-text;
+$maple-status-failedtoappear-border: $maple-color-gray-subtle-border;
 
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
 $font-family-sans-serif: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto,
@@ -221,8 +226,8 @@ $utilities: (
   // Maple design tokens — emitted from the SCSS variables defined above so
   // the compile-time (Bootstrap) and runtime (app components) layers stay
   // structurally linked. Edit the SCSS variable, not the custom property.
-  --mobile-nav-link-color: #{$mobile-nav-link-color};
-  --mobile-nav-link-color-active: #{$mobile-nav-link-color-active};
+  --maple-nav-link-color: #{$maple-nav-link-color};
+  --maple-nav-link-color-active: #{$maple-nav-link-color-active};
 
   --maple-brand-primary: #{$maple-brand-primary};
   --maple-brand-primary-strong: #{$maple-brand-primary-strong};
@@ -255,6 +260,7 @@ $utilities: (
   --maple-border-accent-strong: #{$maple-border-accent-strong};
 
   --maple-focus-ring: #{$maple-focus-ring};
+  --maple-focus-border: #{$maple-focus-border};
 
   --maple-shadow-sm: #{$maple-shadow-sm};
   --maple-shadow-md: #{$maple-shadow-md};
@@ -277,27 +283,31 @@ $utilities: (
   --maple-transition-fast: #{$maple-transition-fast};
   --maple-transition-base: #{$maple-transition-base};
 
-  --maple-status-legislature-bg: #{$maple-status-legislature-bg};
-  --maple-status-legislature-text: #{$maple-status-legislature-text};
-  --maple-status-legislature-border: #{$maple-status-legislature-border};
-  --maple-status-qualifying-bg: #{$maple-status-qualifying-bg};
-  --maple-status-qualifying-text: #{$maple-status-qualifying-text};
-  --maple-status-qualifying-border: #{$maple-status-qualifying-border};
-  --maple-status-certified-bg: #{$maple-status-certified-bg};
-  --maple-status-certified-text: #{$maple-status-certified-text};
-  --maple-status-certified-border: #{$maple-status-certified-border};
-  --maple-status-ballot-bg: #{$maple-status-ballot-bg};
-  --maple-status-ballot-text: #{$maple-status-ballot-text};
-  --maple-status-ballot-border: #{$maple-status-ballot-border};
-  --maple-status-enacted-bg: #{$maple-status-enacted-bg};
-  --maple-status-enacted-text: #{$maple-status-enacted-text};
-  --maple-status-enacted-border: #{$maple-status-enacted-border};
-  --maple-status-failed-bg: #{$maple-status-failed-bg};
-  --maple-status-failed-text: #{$maple-status-failed-text};
-  --maple-status-failed-border: #{$maple-status-failed-border};
-  --maple-status-neutral-bg: #{$maple-status-neutral-bg};
-  --maple-status-neutral-text: #{$maple-status-neutral-text};
-  --maple-status-neutral-border: #{$maple-status-neutral-border};
+  --maple-status-expectedonballot-bg: #{$maple-status-expectedonballot-bg};
+  --maple-status-expectedonballot-text: #{$maple-status-expectedonballot-text};
+  --maple-status-expectedonballot-border: #{$maple-status-expectedonballot-border};
+  --maple-status-accepted-bg: #{$maple-status-accepted-bg};
+  --maple-status-accepted-text: #{$maple-status-accepted-text};
+  --maple-status-accepted-border: #{$maple-status-accepted-border};
+  --maple-status-rejected-bg: #{$maple-status-rejected-bg};
+  --maple-status-rejected-text: #{$maple-status-rejected-text};
+  --maple-status-rejected-border: #{$maple-status-rejected-border};
+  --maple-status-failedtoappear-bg: #{$maple-status-failedtoappear-bg};
+  --maple-status-failedtoappear-text: #{$maple-status-failedtoappear-text};
+  --maple-status-failedtoappear-border: #{$maple-status-failedtoappear-border};
+
+  --maple-color-blue-subtle-bg: #{$maple-color-blue-subtle-bg};
+  --maple-color-blue-subtle-text: #{$maple-color-blue-subtle-text};
+  --maple-color-blue-subtle-border: #{$maple-color-blue-subtle-border};
+  --maple-color-green-subtle-bg: #{$maple-color-green-subtle-bg};
+  --maple-color-green-subtle-text: #{$maple-color-green-subtle-text};
+  --maple-color-green-subtle-border: #{$maple-color-green-subtle-border};
+  --maple-color-red-subtle-bg: #{$maple-color-red-subtle-bg};
+  --maple-color-red-subtle-text: #{$maple-color-red-subtle-text};
+  --maple-color-red-subtle-border: #{$maple-color-red-subtle-border};
+  --maple-color-gray-subtle-bg: #{$maple-color-gray-subtle-bg};
+  --maple-color-gray-subtle-text: #{$maple-color-gray-subtle-text};
+  --maple-color-gray-subtle-border: #{$maple-color-gray-subtle-border};
 }
 
 .btn {

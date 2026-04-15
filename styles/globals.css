@@ -11,18 +11,18 @@
   font-weight: bold;
 }
 
-/* Design tokens (--maple-*, --mobile-nav-link-*) are defined in
-   styles/bootstrap.scss as SCSS variables and emitted to :root there.
-   This keeps Bootstrap's compile-time Sass and runtime CSS custom properties
-   structurally linked — edit the SCSS variable, not the custom property. */
+/* Design tokens (--maple-*) are defined in styles/bootstrap.scss as SCSS
+   variables and emitted to :root there. This keeps Bootstrap's compile-time
+   Sass and runtime CSS custom properties structurally linked — edit the SCSS
+   variable, not the custom property. */
 
 .navLink-primary {
-  color: var(--mobile-nav-link-color) !important;
+  color: var(--maple-nav-link-color) !important;
   font-weight: bold;
 }
 
 .navLink-primary .dropdown-toggle {
-  color: var(--mobile-nav-link-color) !important;
+  color: var(--maple-nav-link-color) !important;
   font-weight: bold;
 }
 
@@ -31,14 +31,14 @@
 .navLink-primary:active,
 .navLink-primary.active,
 .navLink-primary.show {
-  color: var(--mobile-nav-link-color-active) !important;
+  color: var(--maple-nav-link-color-active) !important;
 }
 
 .navLink-primary .dropdown-toggle:hover,
 .navLink-primary .dropdown-toggle:focus,
 .navLink-primary .dropdown-toggle:active,
 .navLink-primary.show .dropdown-toggle {
-  color: var(--mobile-nav-link-color-active) !important;
+  color: var(--maple-nav-link-color-active) !important;
 }
 
 .skip-link {
