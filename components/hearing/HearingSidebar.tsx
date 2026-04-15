@@ -106,7 +106,7 @@ const SidebarHeader = styled.div`
   background-color: #c0c4dc;
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
-  padding-top: 9px;
+  padding-top: var(--maple-space-sm);
 `
 
 const SidebarSubbody = styled.div`
