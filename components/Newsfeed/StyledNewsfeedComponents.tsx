@@ -24,7 +24,7 @@ export const HeaderTitle = styled(Col)`
   font-size: 40px;
   line-height: var(--maple-line-height-loose);
   letter-spacing: -0.03em;
-  color: #000000;
+  color: var(--maple-text-strong);
 `
 
 export const StyledContainer = styled(Container)`

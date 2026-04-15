@@ -141,25 +141,25 @@ function BallotGlyph() {
         height="2.7"
         rx="0.7"
         fill="rgba(94, 114, 228, 0.14)"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.2"
       />
       <path
         d="M9.1 11.45L9.8 12.15L10.95 10.95"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M12.6 10.9H15.95"
-        stroke="#3249b3"
+        stroke="var(--maple-brand-primary)"
         strokeWidth="1.35"
         strokeLinecap="round"
       />
       <path
         d="M8.3 15.2H15.95"
-        stroke="#94A3B8"
+        stroke="var(--maple-text-muted)"
         strokeWidth="1.35"
         strokeLinecap="round"
       />

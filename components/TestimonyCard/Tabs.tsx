@@ -147,7 +147,7 @@ const TabStyle = styled.div<{
     props.variant === "ballotQuestion"
       ? props.active
         ? "var(--maple-brand-danger)"
-        : "#212529"
+        : "var(--maple-text-strong)"
       : props.active
       ? "var(--maple-brand-danger)"
       : "black"};

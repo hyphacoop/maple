@@ -43,6 +43,8 @@ $maple-brand-primary-strong: #12266f;
 $maple-brand-accent: #ff8600;
 $maple-brand-danger: #c71e32;
 $maple-brand-dark: #0b0a3e;
+$maple-brand-senate: #a92929;
+$maple-brand-stage-past: #8ebc81;
 
 // Text
 $maple-text-strong: #1e293b;
@@ -59,6 +61,10 @@ $maple-surface-muted: rgba(248, 250, 252, 0.9);
 $maple-surface-accent: rgba(94, 114, 228, 0.08);
 $maple-surface-accent-strong: rgba(94, 114, 228, 0.12);
 $maple-surface-border: rgba(15, 23, 42, 0.08);
+$maple-surface-hearing-search: #8c98c2;
+$maple-surface-hearing-header: #c0c4dc;
+$maple-surface-transcript-stripe: #e8ecf4;
+$maple-surface-transcript-hover: #d9dfea;
 $maple-surface-gradient: linear-gradient(
   180deg,
   #ffffff 0%,
@@ -244,6 +250,8 @@ $utilities: (
   --maple-brand-accent: #{$maple-brand-accent};
   --maple-brand-danger: #{$maple-brand-danger};
   --maple-brand-dark: #{$maple-brand-dark};
+  --maple-brand-senate: #{$maple-brand-senate};
+  --maple-brand-stage-past: #{$maple-brand-stage-past};
 
   --maple-text-strong: #{$maple-text-strong};
   --maple-text-body: #{$maple-text-body};
@@ -257,6 +265,10 @@ $utilities: (
   --maple-surface-accent: #{$maple-surface-accent};
   --maple-surface-accent-strong: #{$maple-surface-accent-strong};
   --maple-surface-border: #{$maple-surface-border};
+  --maple-surface-hearing-search: #{$maple-surface-hearing-search};
+  --maple-surface-hearing-header: #{$maple-surface-hearing-header};
+  --maple-surface-transcript-stripe: #{$maple-surface-transcript-stripe};
+  --maple-surface-transcript-hover: #{$maple-surface-transcript-hover};
   --maple-surface-gradient: #{$maple-surface-gradient};
   --maple-accent-gradient: #{$maple-accent-gradient};
 
