@@ -111,37 +111,37 @@ $maple-transition-fast: 0.15s ease;
 $maple-transition-base: 0.2s ease;
 
 // Semantic color palette — reusable subtle tints, usable anywhere in the app
-$maple-color-blue-subtle-bg:     #e8efff;
-$maple-color-blue-subtle-text:   #1d3f8a;
+$maple-color-blue-subtle-bg: #e8efff;
+$maple-color-blue-subtle-text: #1d3f8a;
 $maple-color-blue-subtle-border: #c9d8ff;
 
-$maple-color-green-subtle-bg:     #e8f6ea;
-$maple-color-green-subtle-text:   #1d5d2d;
+$maple-color-green-subtle-bg: #e8f6ea;
+$maple-color-green-subtle-text: #1d5d2d;
 $maple-color-green-subtle-border: #c8e7cf;
 
-$maple-color-red-subtle-bg:     #fde8ef;
-$maple-color-red-subtle-text:   #902141;
+$maple-color-red-subtle-bg: #fde8ef;
+$maple-color-red-subtle-text: #902141;
 $maple-color-red-subtle-border: #f4bfd0;
 
-$maple-color-gray-subtle-bg:     #f1f5f9;
-$maple-color-gray-subtle-text:   #475569;
+$maple-color-gray-subtle-bg: #f1f5f9;
+$maple-color-gray-subtle-text: #475569;
 $maple-color-gray-subtle-border: #d7e0ea;
 
 // Ballot question status palettes — aliases of the semantic color palette
-$maple-status-expectedonballot-bg:     $maple-color-blue-subtle-bg;
-$maple-status-expectedonballot-text:   $maple-color-blue-subtle-text;
+$maple-status-expectedonballot-bg: $maple-color-blue-subtle-bg;
+$maple-status-expectedonballot-text: $maple-color-blue-subtle-text;
 $maple-status-expectedonballot-border: $maple-color-blue-subtle-border;
 
-$maple-status-accepted-bg:     $maple-color-green-subtle-bg;
-$maple-status-accepted-text:   $maple-color-green-subtle-text;
+$maple-status-accepted-bg: $maple-color-green-subtle-bg;
+$maple-status-accepted-text: $maple-color-green-subtle-text;
 $maple-status-accepted-border: $maple-color-green-subtle-border;
 
-$maple-status-rejected-bg:     $maple-color-red-subtle-bg;
-$maple-status-rejected-text:   $maple-color-red-subtle-text;
+$maple-status-rejected-bg: $maple-color-red-subtle-bg;
+$maple-status-rejected-text: $maple-color-red-subtle-text;
 $maple-status-rejected-border: $maple-color-red-subtle-border;
 
-$maple-status-failedtoappear-bg:     $maple-color-gray-subtle-bg;
-$maple-status-failedtoappear-text:   $maple-color-gray-subtle-text;
+$maple-status-failedtoappear-bg: $maple-color-gray-subtle-bg;
+$maple-status-failedtoappear-text: $maple-color-gray-subtle-text;
 $maple-status-failedtoappear-border: $maple-color-gray-subtle-border;
 
 // Nunito, rest copied from node_modules/bootstrap/scss/_variables.scss
