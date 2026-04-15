@@ -106,6 +106,16 @@ $maple-space-xl: 1.5rem;
 $maple-space-2xl: 2rem;
 $maple-space-3xl: 3rem;
 
+// Typography
+$maple-font-weight-normal: 400;
+$maple-font-weight-medium: 500;
+$maple-font-weight-semibold: 600;
+$maple-font-weight-bold: 700;
+
+$maple-line-height-tight: 1.2;
+$maple-line-height-base: 1.5;
+$maple-line-height-loose: 1.75;
+
 // Transitions
 $maple-transition-fast: 0.15s ease;
 $maple-transition-base: 0.2s ease;
@@ -258,6 +268,15 @@ $utilities: (
   --maple-border-inverse-soft: #{$maple-border-inverse-soft};
   --maple-border-accent: #{$maple-border-accent};
   --maple-border-accent-strong: #{$maple-border-accent-strong};
+
+  --maple-font-weight-normal: #{$maple-font-weight-normal};
+  --maple-font-weight-medium: #{$maple-font-weight-medium};
+  --maple-font-weight-semibold: #{$maple-font-weight-semibold};
+  --maple-font-weight-bold: #{$maple-font-weight-bold};
+
+  --maple-line-height-tight: #{$maple-line-height-tight};
+  --maple-line-height-base: #{$maple-line-height-base};
+  --maple-line-height-loose: #{$maple-line-height-loose};
 
   --maple-focus-ring: #{$maple-focus-ring};
   --maple-focus-border: #{$maple-focus-border};
