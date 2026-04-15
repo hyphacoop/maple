@@ -20,9 +20,9 @@ export const Header = styled(Row)`
 
 export const HeaderTitle = styled(Col)`
   font-style: normal;
-  font-weight: 700;
+  font-weight: var(--maple-font-weight-bold);
   font-size: 40px;
-  line-height: 48px;
+  line-height: var(--maple-line-height-loose);
   letter-spacing: -0.03em;
   color: #000000;
 `

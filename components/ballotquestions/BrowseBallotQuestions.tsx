@@ -67,7 +67,7 @@ const ControlsHeader = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 0.75rem;
+  gap: var(--maple-space-md);
 
   @media (max-width: 576px) {
     align-items: stretch;
@@ -97,7 +97,7 @@ const ControlsActions = styled.div`
 
 const ControlsButton = styled(Button)`
   flex: 0 0 auto;
-  padding: 0.375rem 0.5rem;
+  padding: var(--maple-space-xs) var(--maple-space-sm);
   font-size: 0.9rem;
   white-space: nowrap;
   width: fit-content;
@@ -132,8 +132,8 @@ const ControlsGrid = styled.div<{ $expanded: boolean }>`
 const FilterLabel = styled(Form.Label)`
   color: var(--bs-gray-700);
   font-size: 0.82rem;
-  font-weight: 700;
-  margin-bottom: 0.35rem;
+  font-weight: var(--maple-font-weight-bold);
+  margin-bottom: var(--maple-space-xs);
 `
 
 const ResultsSummary = styled.p.attrs({
@@ -142,7 +142,7 @@ const ResultsSummary = styled.p.attrs({
 })`
   color: var(--bs-gray-600);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: var(--maple-font-weight-semibold);
   margin: 0;
 `
 
@@ -177,10 +177,10 @@ const StyledCard = styled(Card)`
   .card-body {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--maple-space-md);
     height: 100%;
     border-radius: var(--bs-border-radius-xl);
-    padding: 0.8rem 0.9rem;
+    padding: var(--maple-space-md) var(--maple-space-lg);
   }
 `
 
@@ -217,10 +217,10 @@ const StatusBadge = styled.span<{ $status: BallotQuestionStatus }>`
   color: ${({ $status }) => STATUS_STYLES[$status].color};
   display: inline-flex;
   font-size: 0.74rem;
-  font-weight: 700;
+  font-weight: var(--maple-font-weight-bold);
   letter-spacing: 0.02em;
-  line-height: 1;
-  padding: 0.4rem 0.62rem;
+  line-height: var(--maple-line-height-tight);
+  padding: var(--maple-space-xs) var(--maple-space-sm);
   white-space: nowrap;
 `
 
@@ -241,15 +241,15 @@ const TitleBlock = styled.div`
 const QuestionNumber = styled.h2`
   color: var(--bs-dark-blue);
   font-size: 1.3rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: var(--maple-font-weight-bold);
+  line-height: var(--maple-line-height-tight);
   margin: 0;
 `
 
 const QuestionTitle = styled.p`
   color: var(--bs-gray-700);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: var(--maple-font-weight-bold);
   line-height: 1.4;
   margin: 0;
 `
@@ -278,7 +278,7 @@ const MetaItem = styled.span`
   border-radius: 999px;
   color: var(--bs-gray-700);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: var(--maple-font-weight-semibold);
   padding: 0.24rem 0.55rem;
 `
 
