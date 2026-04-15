@@ -32,15 +32,15 @@ export const StyledContainer = styled(Container)`
   .checkbox {
     width: 187px;
     padding: 0px;
-    color: #12266f;
+    color: var(--maple-brand-primary-strong);
   }
   .checkbox input {
     height: 16px;
     width: 16px;
     background-color: transparent;
-    border-color: #12266f;
+    border-color: var(--maple-brand-primary-strong);
   }
   .checkbox input:checked {
-    background-color: #12266f;
+    background-color: var(--maple-brand-primary-strong);
   }
 `

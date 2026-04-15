@@ -39,7 +39,7 @@ const HandleBranchStyle = (branchStyle: string) => {
   var returnStyle
   switch (branchStyle) {
     case "HOUSE":
-      returnStyle = { backgroundColor: "#1a3185" }
+      returnStyle = { backgroundColor: "var(--maple-brand-primary)" }
       break
     case "SENATE":
       returnStyle = { backgroundColor: "#A92929" }
