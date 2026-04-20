@@ -16,8 +16,6 @@ export const CampaignFinancialsTab = ({
 }) => {
   const support = ballotQuestion.campaignFinancials?.support ?? []
   const oppose = ballotQuestion.campaignFinancials?.oppose ?? []
-  const supportTotals = summarizeEntries(support)
-  const opposeTotals = summarizeEntries(oppose)
 
   return (
     <div className="d-grid gap-4">
@@ -42,7 +40,6 @@ export const CampaignFinancialsTab = ({
       {support.length > 0 && (
         <SectionCard>
           <div className="maple-eyebrow mb-3">Support</div>
-          <TotalsRow totals={supportTotals} />
           <div className="d-grid gap-3">
             {support.map(entry => (
               <FinanceCard key={entry.committee} entry={entry} />
@@ -54,7 +51,6 @@ export const CampaignFinancialsTab = ({
       {oppose.length > 0 && (
         <SectionCard>
           <div className="maple-eyebrow mb-3">Oppose</div>
-          <TotalsRow totals={opposeTotals} />
           <div className="d-grid gap-3">
             {oppose.map(entry => (
               <FinanceCard key={entry.committee} entry={entry} />
@@ -77,47 +73,20 @@ const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
       <Metric label="Cash raised" value={formatMoney(entry.cashRaised)} />
       <Metric label="Spent" value={formatMoney(entry.spent)} />
       <Metric label="In-kind" value={formatMoney(entry.inKind)} />
-    </div>
-  </div>
-)
-
-const TotalsRow = ({
-  totals
-}: {
-  totals: {
-    cashRaised: number
-    spent: number
-    inKind: number
-  }
-}) => (
-  <div className="maple-muted-surface rounded-4 p-3 mb-3">
-    <div className="row g-3">
       <Metric
-        label="Total cash raised"
-        value={formatMoney(totals.cashRaised)}
+        label="Total"
+        value={formatMoney(entry.cashRaised + entry.inKind)}
       />
-      <Metric label="Total spent" value={formatMoney(totals.spent)} />
-      <Metric label="Total in-kind" value={formatMoney(totals.inKind)} />
     </div>
   </div>
 )
 
 const Metric = ({ label, value }: { label: string; value: string }) => (
-  <div className="col-12 col-md-4">
+  <div className="col-12 col-md-3">
     <div className="maple-eyebrow mb-1">{label}</div>
     <div className="fw-semibold text-dark">{value}</div>
   </div>
 )
-
-const summarizeEntries = (entries: CampaignFinanceEntry[]) =>
-  entries.reduce(
-    (acc, entry) => ({
-      cashRaised: acc.cashRaised + entry.cashRaised,
-      spent: acc.spent + entry.spent,
-      inKind: acc.inKind + entry.inKind
-    }),
-    { cashRaised: 0, spent: 0, inKind: 0 }
-  )
 
 const formatMoney = (value: number) =>
   new Intl.NumberFormat("en-US", {
