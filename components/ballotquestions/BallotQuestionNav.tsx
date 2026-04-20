@@ -8,11 +8,13 @@ import {
 export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
-  testimonyCount
+  testimonyCount,
+  showSynthesis
 }: {
   activeTab: BallotQuestionTab | string
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
+  showSynthesis?: boolean
 }) => {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
@@ -23,7 +25,11 @@ export const BallotQuestionNav = ({
       enabled: true,
       badge: testimonyCount
     },
-    { id: "synthesis", label: "Synthesis & Insights", enabled: false },
+    {
+      id: "synthesis",
+      label: "Synthesis & Insights",
+      enabled: showSynthesis ?? false
+    },
     { id: "for_against", label: "For & Against", enabled: false },
     { id: "news", label: "News & Media", enabled: false },
     { id: "academia", label: "Academia", enabled: false },

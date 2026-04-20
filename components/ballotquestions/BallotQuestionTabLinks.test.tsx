@@ -122,7 +122,7 @@ describe("Ballot question tab links", () => {
     const tabs = screen.getAllByRole("tab")
 
     expect(screen.getByRole("tablist")).toBeInTheDocument()
-    expect(tabs).toHaveLength(2)
+    expect(tabs).toHaveLength(3)
     expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
       "aria-selected",
       "true"
@@ -139,6 +139,22 @@ describe("Ballot question tab links", () => {
       "aria-controls",
       "ballot-question-panel-testimonies"
     )
+  })
+
+  it("shows synthesis only when ballot question synthesis data exists", () => {
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={jest.fn()}
+        testimonyCount={5}
+        showSynthesis
+      />
+    )
+
+    expect(
+      screen.getByRole("tab", { name: "Synthesis & Insights" })
+    ).toHaveAttribute("aria-controls", "ballot-question-panel-synthesis")
+    expect(screen.getAllByRole("tab")).toHaveLength(3)
   })
 
   it("supports arrow-key navigation between ballot question tabs", () => {
