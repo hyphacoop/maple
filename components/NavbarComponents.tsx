@@ -8,6 +8,8 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
 
+export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link rounded px-3 py-1"
+
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
     href: string
@@ -110,9 +112,7 @@ export const NavbarLinkBills: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/bills"
         {...other}
       >
@@ -133,9 +133,7 @@ export const NavbarLinkBallotQuestions: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/ballotQuestions"
         {...other}
       >
@@ -156,9 +154,7 @@ export const NavbarLinkHearings: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/hearings"
         {...other}
       >
@@ -303,9 +299,7 @@ export const NavbarLinkNewsfeed: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/newsfeed"
         {...other}
       >
@@ -420,9 +414,7 @@ export const NavbarLinkTestimony: React.FC<
   return (
     <Nav.Item onClick={handleClick}>
       <NavLink
-        className={
-          isMobile ? "navLink-primary" : "desktop-navbar-link rounded px-3 py-1"
-        }
+        className={isMobile ? "navLink-primary" : DESKTOP_NAV_ITEM_CLASS}
         href="/testimony"
         {...other}
       >
