@@ -38,6 +38,17 @@ against: |-
   to expand mental health options. Lieutenant Sarko Gergerian, Mental Health
   Counselor (MHC) Massachusetts for Mental Health Options 14 Sullivan Street
   Boston, MA 02129 781-205-9737 https://maformentalhealth.org
+campaignFinancials:
+  support:
+    - committee: "Massachusetts for Mental Health Options 95505"
+      cashRaised: 7752198.94
+      spent: 7752198.94
+      inKind: 1246724.32
+  oppose:
+    - committee: "Coalition for Safe Communities 95522"
+      cashRaised: 137072.5
+      spent: 129158.9
+      inKind: 0
 fullSummary: >-
   This proposed law would allow persons aged 21 and older to grow, possess,
   and use certain natural psychedelic substances in certain circumstances. The

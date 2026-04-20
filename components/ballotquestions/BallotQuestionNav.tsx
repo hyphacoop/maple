@@ -9,12 +9,14 @@ export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
   testimonyCount,
-  showSynthesis
+  showSynthesis,
+  showCampaignFinancials
 }: {
   activeTab: BallotQuestionTab | string
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
   showSynthesis?: boolean
+  showCampaignFinancials?: boolean
 }) => {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
@@ -33,7 +35,11 @@ export const BallotQuestionNav = ({
     { id: "for_against", label: "For & Against", enabled: false },
     { id: "news", label: "News & Media", enabled: false },
     { id: "academia", label: "Academia", enabled: false },
-    { id: "financials", label: "Campaign Financials", enabled: false },
+    {
+      id: "financials",
+      label: "Campaign Financials",
+      enabled: showCampaignFinancials ?? false
+    },
     { id: "map", label: "Map", enabled: false }
   ]
   const visibleItems = navItems.filter(item => item.enabled)

@@ -37,6 +37,13 @@ against: |-
   proposal is not fair to Drivers and allows just 2 ½ percent of drivers to
   force unionization and leaves many Drivers without a voice. Vote No on
   Question 3.
+campaignFinancials:
+  support:
+    - committee: "United for Justice 95509"
+      cashRaised: 7287547.9
+      spent: 7285148.82
+      inKind: 583831.27
+  oppose: []
 fullSummary: >-
   The proposed law would provide Transportation Network Drivers (“Drivers”) with
   the right to form unions (“Driver Organizations”) to collectively bargain with

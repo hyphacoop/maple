@@ -45,6 +45,17 @@ against: |-
   Significant changes to our education system should be carefully studied,
   designed, and implemented by experts to ensure these policies are actually
   better for our kids. Vote No on Question 2.
+campaignFinancials:
+  support:
+    - committee: "Committee for High Standards Not High Stakes 95507"
+      cashRaised: 950000
+      spent: 950000
+      inKind: 15604360.49
+  oppose:
+    - committee: "Protect Our Kids' Future: Vote No on 2 95518"
+      cashRaised: 5318307.02
+      spent: 5318307.02
+      inKind: 93763.81
 fullSummary: >-
   This proposed law would eliminate the requirement that a student pass the
   Massachusetts Comprehensive Assessment System (MCAS) tests (or other statewide

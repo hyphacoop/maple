@@ -48,6 +48,17 @@ against: |-
   close. Doug Bacon Former Server and Bartender, Current Restaurant Owner
   Committee to Protect Tips 160 E Main St # 2 Westborough, MA 01581
   www.ProtectTips.org
+campaignFinancials:
+  support:
+    - committee: "One Fair Wage Plus Tips MA Committee 95513"
+      cashRaised: 889526.25
+      spent: 889526.25
+      inKind: 1036954.37
+  oppose:
+    - committee: "Committee to Protect Tips 95521"
+      cashRaised: 2518234.24
+      spent: 2518234.24
+      inKind: 658123.44
 fullSummary: >-
   This proposed law would gradually increase the minimum hourly wage an
   employer must pay a tipped worker, over the course of five years, on the

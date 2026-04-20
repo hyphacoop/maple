@@ -141,6 +141,21 @@ describe("Ballot question tab links", () => {
     )
   })
 
+  it("shows campaign financials only when ballot question financial data exists", () => {
+    render(
+      <BallotQuestionNav
+        activeTab="overview"
+        onTabChange={jest.fn()}
+        testimonyCount={5}
+        showCampaignFinancials
+      />
+    )
+
+    expect(
+      screen.getByRole("tab", { name: "Campaign Financials" })
+    ).toHaveAttribute("aria-controls", "ballot-question-panel-financials")
+  })
+
   it("shows synthesis only when ballot question synthesis data exists", () => {
     render(
       <BallotQuestionNav

@@ -10,6 +10,13 @@ import {
 } from "runtypes"
 import { withDefaults } from "../common"
 
+const CampaignFinanceEntry = Record({
+  committee: String,
+  cashRaised: Number,
+  spent: Number,
+  inKind: Number
+})
+
 const BallotQuestionStatus = Union(
   L("expectedOnBallot"),
   L("failedToAppear"),
@@ -41,6 +48,13 @@ export const BallotQuestion = withDefaults(
     fiscalConsequences: Union(String, Null),
     inFavor: Union(String, Null),
     against: Union(String, Null),
+    campaignFinancials: Union(
+      Record({
+        support: Array(CampaignFinanceEntry),
+        oppose: Array(CampaignFinanceEntry)
+      }),
+      Null
+    ),
     fullSummary: Union(String, Null),
     pdfUrl: Union(String, Null),
     title: Union(String, Null),
@@ -58,6 +72,7 @@ export const BallotQuestion = withDefaults(
     fiscalConsequences: null,
     inFavor: null,
     against: null,
+    campaignFinancials: null,
     pdfUrl: null,
     testimonyCount: 0,
     endorseCount: 0,
