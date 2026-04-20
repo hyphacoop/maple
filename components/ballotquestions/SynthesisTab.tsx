@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { BallotQuestion } from "../db"
+import { QuestionTooltip } from "../tooltip"
 
 export const SynthesisTab = ({
   ballotQuestion
@@ -21,7 +22,10 @@ export const SynthesisTab = ({
 
       {(yes || no) && (
         <SectionCard>
-          <div className="maple-eyebrow mb-3">What your vote will do</div>
+          <div className="maple-eyebrow mb-3 d-flex align-items-center">
+            What your vote will do
+            <QuestionTooltip text="As required by law, the statements describing the effect of a “yes” or “no” vote are written jointly by the State Attorney General and the Secretary of the Commonwealth." />
+          </div>
           <div className="d-grid gap-3">
             {yes && <Callout label="Voting YES means" value={yes} />}
             {no && <Callout label="Voting NO means" value={no} />}
@@ -31,8 +35,9 @@ export const SynthesisTab = ({
 
       {fiscal && (
         <SectionCard>
-          <div className="maple-eyebrow mb-2">
+          <div className="maple-eyebrow mb-2 d-flex align-items-center">
             Statement of Fiscal Consequences
+            <QuestionTooltip text="As required by law, statements of fiscal consequences are written by the Executive Office of Administration and Finance." />
           </div>
           <p className="mb-0 lh-lg" style={{ whiteSpace: "pre-wrap" }}>
             {fiscal}

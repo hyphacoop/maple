@@ -70,9 +70,9 @@ export const OverviewTab = ({
 
       {ballotQuestion.fullSummary && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark d-flex align-items-center">
+          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
             Official summary by the Massachusetts Attorney General
-            <QuestionTooltip text="Prepared as required by state law. This summary may be revised through the legal process before the election" />
+            <QuestionTooltip text="As required by law, summaries are written by the State Attorney General." />
           </h3>
           <div
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
