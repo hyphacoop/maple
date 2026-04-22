@@ -71,19 +71,34 @@ const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
     <div className="fw-semibold text-dark mb-3">{entry.committee}</div>
     <div className="row g-3">
       <Metric label="Cash raised" value={formatMoney(entry.cashRaised)} />
-      <Metric label="Spent" value={formatMoney(entry.spent)} />
-      <Metric label="In-kind" value={formatMoney(entry.inKind)} />
+      <Metric label="Cash spent" value={formatMoney(entry.spent)} />
       <Metric
-        label="Total"
+        label="Non-cash donations raised"
+        value={formatMoney(entry.inKind)}
+      />
+      <Metric
+        label="Total cash value of campaign"
         value={formatMoney(entry.cashRaised + entry.inKind)}
+        tooltip="Cash raised plus non-cash donations"
       />
     </div>
   </div>
 )
 
-const Metric = ({ label, value }: { label: string; value: string }) => (
+const Metric = ({
+  label,
+  value,
+  tooltip
+}: {
+  label: string
+  value: string
+  tooltip?: string
+}) => (
   <div className="col-12 col-md-3">
-    <div className="maple-eyebrow mb-1">{label}</div>
+    <div className="maple-eyebrow mb-1 d-flex align-items-center gap-1">
+      {label}
+      {tooltip && <QuestionTooltip text={tooltip} />}
+    </div>
     <div className="fw-semibold text-dark">{value}</div>
   </div>
 )

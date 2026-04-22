@@ -5,6 +5,7 @@ import { BallotQuestionHeader } from "./BallotQuestionHeader"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
+import { ForAndAgainstTab } from "./ForAndAgainstTab"
 import { CampaignFinancialsTab } from "./CampaignFinancialsTab"
 import {
   BallotQuestionTab,
@@ -183,6 +184,9 @@ export const BallotQuestionDetails = ({
     opposeCount: testimonySummary.opposeCount + countDelta.opposeCount
   }
   const showCampaignFinancials = Boolean(ballotQuestion.campaignFinancials)
+  const showForAndAgainst = Boolean(
+    ballotQuestion.inFavor || ballotQuestion.against
+  )
 
   const renderContent = () => {
     switch (activeTab) {
@@ -203,6 +207,8 @@ export const BallotQuestionDetails = ({
             testimonySummary={displayedSummary}
           />
         )
+      case "for_against":
+        return <ForAndAgainstTab ballotQuestion={ballotQuestion} />
       case "financials":
         return <CampaignFinancialsTab ballotQuestion={ballotQuestion} />
       default:
@@ -221,6 +227,7 @@ export const BallotQuestionDetails = ({
               onTabChange={setActiveTab}
               testimonyCount={displayedSummary.testimonyCount}
               showCampaignFinancials={showCampaignFinancials}
+              showForAndAgainst={showForAndAgainst}
             />
           </Col>
           <Col lg={9} md={8}>

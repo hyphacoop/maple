@@ -9,12 +9,14 @@ export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
   testimonyCount,
-  showCampaignFinancials
+  showCampaignFinancials,
+  showForAndAgainst
 }: {
   activeTab: BallotQuestionTab | string
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
   showCampaignFinancials?: boolean
+  showForAndAgainst?: boolean
 }) => {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const navItems: Array<BallotQuestionNavItem & { enabled: boolean }> = [
@@ -25,7 +27,7 @@ export const BallotQuestionNav = ({
       enabled: true,
       badge: testimonyCount
     },
-    { id: "for_against", label: "For & Against", enabled: false },
+    { id: "for_against", label: "For & Against", enabled: showForAndAgainst ?? false },
     { id: "news", label: "News & Media", enabled: false },
     { id: "academia", label: "Academia", enabled: false },
     {
