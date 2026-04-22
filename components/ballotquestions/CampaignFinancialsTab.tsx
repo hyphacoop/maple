@@ -70,16 +70,25 @@ const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
   <div className="maple-muted-surface rounded-4 p-3 p-lg-4">
     <div className="fw-semibold text-dark mb-3">{entry.committee}</div>
     <div className="row g-3">
-      <Metric label="Cash raised" value={formatMoney(entry.cashRaised)} />
-      <Metric label="Cash spent" value={formatMoney(entry.spent)} />
+      <Metric
+        label="Cash raised"
+        value={formatMoney(entry.cashRaised)}
+        tooltip="Monetary contributions made directly to the campaign"
+      />
+      <Metric
+        label="Cash spent"
+        value={formatMoney(entry.spent)}
+        tooltip="Cash spent by the campaign to support its objectives"
+      />
       <Metric
         label="Non-cash donations raised"
         value={formatMoney(entry.inKind)}
+        tooltip="Cash value of contributions to the campaign made in goods, services, or commodities"
       />
       <Metric
         label="Total cash value of campaign"
         value={formatMoney(entry.cashRaised + entry.inKind)}
-        tooltip="Cash raised plus non-cash donations"
+        tooltip="Value of cash and in-kind expenditures made by the campaign"
       />
     </div>
   </div>

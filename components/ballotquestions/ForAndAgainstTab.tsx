@@ -21,7 +21,10 @@ export const ForAndAgainstTab = ({
             <BalanceGlyph />
           </div>
           <div>
-            <h2 className="h4 mb-1 text-secondary">Arguments</h2>
+            <h2 className="h4 mb-1 text-secondary d-flex align-items-center gap-1">
+              Arguments
+              <QuestionTooltip text="As provided by law, the 150-word arguments are written by proponents and opponents of each question, and reflect their opinions. The Commonwealth of Massachusetts does not endorse these arguments, and does not certify the truth or accuracy of any statement made in these arguments. The names of the individuals and organizations who wrote each argument, and any written comments by others about each argument, are on file in the Office of the Secretary of the Commonwealth." />
+            </h2>
             <p className="text-body-secondary small mb-0">
               Official arguments from the Massachusetts Attorney General's voter
               guide.
