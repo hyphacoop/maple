@@ -24,23 +24,29 @@ export const SearchContainer = styled.div`
   }
 
   .ais-CurrentRefinements--noRefinement {
-    height: 0;
+    display: none;
   }
 
   .ais-RefinementList-item {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .ais-RefinementList-list {
-    background-color: var(--maple-surface-base);
-    border: 1px solid var(--maple-surface-border);
-    box-shadow: var(--maple-shadow-sm);
-    padding: var(--maple-space-lg);
-    border-radius: var(--maple-radius-sm);
-    margin-top: var(--maple-space-sm);
-    margin-bottom: var(--maple-space-xl);
-    max-height: 250px;
+    padding: 0;
+    padding-right: var(--maple-space-lg);
+    margin: 0;
+    max-height: 200px;
     overflow-y: auto;
+  }
+
+  .ais-RefinementList-searchBox {
+    margin-bottom: var(--maple-space-sm);
+
+    .ais-SearchBox-input {
+      font-size: 0.85rem;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
   }
 
   .ais-RefinementList-count {
@@ -60,12 +66,18 @@ export const SearchContainer = styled.div`
 
   .ais-SearchBox-input {
     box-shadow: none;
-    border: 1px solid var(--maple-surface-border);
+    border: 1px solid var(--maple-border-default);
     border-radius: var(--maple-radius-sm);
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
     padding-left: var(--maple-space-sm);
     padding-right: 2rem;
     font-size: 1rem;
     background-color: var(--maple-surface-base);
+  }
+
+  .ais-SearchBox-form {
+    margin-bottom: 0;
   }
 
   .ais-RefinementList-checkbox {
@@ -104,8 +116,19 @@ export const SearchContainer = styled.div`
     display: none;
   }
 
+  .ais-Hits-list {
+    columns: 2;
+    column-gap: 1.15rem;
+
+    @media (max-width: 768px) {
+      columns: 1;
+    }
+  }
+
   .ais-Hits-item {
     background: none;
+    break-inside: avoid;
+    margin-bottom: 1.15rem;
   }
 
   .ais-Pagination-list {
@@ -141,6 +164,7 @@ export const SearchContainer = styled.div`
     white-space: normal;
     display: inline-block;
     width: 75%;
+    line-height: 1.25;
   }
 
   .ais-RefinementList-label {
@@ -148,13 +172,9 @@ export const SearchContainer = styled.div`
   }
 
   .ais-MultiselectHierarchicalMenu-list {
-    background-color: var(--maple-surface-base);
-    border: 1px solid var(--maple-surface-border);
-    box-shadow: var(--maple-shadow-sm);
-    padding: var(--maple-space-sm) var(--maple-space-lg) var(--maple-space-lg);
-    border-radius: var(--maple-radius-sm);
-    margin-bottom: var(--maple-space-xl);
-    max-height: 250px;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
     overflow-y: auto;
     list-style: none;
   }
