@@ -27,7 +27,11 @@ export const BallotQuestionNav = ({
       enabled: true,
       badge: testimonyCount
     },
-    { id: "for_against", label: "For & Against", enabled: showForAndAgainst ?? false },
+    {
+      id: "for_against",
+      label: "For & Against",
+      enabled: showForAndAgainst ?? false
+    },
     { id: "news", label: "News & Media", enabled: false },
     { id: "academia", label: "Academia", enabled: false },
     {
