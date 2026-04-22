@@ -8,14 +8,10 @@ type: initiative_statute
 ballotStatus: accepted
 ballotQuestionNumber: 2
 relatedBillIds: []
-description: "Would replace the MCAS graduation requirement with district-certified coursework mastery."
-atAGlance:
-  - label: "What it does"
-    value: "Removes MCAS as a graduation requirement."
-  - label: "Vote effect"
-    value: "A yes vote uses district-certified coursework; a no vote keeps MCAS."
-voteEffectYes: "A YES vote would replace the MCAS graduation requirement with district-certified coursework mastery."
-voteEffectNo: "A NO vote would make no change in the law governing the MCAS graduation requirement."
+description: null
+atAGlance: null
+voteEffectYes: "A YES VOTE would eliminate the requirement that students pass the Massachusetts Comprehensive Assessment System (MCAS) in order to graduate high school but still require students to complete coursework that meets state standards."
+voteEffectNo: "A NO Vote would make no change in the law relative to the requirement that a student pass the MCAS in order to graduate high school."
 fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
 inFavor: |-
   A Yes on Question 2 gives all students the opportunity to thrive and reach

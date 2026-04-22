@@ -8,14 +8,10 @@ type: initiative_statute
 ballotStatus: rejected
 ballotQuestionNumber: 5
 relatedBillIds: []
-description: "Would gradually raise tipped workers to the full minimum wage and allow broader tip pooling."
-atAGlance:
-  - label: "What it does"
-    value: "Phases tipped wages up to the full state minimum wage."
-  - label: "Vote effect"
-    value: "A yes vote changes tipped wages and tip pooling; a no vote keeps current law."
-voteEffectYes: "A YES vote would increase the minimum hourly wage an employer must pay a tipped worker to the full state minimum wage implemented over five years, at which point employers could pool all tips and distribute them to all non-management workers."
-voteEffectNo: "A NO vote would make no change in the law governing tip pooling or the minimum wage for tipped workers."
+description: null
+atAGlance: null
+voteEffectYes: "A YES VOTE would increase the minimum hourly wage an employer must pay a tipped worker to the full state minimum wage implemented over five years, at which point employers could pool all tips and distribute them to all non-management workers."
+voteEffectNo: "A NO VOTE would make no change in the law governing tip pooling or the minimum wage for tipped workers. "
 fiscalConsequences: "There are no direct fiscal consequences on the Commonwealth or municipalities because they generally do not employ tipped employees. Nevertheless, this measure will affect proposed state and municipal revenues and expenditures due to impacts on employee and business income and earnings. While those impacts are difficult to project due to the lack of reliable data, increasing the minimum hourly wage of tipped employees will likely increase state income tax collections because employees will earn more in hourly wages from which state income tax is withheld. The impacts on gratuity earnings and gratuity tax reporting are unknown."
 inFavor: |-
   Vote Yes for FAIRNESS. It’s fair for Workers: Instead of being paid the

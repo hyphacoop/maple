@@ -8,14 +8,10 @@ type: initiative_statute
 ballotStatus: rejected
 ballotQuestionNumber: 4
 relatedBillIds: []
-description: "Would allow limited use, home growing, and regulated supervised access to certain psychedelic substances."
-atAGlance:
-  - label: "What it does"
-    value: "Legalizes limited adult possession, use, and supervised access."
-  - label: "Vote effect"
-    value: "A yes vote creates a regulated system; a no vote keeps current law."
-voteEffectYes: "A YES vote would allow persons over age 21 to use certain natural psychedelic substances under licensed supervision and to grow and possess limited quantities of those substances in their home, and would create a commission to regulate those substances."
-voteEffectNo: "A NO vote would make no change in the law regarding natural psychedelic substances."
+description: null
+atAGlance: null
+voteEffectYes: "A YES VOTE would allow persons over age 21 to use certain natural psychedelic substances under licensed supervision and to grow and possess limited quantities of those substances in their home, and would create a commission to regulate those substances."
+voteEffectNo: "A NO VOTE would make no change in the law regarding natural psychedelic substances."
 fiscalConsequences: "This measure would establish a 15% state excise tax for the sale of natural psychedelic substances, which would be available for spending from a dedicated fund; however, the revenue generating impact is unknown due to the lack of data for the new market being proposed. This measure would also allow for a local tax option that could generate local sales tax revenue. This measure would also create an oversight commission that would require dedicated resources to execute its duties and responsibilities. The costs of establishing and operating the commission would need to be developed and would be subject to appropriation."
 inFavor: |-
   Vote YES on 4 to provide safe, regulated access to promising natural

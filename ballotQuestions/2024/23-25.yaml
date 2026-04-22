@@ -8,14 +8,10 @@ type: initiative_statute
 ballotStatus: accepted
 ballotQuestionNumber: 3
 relatedBillIds: []
-description: "Would let transportation network drivers form unions and bargain collectively."
-atAGlance:
-  - label: "What it does"
-    value: "Creates a unionization and bargaining process for rideshare drivers."
-  - label: "Vote effect"
-    value: "A yes vote allows driver organizations; a no vote keeps current law."
-voteEffectYes: "A YES vote would provide transportation network drivers the option to form unions to collectively bargain with transportation network companies regarding wages, benefits, and terms and conditions of work."
-voteEffectNo: "A NO vote would make no change in the law relative to the ability of transportation network drivers to form unions."
+description: null
+atAGlance: null
+voteEffectYes: "A YES VOTE would provide transportation network drivers the option to form unions to collectively bargain with transportation network companies regarding wages, benefits, and terms and conditions of work."
+voteEffectNo: "A NO VOTE would make no change in the law relative to the ability of transportation network drivers to form unions."
 fiscalConsequences: "The proposed law has no discernible material fiscal consequences for state and municipal government finances."
 inFavor: |-
   A YES vote will give Massachusetts rideshare drivers, who work for companies
