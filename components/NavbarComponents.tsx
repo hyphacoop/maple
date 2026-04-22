@@ -8,7 +8,8 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
 
-export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1 btn-secondary"
+export const DESKTOP_NAV_ITEM_CLASS =
+  "desktop-navbar-link px-3 py-1 btn-secondary"
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -490,11 +491,7 @@ export const NavbarLinkInTheNews: React.FC<
   const { t } = useTranslation(["common", "auth"])
   return isMobile ? (
     <NavDropdown.Item onClick={handleClick}>
-      <NavLink
-        className="navLink-primary"
-        href="/about/in-the-news"
-        {...other}
-      >
+      <NavLink className="navLink-primary" href="/about/in-the-news" {...other}>
         {t("navigation.inTheNews")}
       </NavLink>
     </NavDropdown.Item>
