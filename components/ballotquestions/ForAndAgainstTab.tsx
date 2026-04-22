@@ -1,6 +1,5 @@
 import type { ReactNode } from "react"
 import { BallotQuestion } from "../db"
-import { QuestionTooltip } from "../tooltip"
 
 export const ForAndAgainstTab = ({
   ballotQuestion
@@ -38,10 +37,7 @@ export const ForAndAgainstTab = ({
 
       {ballotQuestion.inFavor && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
-            Argument in favor
-            <QuestionTooltip text="Official argument from the voter guide for voting YES on this question." />
-          </h3>
+          <h3 className="h5 mb-3 text-dark">Argument in favor</h3>
           {ballotQuestion.campaignFinancials?.support &&
             ballotQuestion.campaignFinancials.support.length > 0 && (
               <div className="mb-3">
@@ -66,10 +62,7 @@ export const ForAndAgainstTab = ({
 
       {ballotQuestion.against && (
         <SectionCard>
-          <h3 className="h5 mb-3 text-dark d-flex align-items-center gap-1">
-            Argument against
-            <QuestionTooltip text="Official argument from the voter guide for voting NO on this question." />
-          </h3>
+          <h3 className="h5 mb-3 text-dark">Argument against</h3>
           {ballotQuestion.campaignFinancials?.oppose &&
             ballotQuestion.campaignFinancials.oppose.length > 0 && (
               <div className="mb-3">
