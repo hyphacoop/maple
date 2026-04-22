@@ -36,6 +36,19 @@ export const ForAndAgainstTab = ({
             Argument in favor
             <QuestionTooltip text="Official argument from the voter guide for voting YES on this question." />
           </h3>
+          {ballotQuestion.campaignFinancials?.support &&
+            ballotQuestion.campaignFinancials.support.length > 0 && (
+              <div className="mb-3">
+                {ballotQuestion.campaignFinancials.support.map(entry => (
+                  <div
+                    key={entry.committee}
+                    className="maple-eyebrow small mb-2"
+                  >
+                    {entry.committee}
+                  </div>
+                ))}
+              </div>
+            )}
           <div
             className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
             style={{ whiteSpace: "pre-wrap" }}
@@ -51,6 +64,19 @@ export const ForAndAgainstTab = ({
             Argument against
             <QuestionTooltip text="Official argument from the voter guide for voting NO on this question." />
           </h3>
+          {ballotQuestion.campaignFinancials?.oppose &&
+            ballotQuestion.campaignFinancials.oppose.length > 0 && (
+              <div className="mb-3">
+                {ballotQuestion.campaignFinancials.oppose.map(entry => (
+                  <div
+                    key={entry.committee}
+                    className="maple-eyebrow small mb-2"
+                  >
+                    {entry.committee}
+                  </div>
+                ))}
+              </div>
+            )}
           <div
             className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
             style={{ whiteSpace: "pre-wrap" }}
