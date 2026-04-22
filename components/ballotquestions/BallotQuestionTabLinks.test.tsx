@@ -156,22 +156,6 @@ describe("Ballot question tab links", () => {
     ).toHaveAttribute("aria-controls", "ballot-question-panel-financials")
   })
 
-  it("shows synthesis only when ballot question synthesis data exists", () => {
-    render(
-      <BallotQuestionNav
-        activeTab="overview"
-        onTabChange={jest.fn()}
-        testimonyCount={5}
-        showSynthesis
-      />
-    )
-
-    expect(
-      screen.getByRole("tab", { name: "Synthesis & Insights" })
-    ).toHaveAttribute("aria-controls", "ballot-question-panel-synthesis")
-    expect(screen.getAllByRole("tab")).toHaveLength(3)
-  })
-
   it("supports arrow-key navigation between ballot question tabs", () => {
     const onTabChange = jest.fn()
 

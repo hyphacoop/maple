@@ -5,7 +5,6 @@ import { BallotQuestionHeader } from "./BallotQuestionHeader"
 import { BallotQuestionNav } from "./BallotQuestionNav"
 import { OverviewTab } from "./OverviewTab"
 import { TestimoniesTab } from "./TestimoniesTab"
-import { SynthesisTab } from "./SynthesisTab"
 import { CampaignFinancialsTab } from "./CampaignFinancialsTab"
 import {
   BallotQuestionTab,
@@ -183,10 +182,6 @@ export const BallotQuestionDetails = ({
     neutralCount: testimonySummary.neutralCount + countDelta.neutralCount,
     opposeCount: testimonySummary.opposeCount + countDelta.opposeCount
   }
-  const showSynthesis =
-    Boolean(ballotQuestion.voteEffectYes) ||
-    Boolean(ballotQuestion.voteEffectNo) ||
-    Boolean(ballotQuestion.fiscalConsequences)
   const showCampaignFinancials = Boolean(ballotQuestion.campaignFinancials)
 
   const renderContent = () => {
@@ -208,8 +203,6 @@ export const BallotQuestionDetails = ({
             testimonySummary={displayedSummary}
           />
         )
-      case "synthesis":
-        return <SynthesisTab ballotQuestion={ballotQuestion} />
       case "financials":
         return <CampaignFinancialsTab ballotQuestion={ballotQuestion} />
       default:
@@ -227,7 +220,6 @@ export const BallotQuestionDetails = ({
               activeTab={activeTab}
               onTabChange={setActiveTab}
               testimonyCount={displayedSummary.testimonyCount}
-              showSynthesis={showSynthesis}
               showCampaignFinancials={showCampaignFinancials}
             />
           </Col>

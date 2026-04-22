@@ -9,13 +9,11 @@ export const BallotQuestionNav = ({
   activeTab,
   onTabChange,
   testimonyCount,
-  showSynthesis,
   showCampaignFinancials
 }: {
   activeTab: BallotQuestionTab | string
   onTabChange: (tab: BallotQuestionTab) => void
   testimonyCount?: number
-  showSynthesis?: boolean
   showCampaignFinancials?: boolean
 }) => {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
@@ -26,11 +24,6 @@ export const BallotQuestionNav = ({
       label: "Perspectives",
       enabled: true,
       badge: testimonyCount
-    },
-    {
-      id: "synthesis",
-      label: "Synthesis & Insights",
-      enabled: showSynthesis ?? false
     },
     { id: "for_against", label: "For & Against", enabled: false },
     { id: "news", label: "News & Media", enabled: false },
