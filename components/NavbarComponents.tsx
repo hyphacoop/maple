@@ -8,7 +8,7 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
 
-export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link rounded px-3 py-1"
+export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1 btn-secondary"
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
