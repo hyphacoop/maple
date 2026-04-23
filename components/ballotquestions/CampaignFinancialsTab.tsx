@@ -24,8 +24,8 @@ export const CampaignFinancialsTab = ({
           <QuestionTooltip text="Committee receipts and expenditures are filed with the Office of Campaign and Political Finance." />
         </h2>
         <p className="text-body-secondary small mb-0">
-          Committee receipts and expenditures from the 2024 ballot question
-          filings.{" "}
+          Committee receipts and expenditures from the{" "}
+          {ballotQuestion.electionYear} ballot question filings.{" "}
           <a
             href="https://www.ocpf.us/Reports/ballotquestionreports"
             target="_blank"
