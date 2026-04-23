@@ -99,13 +99,13 @@ export const OverviewTab = ({
           <div className="d-grid gap-3">
             {ballotQuestion.voteEffectYes && (
               <Callout
-                label="Voting YES means"
+                label="Voting YES"
                 value={ballotQuestion.voteEffectYes}
               />
             )}
             {ballotQuestion.voteEffectNo && (
               <Callout
-                label="Voting NO means"
+                label="Voting NO"
                 value={ballotQuestion.voteEffectNo}
               />
             )}

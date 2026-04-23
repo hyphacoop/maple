@@ -27,8 +27,8 @@ export const SynthesisTab = ({
             <QuestionTooltip text="As required by law, the statements describing the effect of a “yes” or “no” vote are written jointly by the State Attorney General and the Secretary of the Commonwealth." />
           </div>
           <div className="d-grid gap-3">
-            {yes && <Callout label="Voting YES means" value={yes} />}
-            {no && <Callout label="Voting NO means" value={no} />}
+            {yes && <Callout label="Voting YES" value={yes} />}
+            {no && <Callout label="Voting NO" value={no} />}
           </div>
         </SectionCard>
       )}
