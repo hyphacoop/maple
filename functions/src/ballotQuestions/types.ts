@@ -48,6 +48,8 @@ export const BallotQuestion = withDefaults(
     fiscalConsequences: Union(String, Null),
     inFavor: Union(String, Null),
     against: Union(String, Null),
+    supportCommittee: Union(Array(String), Null),
+    opposeCommittee: Union(Array(String), Null),
     campaignFinancials: Union(
       Record({
         support: Array(CampaignFinanceEntry),
@@ -72,6 +74,8 @@ export const BallotQuestion = withDefaults(
     fiscalConsequences: null,
     inFavor: null,
     against: null,
+    supportCommittee: null,
+    opposeCommittee: null,
     campaignFinancials: null,
     pdfUrl: null,
     testimonyCount: 0,
