@@ -23,17 +23,24 @@ export const CampaignFinancialsTab = ({
           Campaign Financials
           <QuestionTooltip text="Committee receipts and expenditures are filed with the Office of Campaign and Political Finance." />
         </h2>
-        <p className="text-body-secondary small mb-0">
+        <p className="text-body-secondary small mb-2">
           Committee receipts and expenditures from the{" "}
-          {ballotQuestion.electionYear} ballot question filings.{" "}
-          <a
-            href="https://www.ocpf.us/Reports/ballotquestionreports"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Reports for all ballot questions available here
-          </a>
+          {ballotQuestion.electionYear} ballot question filings.
         </p>
+        <a
+          href="https://www.ocpf.us/Reports/ballotquestionreports"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small fw-semibold text-decoration-none"
+          style={{
+            borderColor: "var(--maple-border-accent)",
+            backgroundColor: "var(--maple-surface-base)",
+            color: "var(--maple-brand-primary)"
+          }}
+        >
+          <span>Reports for all ballot questions</span>
+          <span aria-hidden="true">↗</span>
+        </a>
       </SectionCard>
 
       {!ballotQuestion.campaignFinancials && (
