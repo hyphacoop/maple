@@ -15,8 +15,8 @@ voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: null
-opposeCommittee: null
+supportCommittee: "Coalition for a Healthy Massachusetts"
+opposeCommittee: "Massachusetts Cannabis Business Association"
 campaignFinancials: null
 fullSummary: |-
   The proposed law would change the type and amount of marijuana that may legally be

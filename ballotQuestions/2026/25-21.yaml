@@ -15,8 +15,8 @@ voteEffectNo: null
 fiscalConsequences: null
 inFavor: null
 against: null
-supportCommittee: null
-opposeCommittee: null
+supportCommittee: "Keep Massachusetts Home"
+opposeCommittee: "Housing for Massachusetts"
 campaignFinancials: null
 fullSummary: |-
   This proposed law would limit the annual rent increase for residential units in
