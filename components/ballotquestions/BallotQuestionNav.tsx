@@ -82,7 +82,7 @@ export const BallotQuestionNav = ({
 
   return (
     <div className="maple-surface rounded-4 p-3 p-lg-4">
-      <div className="mb-3 mb-lg-4">
+      <div className="d-none d-lg-block mb-4">
         <div className="maple-eyebrow mb-1">Explore</div>
         <p className="mb-0 small text-body-secondary">
           Move between the question overview and public perspectives.
@@ -91,13 +91,13 @@ export const BallotQuestionNav = ({
 
       <div
         role="tablist"
-        className="d-flex flex-row flex-lg-column gap-2"
+        className="d-flex flex-row flex-lg-column gap-2 overflow-x-auto overflow-lg-visible pb-1 pb-lg-0"
         aria-label="Ballot question sections"
       >
         {visibleItems.map((item, itemIndex) => {
           const isActive = activeTab === item.id
           return (
-            <div key={item.id} className="flex-fill">
+            <div key={item.id} className="flex-shrink-0 flex-lg-fill">
               <BallotQuestionTabButton
                 ref={element => {
                   tabRefs.current[itemIndex] = element

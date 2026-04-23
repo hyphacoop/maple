@@ -219,7 +219,7 @@ export const BallotQuestionDetails = ({
       <BallotQuestionHeader ballotQuestion={ballotQuestion} bill={bill} />
       <Container fluid="xl" className="my-4 pb-5">
         <Row className="g-4 align-items-start">
-          <Col lg={3} md={4} className="mb-4">
+          <Col lg={3} className="mb-4 mb-lg-0">
             <BallotQuestionNav
               activeTab={activeTab}
               onTabChange={setActiveTab}
@@ -228,7 +228,7 @@ export const BallotQuestionDetails = ({
               showForAndAgainst={showForAndAgainst}
             />
           </Col>
-          <Col lg={9} md={8}>
+          <Col lg={9}>
             <div
               role="tabpanel"
               id={getBallotQuestionPanelId(activeTab)}
