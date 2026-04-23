@@ -3,7 +3,6 @@ import { BallotQuestion } from "../db"
 import { QuestionTooltip } from "../tooltip"
 
 type CampaignFinanceEntry = {
-  committee: string
   cashRaised: number
   spent: number
   inKind: number
@@ -47,10 +46,15 @@ export const CampaignFinancialsTab = ({
 
       {support.length > 0 && (
         <SectionCard>
-          <div className="maple-eyebrow mb-3">Support</div>
+          <div className="maple-eyebrow mb-1">Support</div>
+          {ballotQuestion.supportCommittee && (
+            <div className="fw-semibold text-dark mb-3">
+              {ballotQuestion.supportCommittee}
+            </div>
+          )}
           <div className="d-grid gap-3">
-            {support.map(entry => (
-              <FinanceCard key={entry.committee} entry={entry} />
+            {support.map((entry, i) => (
+              <FinanceCard key={i} entry={entry} />
             ))}
           </div>
         </SectionCard>
@@ -58,10 +62,15 @@ export const CampaignFinancialsTab = ({
 
       {oppose.length > 0 && (
         <SectionCard>
-          <div className="maple-eyebrow mb-3">Oppose</div>
+          <div className="maple-eyebrow mb-1">Oppose</div>
+          {ballotQuestion.opposeCommittee && (
+            <div className="fw-semibold text-dark mb-3">
+              {ballotQuestion.opposeCommittee}
+            </div>
+          )}
           <div className="d-grid gap-3">
-            {oppose.map(entry => (
-              <FinanceCard key={entry.committee} entry={entry} />
+            {oppose.map((entry, i) => (
+              <FinanceCard key={i} entry={entry} />
             ))}
           </div>
         </SectionCard>
@@ -76,7 +85,6 @@ const SectionCard = ({ children }: { children: ReactNode }) => (
 
 const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
   <div className="maple-muted-surface rounded-4 p-3 p-lg-4">
-    <div className="fw-semibold text-dark mb-3">{entry.committee}</div>
     <div className="d-flex flex-column flex-md-row gap-3 align-items-md-center">
       <div className="flex-shrink-0">
         <Metric

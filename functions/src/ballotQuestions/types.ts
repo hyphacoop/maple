@@ -11,7 +11,6 @@ import {
 import { withDefaults } from "../common"
 
 const CampaignFinanceEntry = Record({
-  committee: String,
   cashRaised: Number,
   spent: Number,
   inKind: Number
@@ -48,8 +47,8 @@ export const BallotQuestion = withDefaults(
     fiscalConsequences: Union(String, Null),
     inFavor: Union(String, Null),
     against: Union(String, Null),
-    supportCommittee: Union(Array(String), Null),
-    opposeCommittee: Union(Array(String), Null),
+    supportCommittee: Union(String, Null),
+    opposeCommittee: Union(String, Null),
     campaignFinancials: Union(
       Record({
         support: Array(CampaignFinanceEntry),

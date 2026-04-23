@@ -68,19 +68,13 @@ const ArgumentCard = ({
   statement
 }: {
   title: string
-  committee: string[] | null
+  committee: string | null
   statement: string | null
 }) => (
   <SectionCard>
     <h3 className="h5 mb-3 text-dark">{title}</h3>
-    {committee && committee.length > 0 ? (
-      <div className="mb-3">
-        {committee.map(name => (
-          <div key={name} className="maple-eyebrow small mb-2">
-            {name}
-          </div>
-        ))}
-      </div>
+    {committee ? (
+      <div className="maple-eyebrow small mb-3">{committee}</div>
     ) : (
       <p className="text-body-secondary small mb-3">
         Committee information is not yet available.
