@@ -37,6 +37,14 @@ export const CampaignFinancialsTab = ({
         </p>
       </SectionCard>
 
+      {!ballotQuestion.campaignFinancials && (
+        <SectionCard>
+          <p className="text-body-secondary small mb-0">
+            Campaign finance information is not yet available.
+          </p>
+        </SectionCard>
+      )}
+
       {support.length > 0 && (
         <SectionCard>
           <div className="maple-eyebrow mb-3">Support</div>
@@ -69,27 +77,36 @@ const SectionCard = ({ children }: { children: ReactNode }) => (
 const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
   <div className="maple-muted-surface rounded-4 p-3 p-lg-4">
     <div className="fw-semibold text-dark mb-3">{entry.committee}</div>
-    <div className="row g-3">
-      <Metric
-        label="Cash raised"
-        value={formatMoney(entry.cashRaised)}
-        tooltip="Monetary contributions made directly to the campaign"
-      />
-      <Metric
-        label="Cash spent"
-        value={formatMoney(entry.spent)}
-        tooltip="Cash spent by the campaign to support its objectives"
-      />
-      <Metric
-        label="Non-cash donations raised"
-        value={formatMoney(entry.inKind)}
-        tooltip="Cash value of contributions to the campaign made in goods, services, or commodities"
-      />
-      <Metric
-        label="Total cash value of campaign"
-        value={formatMoney(entry.cashRaised + entry.inKind)}
-        tooltip="Value of cash and in-kind expenditures made by the campaign"
-      />
+    <div className="d-flex flex-column flex-md-row gap-3 align-items-md-center">
+      <div className="flex-shrink-0">
+        <Metric
+          label="Receipts"
+          value={formatMoney(entry.cashRaised)}
+          tooltip="Contributions made in cash to the campaign"
+        />
+      </div>
+      <div className="finance-spending-group rounded-3 p-3 flex-grow-1">
+        <div className="row g-3">
+          <Metric
+            label="Expenditures"
+            value={formatMoney(entry.spent)}
+            tooltip="Cash spent by the campaign to support its objectives"
+            colClass="col-12 col-sm-4"
+          />
+          <Metric
+            label="Inkinds"
+            value={formatMoney(entry.inKind)}
+            tooltip="Cash value of contributions to the campaign made in goods, services, or commodities"
+            colClass="col-12 col-sm-4"
+          />
+          <Metric
+            label="Total"
+            value={formatMoney(entry.spent + entry.inKind)}
+            tooltip="Value of cash and in-kind expenditures made by the campaign"
+            colClass="col-12 col-sm-4"
+          />
+        </div>
+      </div>
     </div>
   </div>
 )
@@ -97,13 +114,15 @@ const FinanceCard = ({ entry }: { entry: CampaignFinanceEntry }) => (
 const Metric = ({
   label,
   value,
-  tooltip
+  tooltip,
+  colClass = "col-12 col-md-3"
 }: {
   label: string
   value: string
   tooltip?: string
+  colClass?: string
 }) => (
-  <div className="col-12 col-md-3">
+  <div className={colClass}>
     <div className="maple-eyebrow mb-1 d-flex align-items-center gap-1">
       {label}
       {tooltip && <QuestionTooltip text={tooltip} />}

@@ -183,10 +183,8 @@ export const BallotQuestionDetails = ({
     neutralCount: testimonySummary.neutralCount + countDelta.neutralCount,
     opposeCount: testimonySummary.opposeCount + countDelta.opposeCount
   }
-  const showCampaignFinancials = Boolean(ballotQuestion.campaignFinancials)
-  const showForAndAgainst = Boolean(
-    ballotQuestion.inFavor || ballotQuestion.against
-  )
+  const showCampaignFinancials = true
+  const showForAndAgainst = true
 
   const renderContent = () => {
     switch (activeTab) {

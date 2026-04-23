@@ -35,53 +35,59 @@ export const ForAndAgainstTab = ({
         </div>
       </SectionCard>
 
-      {ballotQuestion.inFavor && (
+      {(ballotQuestion.inFavor || ballotQuestion.supportCommittee) && (
         <SectionCard>
           <h3 className="h5 mb-3 text-dark">Argument in favor</h3>
-          {ballotQuestion.campaignFinancials?.support &&
-            ballotQuestion.campaignFinancials.support.length > 0 && (
+          {ballotQuestion.supportCommittee &&
+            ballotQuestion.supportCommittee.length > 0 && (
               <div className="mb-3">
-                {ballotQuestion.campaignFinancials.support.map(entry => (
-                  <div
-                    key={entry.committee}
-                    className="maple-eyebrow small mb-2"
-                  >
-                    {entry.committee}
+                {ballotQuestion.supportCommittee.map(name => (
+                  <div key={name} className="maple-eyebrow small mb-2">
+                    {name}
                   </div>
                 ))}
               </div>
             )}
-          <div
-            className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
-            style={{ whiteSpace: "pre-wrap" }}
-          >
-            {ballotQuestion.inFavor}
-          </div>
+          {ballotQuestion.inFavor ? (
+            <div
+              className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
+              style={{ whiteSpace: "pre-wrap" }}
+            >
+              {ballotQuestion.inFavor}
+            </div>
+          ) : (
+            <p className="text-body-secondary small mb-0">
+              No official statement has been made.
+            </p>
+          )}
         </SectionCard>
       )}
 
-      {ballotQuestion.against && (
+      {(ballotQuestion.against || ballotQuestion.opposeCommittee) && (
         <SectionCard>
           <h3 className="h5 mb-3 text-dark">Argument against</h3>
-          {ballotQuestion.campaignFinancials?.oppose &&
-            ballotQuestion.campaignFinancials.oppose.length > 0 && (
+          {ballotQuestion.opposeCommittee &&
+            ballotQuestion.opposeCommittee.length > 0 && (
               <div className="mb-3">
-                {ballotQuestion.campaignFinancials.oppose.map(entry => (
-                  <div
-                    key={entry.committee}
-                    className="maple-eyebrow small mb-2"
-                  >
-                    {entry.committee}
+                {ballotQuestion.opposeCommittee.map(name => (
+                  <div key={name} className="maple-eyebrow small mb-2">
+                    {name}
                   </div>
                 ))}
               </div>
             )}
-          <div
-            className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
-            style={{ whiteSpace: "pre-wrap" }}
-          >
-            {ballotQuestion.against}
-          </div>
+          {ballotQuestion.against ? (
+            <div
+              className="maple-muted-surface rounded-4 px-4 py-4 lh-lg"
+              style={{ whiteSpace: "pre-wrap" }}
+            >
+              {ballotQuestion.against}
+            </div>
+          ) : (
+            <p className="text-body-secondary small mb-0">
+              No official statement has been made.
+            </p>
+          )}
         </SectionCard>
       )}
     </div>

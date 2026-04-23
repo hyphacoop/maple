@@ -449,3 +449,7 @@
   border-bottom: 4px solid;
   border-color: var(--maple-brand-primary-strong);
 }
+
+.finance-spending-group {
+  background-color: var(--maple-surface-page, #f4f5f7);
+}
