@@ -104,10 +104,7 @@ export const OverviewTab = ({
               />
             )}
             {ballotQuestion.voteEffectNo && (
-              <Callout
-                label="Voting NO"
-                value={ballotQuestion.voteEffectNo}
-              />
+              <Callout label="Voting NO" value={ballotQuestion.voteEffectNo} />
             )}
           </div>
         </SectionCard>
