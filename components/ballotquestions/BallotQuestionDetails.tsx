@@ -219,7 +219,7 @@ export const BallotQuestionDetails = ({
       <BallotQuestionHeader ballotQuestion={ballotQuestion} bill={bill} />
       <Container fluid="xl" className="my-4 pb-5">
         <Row className="g-4 align-items-start">
-          <Col lg={3} className="mb-4 mb-lg-0">
+          <Col lg={3}>
             <BallotQuestionNav
               activeTab={activeTab}
               onTabChange={setActiveTab}
