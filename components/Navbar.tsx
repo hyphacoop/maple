@@ -31,7 +31,7 @@ import {
 } from "./NavbarComponents"
 
 const MobileCollapse = styled(Navbar.Collapse)`
-  background-color: var(--maple-brand-primary);
+  background-color: var(--maple-surface-base);
 `
 
 export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
@@ -124,9 +124,9 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
   return (
     <Navbar
-      className={`w-100 ${isExpanded ? "pb-0" : ""}`}
-      style={{ backgroundColor: "var(--maple-brand-primary)" }}
-      data-bs-theme="dark"
+      className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
+      style={{ backgroundColor: "var(--maple-surface-base)" }}
+      data-bs-theme="light"
       expand="lg"
       expanded={isExpanded}
     >
@@ -144,14 +144,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           className="mobile-nav-trigger"
         >
           {isExpanded && whichMenu == "site" ? (
-            <Image
-              src="/Union.svg"
-              alt=""
-              aria-hidden="true"
-              width="35"
-              height="35"
-              className="ms-2"
-            />
+            <span className="mobile-nav-close-icon ms-2" aria-hidden="true" />
           ) : (
             <span className="navbar-toggler-icon" aria-hidden="true" />
           )}
@@ -176,16 +169,10 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           >
             <span
               className="p-0 d-inline-flex"
-              style={{ color: "var(--maple-text-inverse)" }}
+              style={{ color: "var(--maple-brand-primary-strong)" }}
             >
               {isExpanded && whichMenu == "profile" ? (
-                <Image
-                  src="/Union.svg"
-                  alt=""
-                  aria-hidden="true"
-                  width="35"
-                  height="35"
-                />
+                <span className="mobile-nav-close-icon" aria-hidden="true" />
               ) : (
                 <Avatar />
               )}
@@ -215,8 +202,8 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Container
       fluid
-      className={`desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
-      style={{ backgroundColor: "var(--maple-brand-primary)" }}
+      className={`main-navbar desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
+      style={{ backgroundColor: "var(--maple-surface-base)" }}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
@@ -254,7 +241,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className={`${DESKTOP_NAV_ITEM_CLASS}`}>
+          <Dropdown.Toggle
+            variant="light"
+            className={`${DESKTOP_NAV_ITEM_CLASS}`}
+          >
             {t("about")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -270,7 +260,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
 
       <div className={`align-self-center`}>
         <Dropdown>
-          <Dropdown.Toggle className={`${DESKTOP_NAV_ITEM_CLASS}`}>
+          <Dropdown.Toggle
+            variant="light"
+            className={`${DESKTOP_NAV_ITEM_CLASS}`}
+          >
             {t("learn")}
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -284,9 +277,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <div className={`align-self-center`}>
           <Dropdown>
-            <Dropdown.Toggle
-              className={`desktop-navbar-dropdown btn-secondary`}
-            >
+            <Dropdown.Toggle variant="light" className={`desktop-navbar-dropdown`}>
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>

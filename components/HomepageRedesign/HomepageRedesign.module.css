@@ -1,0 +1,641 @@
+.page {
+  background: var(--maple-surface-base);
+  color: var(--maple-text-strong);
+}
+
+.sectionShell {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.hero,
+.didYouKnow,
+.features,
+.hearings {
+  padding: 2rem 0;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(23rem, 1.05fr) minmax(24rem, 1.15fr);
+  align-items: center;
+  gap: clamp(1.8rem, 4vw, 3.4rem);
+  min-height: 29rem;
+  padding-top: 0.5rem;
+}
+
+.heroVisual {
+  position: relative;
+  min-height: 24rem;
+}
+
+.heroMap {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: min(38rem, 100%);
+  height: 22rem;
+  background: radial-gradient(
+      circle at 67% 30%,
+      rgba(255, 255, 255, 0.95) 0 0.6rem,
+      transparent 0.7rem
+    ),
+    radial-gradient(
+      circle at 60% 45%,
+      rgba(255, 255, 255, 0.95) 0 0.4rem,
+      transparent 0.45rem
+    ),
+    radial-gradient(
+      circle at 78% 49%,
+      rgba(255, 255, 255, 0.95) 0 0.65rem,
+      transparent 0.7rem
+    ),
+    linear-gradient(135deg, rgba(44, 66, 157, 0.18), rgba(44, 66, 157, 0.28));
+  clip-path: polygon(
+    3% 40%,
+    11% 35%,
+    16% 20%,
+    22% 9%,
+    28% 7%,
+    32% 0%,
+    35% 3%,
+    31% 12%,
+    35% 23%,
+    45% 28%,
+    49% 22%,
+    56% 24%,
+    64% 38%,
+    72% 36%,
+    83% 44%,
+    91% 43%,
+    95% 53%,
+    90% 58%,
+    81% 56%,
+    76% 68%,
+    67% 64%,
+    58% 79%,
+    43% 75%,
+    31% 90%,
+    16% 82%,
+    8% 85%,
+    0% 74%,
+    0% 48%
+  );
+}
+
+.statehouse {
+  position: absolute;
+  left: 0.7rem;
+  bottom: 0;
+  width: min(30rem, 84%);
+  filter: none;
+}
+
+.heroContent {
+  max-width: 43rem;
+}
+
+.heroTitle {
+  color: var(--maple-brand-primary-strong);
+  font-size: clamp(2.55rem, 3.5vw, 3.85rem);
+  line-height: 1.08;
+  margin: 0 0 1.35rem;
+}
+
+.heroBody {
+  color: var(--maple-text-body);
+  font-size: 1.18rem;
+  line-height: 1.62;
+  margin: 0 0 1.9rem;
+  max-width: 42rem;
+}
+
+.heroActions {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.primaryAction,
+.secondaryAction,
+.hearingsActionDesktop,
+.hearingsActionMobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10.5rem;
+  min-height: 2.55rem;
+  padding: 0.55rem 1.3rem;
+  border-radius: 0.12rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background-color var(--maple-transition-fast),
+    color var(--maple-transition-fast),
+    border-color var(--maple-transition-fast);
+}
+
+.primaryAction {
+  background: var(--maple-brand-danger);
+  border: 1px solid var(--maple-brand-danger);
+  color: var(--maple-text-inverse);
+}
+
+.primaryAction:hover,
+.primaryAction:focus-visible {
+  background: var(--maple-brand-danger-strong);
+  border-color: var(--maple-brand-danger-strong);
+  color: var(--maple-text-inverse);
+}
+
+.secondaryAction,
+.hearingsActionDesktop,
+.hearingsActionMobile {
+  background: transparent;
+  border: 1px solid rgba(44, 66, 157, 0.35);
+  color: var(--maple-brand-primary-strong);
+}
+
+.secondaryAction:hover,
+.secondaryAction:focus-visible,
+.hearingsActionDesktop:hover,
+.hearingsActionDesktop:focus-visible,
+.hearingsActionMobile:hover,
+.hearingsActionMobile:focus-visible {
+  background: rgba(44, 66, 157, 0.08);
+  color: var(--maple-brand-primary-strong);
+}
+
+.sectionTitle {
+  color: var(--maple-brand-primary-strong);
+  font-size: clamp(2.3rem, 3vw, 3.15rem);
+  line-height: 1.15;
+  margin: 0 0 2.25rem;
+}
+
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5rem;
+}
+
+.factCard {
+  text-align: center;
+  padding: 0.75rem 0.75rem 0;
+}
+
+.factIcon {
+  width: 5.1rem;
+  height: 5.1rem;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.factText {
+  max-width: 18rem;
+  margin: 0 auto;
+  color: var(--maple-text-body);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.explainer {
+  background: var(--maple-brand-primary);
+  color: var(--maple-text-inverse);
+}
+
+.explainerInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 22rem);
+  align-items: center;
+  gap: clamp(2rem, 4vw, 3rem);
+  padding: 3rem 0;
+}
+
+.explainerCopy {
+  max-width: 35rem;
+}
+
+.explainerTitle {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 3vw, 2.65rem);
+  line-height: 1.15;
+}
+
+.explainerBody {
+  margin: 0 0 1.5rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 34rem;
+}
+
+.explainerVisual {
+  display: flex;
+  justify-content: center;
+}
+
+.appPreview,
+.featurePreview {
+  width: min(100%, 25rem);
+  border-radius: 0.25rem;
+}
+
+.featurePreview {
+  box-shadow: 0 0.7rem 1.5rem rgba(17, 25, 58, 0.18);
+}
+
+.features {
+  padding-top: 2.25rem;
+  padding-bottom: 2.5rem;
+}
+
+.featureLayout {
+  display: grid;
+  grid-template-columns: minmax(16rem, 30rem) minmax(0, 1fr);
+  gap: clamp(1.75rem, 3vw, 2.3rem);
+  align-items: start;
+}
+
+.featurePreviewWrap {
+  display: flex;
+  justify-content: center;
+}
+
+.featureList {
+  display: grid;
+  gap: 1.55rem;
+}
+
+.featureItem {
+  display: grid;
+  grid-template-columns: 4.3rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.featureIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.3rem;
+  height: 4.3rem;
+  border-radius: 50%;
+}
+
+.featureIcon {
+  width: 2.35rem;
+  height: 2.35rem;
+  object-fit: contain;
+}
+
+.featureBody {
+  margin: 0;
+  color: var(--maple-text-body);
+  font-size: 0.84rem;
+  line-height: 1.42;
+  max-width: 21rem;
+}
+
+.hearingsBand {
+  background: #dfe3f5;
+}
+
+.hearings {
+  padding-top: 2.1rem;
+  padding-bottom: 2.4rem;
+}
+
+.hearingsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.hearingsTitle {
+  color: var(--maple-brand-primary-strong);
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.hearingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem 2rem;
+}
+
+.hearingCard {
+  display: grid;
+  grid-template-columns: 5.55rem minmax(0, 1fr);
+  gap: 1.15rem;
+  padding: 0.55rem 0 0.8rem;
+  border-bottom: 1px solid rgba(44, 66, 157, 0.22);
+}
+
+.hearingDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 5.35rem;
+  border-radius: 0.45rem;
+  background: linear-gradient(
+    to bottom,
+    var(--maple-brand-primary) 0 48%,
+    #fff 48% 100%
+  );
+  color: var(--maple-text-inverse);
+  text-transform: uppercase;
+  box-shadow: 0 0.45rem 0.8rem rgba(17, 25, 58, 0.18);
+}
+
+.hearingMonth {
+  color: var(--maple-text-inverse);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.hearingDay {
+  color: var(--maple-text-strong);
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.1;
+  padding-top: 0.8rem;
+}
+
+.hearingBody {
+  min-width: 0;
+}
+
+.hearingMeta,
+.hearingTopic {
+  color: rgba(28, 44, 106, 0.7);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.hearingMeta {
+  position: relative;
+  margin-bottom: 0.55rem;
+  padding-left: 1.1rem;
+  font-weight: 600;
+}
+
+.hearingMeta::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.12rem;
+  width: 0.68rem;
+  height: 0.68rem;
+  border-radius: 50%;
+  background: var(--maple-brand-primary);
+}
+
+.hearingLink {
+  display: inline-block;
+  color: #1f1f1f;
+  font-weight: 400;
+  line-height: 1.5;
+  text-decoration: none;
+  margin-bottom: 0.7rem;
+  font-size: 0.92rem;
+}
+
+.hearingLink:hover,
+.hearingLink:focus-visible {
+  text-decoration: underline;
+}
+
+.hearingTopic {
+  margin: 0;
+  color: var(--maple-brand-primary-strong);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.hearingsEmpty {
+  margin: 0;
+  color: var(--maple-text-body);
+}
+
+.hearingsActionMobile {
+  display: none;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .explainerInner,
+  .featureLayout,
+  .hearingGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding-top: 1.5rem;
+  }
+
+  .heroContent,
+  .explainerCopy {
+    max-width: none;
+  }
+
+  .factGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .factCard {
+    padding-inline: 0;
+  }
+
+  .hearingsHeader {
+    align-items: start;
+  }
+}
+
+@media (max-width: 768px) {
+  .sectionShell {
+    width: calc(100% - 1rem);
+  }
+
+  .hero,
+  .didYouKnow,
+  .features,
+  .hearings {
+    padding: 1rem 0;
+  }
+
+  .hero {
+    gap: 0.9rem;
+    min-height: auto;
+    padding-top: 0.5rem;
+  }
+
+  .heroVisual {
+    min-height: 14.6rem;
+  }
+
+  .heroMap {
+    height: 12.8rem;
+    width: 100%;
+  }
+
+  .statehouse {
+    width: min(16rem, 84%);
+    left: 0.25rem;
+  }
+
+  .heroTitle {
+    font-size: 1.35rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .heroBody,
+  .factText {
+    font-size: 0.68rem;
+  }
+
+  .heroActions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
+    min-height: 1.55rem;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.58rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.18rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .factGrid {
+    gap: 0.45rem;
+  }
+
+  .factIcon {
+    width: 2.7rem;
+    height: 2.7rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .explainerInner {
+    padding: 1.4rem 0;
+    gap: 0.8rem;
+  }
+
+  .explainerTitle,
+  .hearingsTitle {
+    font-size: 1.1rem;
+  }
+
+  .explainerBody {
+    font-size: 0.66rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .featureItem {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    justify-items: center;
+    text-align: left;
+  }
+
+  .featureIconWrap {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .featureIcon {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .appPreview,
+  .featurePreview {
+    width: min(100%, 14.25rem);
+  }
+
+  .featurePreviewWrap {
+    justify-content: flex-start;
+  }
+
+  .featureList {
+    gap: 1.45rem;
+  }
+
+  .featureBody {
+    max-width: none;
+    font-size: 0.72rem;
+    line-height: 1.38;
+  }
+
+  .hearingsHeader {
+    margin-bottom: 0.7rem;
+  }
+
+  .hearingsActionDesktop {
+    display: none;
+  }
+
+  .hearingsActionMobile {
+    display: inline-flex;
+    width: 100%;
+    margin-top: 0.9rem;
+  }
+
+  .hearingGrid {
+    gap: 0.45rem;
+  }
+
+  .hearingCard {
+    grid-template-columns: 2.45rem minmax(0, 1fr);
+    gap: 0.55rem;
+    padding: 0.55rem 0;
+  }
+
+  .hearingDate {
+    min-height: 2.6rem;
+    border-radius: 0.2rem;
+  }
+
+  .hearingMonth {
+    font-size: 0.48rem;
+  }
+
+  .hearingDay {
+    font-size: 0.72rem;
+    padding-top: 0.8rem;
+  }
+
+  .hearingMeta {
+    margin-bottom: 0.2rem;
+    padding-left: 0.75rem;
+    font-size: 0.48rem;
+  }
+
+  .hearingMeta::before {
+    width: 0.38rem;
+    height: 0.38rem;
+    top: 0.1rem;
+  }
+
+  .hearingLink {
+    font-size: 0.56rem;
+    margin-bottom: 0.24rem;
+  }
+
+  .hearingTopic {
+    font-size: 0.5rem;
+  }
+}
