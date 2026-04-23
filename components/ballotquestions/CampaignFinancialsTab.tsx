@@ -31,7 +31,7 @@ export const CampaignFinancialsTab = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            View source reports
+            Reports for all ballot questions available here
           </a>
         </p>
       </SectionCard>
