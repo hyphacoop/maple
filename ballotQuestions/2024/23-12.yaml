@@ -50,13 +50,11 @@ against: |-
   www.ProtectTips.org
 campaignFinancials:
   support:
-    - committee: "One Fair Wage Plus Tips MA Committee 95513"
-      cashRaised: 889526.25
+    - cashRaised: 889526.25
       spent: 889526.25
       inKind: 1036954.37
   oppose:
-    - committee: "Committee to Protect Tips 95521"
-      cashRaised: 2518234.24
+    - cashRaised: 2518234.24
       spent: 2518234.24
       inKind: 658123.44
 fullSummary: >-

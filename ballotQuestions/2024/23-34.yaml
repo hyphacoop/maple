@@ -22,8 +22,7 @@ against: |-
   A NO vote would make no change in the law relative to the State Auditor’s authority.
 campaignFinancials:
   support:
-    - committee: "Committee for Transparent Democracy 95510"
-      cashRaised: 419213.7
+    - cashRaised: 419213.7
       spent: 419213.7
       inKind: 42248.44
   oppose: []

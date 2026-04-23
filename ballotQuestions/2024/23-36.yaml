@@ -47,13 +47,11 @@ against: |-
   better for our kids. Vote No on Question 2.
 campaignFinancials:
   support:
-    - committee: "Committee for High Standards Not High Stakes 95507"
-      cashRaised: 950000
+    - cashRaised: 950000
       spent: 950000
       inKind: 15604360.49
   oppose:
-    - committee: "Protect Our Kids' Future: Vote No on 2 95518"
-      cashRaised: 5318307.02
+    - cashRaised: 5318307.02
       spent: 5318307.02
       inKind: 93763.81
 fullSummary: >-

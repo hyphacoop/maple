@@ -38,8 +38,7 @@ against: |-
   Question 3.
 campaignFinancials:
   support:
-    - committee: "United for Justice 95509"
-      cashRaised: 7287547.9
+    - cashRaised: 7287547.9
       spent: 7285148.82
       inKind: 583831.27
   oppose: []
