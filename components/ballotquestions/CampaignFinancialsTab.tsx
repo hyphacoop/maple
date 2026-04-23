@@ -31,7 +31,7 @@ export const CampaignFinancialsTab = ({
           href="https://www.ocpf.us/Reports/ballotquestionreports"
           target="_blank"
           rel="noopener noreferrer"
-          className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small fw-semibold text-decoration-none"
+          className="maple-pill-link d-inline-flex align-items-center gap-2 rounded-pill border px-3 py-2 small fw-semibold text-decoration-none mt-3"
           style={{
             borderColor: "var(--maple-border-accent)",
             backgroundColor: "var(--maple-surface-base)",
