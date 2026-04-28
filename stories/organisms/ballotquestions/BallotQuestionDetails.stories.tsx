@@ -95,9 +95,9 @@ const sampleBallotQuestion: BallotQuestion = {
   fiscalConsequences:
     "The measure may increase state administrative costs related to oversight and reporting.",
   inFavor:
-    "Supporters argue the proposal would provide workers with flexible benefits.",
+    "**Supporters argue** the proposal would provide workers with flexible benefits while preserving independent schedules.\n\nThey say the measure would create a practical path to benefits for workers who currently fall outside traditional employment systems. Learn more from the [supporting committee](https://example.com/support).",
   against:
-    "Opponents argue the proposal would create a separate standard for app-based workers.",
+    "**Opponents argue** the proposal would create a separate standard for app-based workers.\n\nThey say workers should receive the same protections as other employees instead of a new category written for one industry.",
   supportCommittee: "Committee for Portable Benefits",
   opposeCommittee: "Coalition for Worker Classification Standards",
   campaignFinancials: {

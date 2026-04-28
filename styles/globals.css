@@ -166,6 +166,25 @@
   outline-offset: 3px;
 }
 
+.ballot-question-markdown p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  overflow-wrap: break-word;
+}
+
+.ballot-question-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.ballot-question-markdown a {
+  color: var(--maple-brand-primary);
+  font-weight: 600;
+}
+
+.ballot-question-markdown strong {
+  color: var(--maple-text-strong);
+}
+
 @media (min-width: 766px) and (max-width: 1020px) {
   .desktop-navbar {
     gap: var(--maple-space-xs) !important;
