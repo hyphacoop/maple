@@ -185,6 +185,52 @@
   color: var(--maple-text-strong);
 }
 
+.ballot-question-alert {
+  max-width: 42rem;
+  color: #3d2600;
+  background: #ffe08a;
+  border: 1px solid #f3b72b;
+  box-shadow: 0 0.5rem 1.5rem rgba(116, 77, 0, 0.12);
+}
+
+.ballot-question-alert-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.65rem;
+  height: 1.65rem;
+  color: #3d2600;
+  background: #ffbf2f;
+  border-radius: var(--maple-radius-pill);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ballot-question-alert-content {
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.ballot-question-alert-content p {
+  margin-top: 0;
+  margin-bottom: 0.65rem;
+  overflow-wrap: break-word;
+}
+
+.ballot-question-alert-content p:last-child {
+  margin-bottom: 0;
+}
+
+.ballot-question-alert-content a {
+  color: #3d2600;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
 @media (min-width: 766px) and (max-width: 1020px) {
   .desktop-navbar {
     gap: var(--maple-space-xs) !important;
