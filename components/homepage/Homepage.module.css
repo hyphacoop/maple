@@ -12,12 +12,13 @@
 .didYouKnow,
 .features,
 .hearings {
-  padding: 3.5rem 0;
+  padding: 5rem 0;
 }
 
 .heroSection {
   position: relative;
   width: 100%;
+  padding-top: 5rem;
   background: var(--maple-surface-base);
   overflow: hidden;
 }
@@ -28,8 +29,8 @@
   align-items: center;
   gap: clamp(1.8rem, 4vw, 3.4rem);
   min-height: 38rem;
-  padding-top: 2rem;
-  padding-bottom: 0;
+  padding-top: 0rem;
+  padding-bottom: 1rem;
 }
 
 .skylineBackground {
@@ -61,7 +62,7 @@
   position: relative;
   max-width: 43rem;
   z-index: 1;
-  padding-bottom: 2rem;
+  padding-bottom: 8rem;
 }
 
 .statehouse {
@@ -74,14 +75,14 @@
 
 .heroTitle {
   color: var(--maple-brand-primary-strong);
-  font-size: clamp(2.55rem, 3.5vw, 3.85rem);
+  font-size: clamp(2.5rem, 3.5vw, 3.8rem);
   line-height: 1.08;
   margin: 0 0 1.35rem;
 }
 
 .heroBody {
   color: var(--maple-text-body);
-  font-size: 1.18rem;
+  font-size: 1.125rem;
   line-height: 1.62;
   margin: 0 0 1.9rem;
   max-width: 42rem;
@@ -104,7 +105,7 @@
   min-height: 2.55rem;
   padding: 0.55rem 1.3rem;
   border-radius: 0.12rem;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   text-decoration: none;
@@ -146,7 +147,7 @@
 
 .sectionTitle {
   color: var(--maple-brand-primary-strong);
-  font-size: clamp(2.3rem, 3vw, 3.15rem);
+  font-size: clamp(2rem, 3vw, 2.8rem);
   line-height: 1.15;
   margin: 0 0 2.25rem;
 }
@@ -173,14 +174,14 @@
   max-width: 18rem;
   margin: 0 auto;
   color: var(--maple-text-body);
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   line-height: 1.4;
 }
 
 .explainer {
   background: var(--maple-brand-primary);
   color: var(--maple-text-inverse);
-  padding: 3.5rem 0;
+  padding: 5rem 0;
 }
 
 .explainerInner {
@@ -197,7 +198,7 @@
 
 .explainerTitle {
   margin: 0 0 1rem;
-  font-size: clamp(2.3rem, 3vw, 3.15rem);
+  font-size: clamp(2rem, 3vw, 2.8rem);
   line-height: 1.15;
 }
 
@@ -282,8 +283,8 @@
 }
 
 .hearings {
-  padding-top: 2.1rem;
-  padding-bottom: 2.4rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .hearingsHeader {
@@ -296,7 +297,7 @@
 
 .hearingsTitle {
   color: var(--maple-brand-primary-strong);
-  font-size: clamp(2rem, 3vw, 2.7rem);
+  font-size: clamp(2rem, 3vw, 2.8rem);
   line-height: 1.1;
   margin: 0;
 }
@@ -334,14 +335,14 @@
 
 .hearingMonth {
   color: var(--maple-text-inverse);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.03em;
 }
 
 .hearingDay {
   color: var(--maple-text-strong);
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   font-weight: 500;
   line-height: 1.1;
   padding-top: 0.8rem;
@@ -354,7 +355,7 @@
 .hearingMeta,
 .hearingTopic {
   color: rgba(28, 44, 106, 0.7);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   line-height: 1.35;
 }
 
@@ -383,7 +384,7 @@
   line-height: 1.5;
   text-decoration: none;
   margin-bottom: 0.7rem;
-  font-size: 0.92rem;
+  font-size: 0.875rem;
 }
 
 .hearingLink:hover,
@@ -395,7 +396,7 @@
   margin: 0;
   color: var(--maple-brand-primary-strong);
   font-weight: 600;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
 }
 
 .hearingsEmpty {
@@ -421,6 +422,7 @@
   }
 
   .heroSection {
+    padding-top: 0;
     padding-bottom: 2rem;
   }
 
@@ -475,7 +477,7 @@
   }
 
   .heroBody {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     line-height: 1.5;
     margin-bottom: 2.5rem;
   }
@@ -494,7 +496,7 @@
     width: 100%;
     min-height: 3.5rem;
     padding: 0.75rem 1.5rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   .sectionTitle {
@@ -504,7 +506,7 @@
   }
 
   .factText {
-    font-size: 0.95rem;
+    font-size: 0.875rem;
     line-height: 1.5;
   }
 
@@ -526,15 +528,15 @@
   }
 
   .explainerTitle {
-    font-size: 1.55rem;
+    font-size: 1.5rem;
   }
 
   .hearingsTitle {
-    font-size: 1.55rem;
+    font-size: 1.5rem;
   }
 
   .explainerBody {
-    font-size: 0.95rem;
+    font-size: 1rem;
     margin-bottom: 1rem;
   }
 
@@ -576,7 +578,7 @@
 
   .featureBody {
     max-width: none;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
     line-height: 1.5;
   }
 
@@ -612,7 +614,7 @@
   }
 
   .hearingMonth {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 
   .hearingDay {
@@ -623,7 +625,7 @@
   .hearingMeta {
     margin-bottom: 0.2rem;
     padding-left: 0.75rem;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 
   .hearingMeta::before {
@@ -633,11 +635,18 @@
   }
 
   .hearingLink {
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     margin-bottom: 0.24rem;
   }
 
   .hearingTopic {
     font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 688px) and (max-width: 900px) {
+  .heroBody {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
