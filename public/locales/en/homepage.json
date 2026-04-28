@@ -38,20 +38,21 @@
   },
   "explainer": {
     "title": "What does MAPLE do?",
-    "body": "MAPLE allows you to be able to research, read and also provide testimony that will be published on this site for other users as well as your legislators and other responsible legislative figures.",
+    "body": "MAPLE makes it easy to engage with the Massachusetts Legislature. Research bills, read diverse perspectives, and submit your own testimony to ensure your voice is heard.",
     "action": "Get Started"
   },
   "features": {
     "title": "Features",
-    "research": "MAPLE allows you to be able to research, read and also provide testimony that will be published on this site for other users as well as your legislators and other responsible legislative figures",
-    "publish": "MAPLE allows you to be able to research, read and also provide testimony that will be published on this site for other users as well as your legislators and other responsible legislative figures",
-    "share": "MAPLE allows you to be able to research, read and also provide testimony that will be published on this site for other users as well as your legislators and other responsible legislative figures"
+    "research": "Explore bills and policy changes on topics that matter to you. Search by keyword, committee, or legislator.",
+    "publish": "Share your perspective directly with the State House. Submit written testimony to make your voice part of the legislative process.",
+    "share": "Read testimony from organizations and constituents across the Commonwealth to get informed on the issues of the day."
   },
   "hearings": {
     "title": "Upcoming Hearings",
     "action": "Browse Policies",
     "loading": "Loading upcoming hearings...",
     "topic": "Massachusetts Legislature",
-    "appPreviewAlt": "MAPLE platform preview"
+    "appPreviewAlt": "MAPLE platform preview",
+    "logoAlt": "MAPLE Massachusetts Platform for Legislative Engagement logo"
   }
 }

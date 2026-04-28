@@ -8,8 +8,7 @@ import { useProfile } from "./db"
 import { NavLink } from "./Navlink"
 import { Wrap } from "./links"
 
-export const DESKTOP_NAV_ITEM_CLASS =
-  "desktop-navbar-link px-3 py-1"
+export const DESKTOP_NAV_ITEM_CLASS = "desktop-navbar-link px-3 py-1"
 
 const NavbarDropdownLink: React.FC<
   React.PropsWithChildren<{
@@ -278,7 +277,7 @@ export const NavbarLinkLogo: React.FC<
     >
       <NavLink className={isMobile ? "" : "py-0 px-2"} href="/" {...other}>
         <Image
-          src="/maple_logo.png"
+          src="/maple-logo-white-no-tagline.svg"
           alt={t("navigation.logo")}
           className={isMobile ? "w-100" : ""}
           width={isMobile ? "60" : "80"}

@@ -3,7 +3,7 @@
 }
 
 .main-navbar .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(28,44,106, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 .navbar-text.navbar-section-header {
@@ -17,15 +17,14 @@
    variable, not the custom property. */
 
 .navLink-primary {
-  color: var(--maple-brand-primary-strong) !important;
+  color: var(--maple-text-inverse) !important;
   font-weight: bold;
 }
 
 .navLink-primary .dropdown-toggle {
-  color: var(--maple-brand-primary-strong) !important;
+  color: var(--maple-text-inverse) !important;
   border-color: transparent !important;
-  background: var(--maple-surface-base) !important;
-  background-color: var(--maple-surface-base) !important;
+  background: transparent !important;
   font-weight: bold;
 }
 
@@ -34,17 +33,16 @@
 .navLink-primary:active,
 .navLink-primary.active,
 .navLink-primary.show {
-  color: var(--maple-brand-primary-strong) !important;
+  color: var(--maple-text-inverse) !important;
 }
 
 .navLink-primary .dropdown-toggle:hover,
 .navLink-primary .dropdown-toggle:focus,
 .navLink-primary .dropdown-toggle:active,
 .navLink-primary.show .dropdown-toggle {
-  color: var(--maple-brand-primary-strong) !important;
+  color: var(--maple-text-inverse) !important;
   border-color: transparent !important;
-  background: var(--maple-surface-base) !important;
-  background-color: var(--maple-surface-base) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
 .skip-link {
@@ -68,7 +66,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  color: var(--maple-brand-primary-strong);
+  color: var(--maple-text-inverse);
   display: inline-flex;
   justify-content: center;
   padding: 0;
@@ -76,7 +74,7 @@
 
 .mobile-nav-trigger:focus-visible {
   border-radius: var(--maple-radius-pill);
-  outline: 2px solid var(--maple-brand-primary-strong);
+  outline: 2px solid var(--maple-text-inverse);
   outline-offset: 4px;
 }
 
@@ -95,7 +93,7 @@
   left: 50%;
   width: 1.6rem;
   height: 2px;
-  background-color: var(--maple-brand-primary-strong);
+  background-color: var(--maple-text-inverse);
   border-radius: 999px;
   transform-origin: center;
 }
@@ -109,11 +107,10 @@
 }
 
 .desktop-navbar-link {
-  color: var(--maple-brand-primary-strong) !important;
+  color: var(--maple-text-inverse) !important;
   border-radius: var(--maple-radius-md);
   border: 0 !important;
-  background: var(--maple-surface-base) !important;
-  background-color: var(--maple-surface-base) !important;
+  background: transparent !important;
   font-weight: normal;
   transition: background-color var(--maple-transition-fast),
     color var(--maple-transition-fast);
@@ -128,45 +125,44 @@
 
 .desktop-navbar-link:hover,
 .desktop-navbar-link:focus-visible {
-  color: var(--maple-brand-primary-strong) !important;
-  background-color: rgba(44, 66, 157, 0.08);
+  color: var(--maple-text-inverse) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 .desktop-navbar-dropdown {
   border-radius: var(--maple-radius-md) !important;
   border: 0 !important;
-  background: var(--maple-surface-base) !important;
-  background-color: var(--maple-surface-base) !important;
+  background: transparent !important;
 }
 
 .desktop-navbar-dropdown.btn {
-  --bs-btn-bg: var(--maple-surface-base);
+  --bs-btn-bg: transparent;
   --bs-btn-border-width: 0;
   --bs-btn-border-color: transparent;
-  --bs-btn-hover-bg: var(--maple-surface-base);
+  --bs-btn-hover-bg: rgba(255, 255, 255, 0.12);
   --bs-btn-hover-border-color: transparent;
-  --bs-btn-active-bg: var(--maple-surface-base);
+  --bs-btn-active-bg: rgba(255, 255, 255, 0.12);
   --bs-btn-active-border-color: transparent;
-  --bs-btn-color: var(--maple-brand-primary-strong);
-  --bs-btn-hover-color: var(--maple-brand-primary-strong);
-  --bs-btn-active-color: var(--maple-brand-primary-strong);
-  --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(44, 66, 157, 0.2);
-  background: var(--maple-surface-base) !important;
-  background-color: var(--maple-surface-base) !important;
+  --bs-btn-color: var(--maple-text-inverse);
+  --bs-btn-hover-color: var(--maple-text-inverse);
+  --bs-btn-active-color: var(--maple-text-inverse);
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.2);
+  background: transparent !important;
   border-color: transparent !important;
+  color: var(--maple-text-inverse) !important;
 }
 
 .desktop-navbar-dropdown.btn:hover,
 .desktop-navbar-dropdown.btn:focus,
 .desktop-navbar-dropdown.btn:active,
 .desktop-navbar-dropdown.btn.show {
-  background: var(--maple-surface-base) !important;
-  background-color: var(--maple-surface-base) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   border-color: transparent !important;
+  color: var(--maple-text-inverse) !important;
 }
 
 .desktop-navbar-dropdown.btn:focus-visible {
-  outline: 2px solid var(--maple-brand-primary-strong);
+  outline: 2px solid var(--maple-text-inverse);
   outline-offset: 3px;
 }
 

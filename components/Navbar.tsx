@@ -31,7 +31,7 @@ import {
 } from "./NavbarComponents"
 
 const MobileCollapse = styled(Navbar.Collapse)`
-  background-color: var(--maple-surface-base);
+  background-color: var(--maple-brand-primary);
 `
 
 export const MainNavbar: React.FC<React.PropsWithChildren<unknown>> = () => {
@@ -125,8 +125,8 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Navbar
       className={`main-navbar w-100 ${isExpanded ? "pb-0" : ""}`}
-      style={{ backgroundColor: "var(--maple-surface-base)" }}
-      data-bs-theme="light"
+      style={{ backgroundColor: "var(--maple-brand-primary)" }}
+      data-bs-theme="dark"
       expand="lg"
       expanded={isExpanded}
     >
@@ -144,7 +144,7 @@ const MobileNav: React.FC<React.PropsWithChildren<unknown>> = () => {
           className="mobile-nav-trigger"
         >
           {isExpanded && whichMenu == "site" ? (
-            <span className="mobile-nav-close-icon ms-2" aria-hidden="true" />
+            <span className="mobile-nav-close-icon" aria-hidden="true" />
           ) : (
             <span className="navbar-toggler-icon" aria-hidden="true" />
           )}
@@ -203,7 +203,7 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
     <Container
       fluid
       className={`main-navbar desktop-navbar d-flex py-2 sticky-top justify-content-end gap-2`}
-      style={{ backgroundColor: "var(--maple-surface-base)" }}
+      style={{ backgroundColor: "var(--maple-brand-primary)" }}
     >
       <div className={`me-auto`}>
         <NavbarLinkLogo />
@@ -277,7 +277,10 @@ const DesktopNav: React.FC<React.PropsWithChildren<unknown>> = () => {
       {authenticated ? (
         <div className={`align-self-center`}>
           <Dropdown>
-            <Dropdown.Toggle variant="light" className={`desktop-navbar-dropdown`}>
+            <Dropdown.Toggle
+              variant="light"
+              className={`desktop-navbar-dropdown`}
+            >
               <Avatar />
             </Dropdown.Toggle>
             <Dropdown.Menu>

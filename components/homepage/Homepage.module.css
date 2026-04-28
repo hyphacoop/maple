@@ -12,7 +12,14 @@
 .didYouKnow,
 .features,
 .hearings {
-  padding: 2rem 0;
+  padding: 3.5rem 0;
+}
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  background: var(--maple-surface-base);
+  overflow: hidden;
 }
 
 .hero {
@@ -20,78 +27,49 @@
   grid-template-columns: minmax(23rem, 1.05fr) minmax(24rem, 1.15fr);
   align-items: center;
   gap: clamp(1.8rem, 4vw, 3.4rem);
-  min-height: 29rem;
-  padding-top: 0.5rem;
+  min-height: 38rem;
+  padding-top: 2rem;
+  padding-bottom: 0;
+}
+
+.skylineBackground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  background-image: url("/skyline_blue.svg");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% auto;
+  opacity: 0.2;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .heroVisual {
   position: relative;
+  height: 100%;
   min-height: 24rem;
-}
-
-.heroMap {
-  position: absolute;
-  inset: 0 auto auto 0;
-  width: min(38rem, 100%);
-  height: 22rem;
-  background: radial-gradient(
-      circle at 67% 30%,
-      rgba(255, 255, 255, 0.95) 0 0.6rem,
-      transparent 0.7rem
-    ),
-    radial-gradient(
-      circle at 60% 45%,
-      rgba(255, 255, 255, 0.95) 0 0.4rem,
-      transparent 0.45rem
-    ),
-    radial-gradient(
-      circle at 78% 49%,
-      rgba(255, 255, 255, 0.95) 0 0.65rem,
-      transparent 0.7rem
-    ),
-    linear-gradient(135deg, rgba(44, 66, 157, 0.18), rgba(44, 66, 157, 0.28));
-  clip-path: polygon(
-    3% 40%,
-    11% 35%,
-    16% 20%,
-    22% 9%,
-    28% 7%,
-    32% 0%,
-    35% 3%,
-    31% 12%,
-    35% 23%,
-    45% 28%,
-    49% 22%,
-    56% 24%,
-    64% 38%,
-    72% 36%,
-    83% 44%,
-    91% 43%,
-    95% 53%,
-    90% 58%,
-    81% 56%,
-    76% 68%,
-    67% 64%,
-    58% 79%,
-    43% 75%,
-    31% 90%,
-    16% 82%,
-    8% 85%,
-    0% 74%,
-    0% 48%
-  );
-}
-
-.statehouse {
-  position: absolute;
-  left: 0.7rem;
-  bottom: 0;
-  width: min(30rem, 84%);
-  filter: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1;
 }
 
 .heroContent {
+  position: relative;
   max-width: 43rem;
+  z-index: 1;
+  padding-bottom: 2rem;
+}
+
+.statehouse {
+  position: relative;
+  width: min(32rem, 90%);
+  height: auto;
+  margin-bottom: -1rem;
+  filter: drop-shadow(0 0.5rem 1rem rgba(0, 0, 0, 0.05));
 }
 
 .heroTitle {
@@ -126,8 +104,8 @@
   min-height: 2.55rem;
   padding: 0.55rem 1.3rem;
   border-radius: 0.12rem;
-  font-size: 0.82rem;
-  font-weight: 500;
+  font-size: 1.05rem;
+  font-weight: 700;
   letter-spacing: 0.01em;
   text-decoration: none;
   transition: background-color var(--maple-transition-fast),
@@ -143,15 +121,15 @@
 
 .primaryAction:hover,
 .primaryAction:focus-visible {
-  background: var(--maple-brand-danger-strong);
-  border-color: var(--maple-brand-danger-strong);
-  color: var(--maple-text-inverse);
+  background: var(--maple-surface-base);
+  border-color: var(--maple-brand-danger);
+  color: var(--maple-brand-danger);
 }
 
 .secondaryAction,
 .hearingsActionDesktop,
 .hearingsActionMobile {
-  background: transparent;
+  background: var(--maple-surface-base);
   border: 1px solid rgba(44, 66, 157, 0.35);
   color: var(--maple-brand-primary-strong);
 }
@@ -162,7 +140,7 @@
 .hearingsActionDesktop:focus-visible,
 .hearingsActionMobile:hover,
 .hearingsActionMobile:focus-visible {
-  background: rgba(44, 66, 157, 0.08);
+  background: #f0f2f8;
   color: var(--maple-brand-primary-strong);
 }
 
@@ -195,13 +173,14 @@
   max-width: 18rem;
   margin: 0 auto;
   color: var(--maple-text-body);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   line-height: 1.4;
 }
 
 .explainer {
   background: var(--maple-brand-primary);
   color: var(--maple-text-inverse);
+  padding: 3.5rem 0;
 }
 
 .explainerInner {
@@ -209,7 +188,7 @@
   grid-template-columns: minmax(0, 1fr) minmax(17rem, 22rem);
   align-items: center;
   gap: clamp(2rem, 4vw, 3rem);
-  padding: 3rem 0;
+  padding: 0;
 }
 
 .explainerCopy {
@@ -218,7 +197,7 @@
 
 .explainerTitle {
   margin: 0 0 1rem;
-  font-size: clamp(2rem, 3vw, 2.65rem);
+  font-size: clamp(2.3rem, 3vw, 3.15rem);
   line-height: 1.15;
 }
 
@@ -246,15 +225,15 @@
 }
 
 .features {
-  padding-top: 2.25rem;
-  padding-bottom: 2.5rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
 }
 
 .featureLayout {
   display: grid;
   grid-template-columns: minmax(16rem, 30rem) minmax(0, 1fr);
   gap: clamp(1.75rem, 3vw, 2.3rem);
-  align-items: start;
+  align-items: center;
 }
 
 .featurePreviewWrap {
@@ -271,7 +250,8 @@
   display: grid;
   grid-template-columns: 4.3rem minmax(0, 1fr);
   gap: 1rem;
-  align-items: start;
+  align-items: center;
+  text-align: center;
 }
 
 .featureIconWrap {
@@ -290,10 +270,10 @@
 }
 
 .featureBody {
-  margin: 0;
+  margin: 0 auto;
   color: var(--maple-text-body);
-  font-size: 0.84rem;
-  line-height: 1.42;
+  font-size: 1rem;
+  line-height: 1.5;
   max-width: 21rem;
 }
 
@@ -429,20 +409,103 @@
 }
 
 @media (max-width: 900px) {
+  .sectionShell {
+    width: calc(100% - 1rem);
+  }
+
   .hero,
-  .explainerInner,
-  .featureLayout,
-  .hearingGrid {
-    grid-template-columns: 1fr;
+  .didYouKnow,
+  .features,
+  .hearings {
+    padding: 2rem 0;
+  }
+
+  .heroSection {
+    padding-bottom: 2rem;
   }
 
   .hero {
-    padding-top: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 0;
+    min-height: auto;
+    padding-top: 1rem;
+    padding-bottom: 0;
+    text-align: center;
   }
 
-  .heroContent,
-  .explainerCopy {
+  .heroVisual {
+    min-height: 20rem;
+    order: 1;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .statehouse {
+    position: relative;
+    width: min(20rem, 90%);
+    margin: 0 auto;
+    left: auto;
+  }
+
+  .skylineBackground {
+    height: 50%;
+    background-size: contain;
+    background-position: bottom center;
+  }
+
+  .heroContent {
+    order: 2;
+    padding-top: 6rem;
+    padding-bottom: 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    height: 100%;
     max-width: none;
+  }
+
+  .heroTitle {
+    font-size: 2.75rem;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+  }
+
+  .heroBody {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+  }
+
+  .heroActions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
+    min-height: 3.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.85rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+
+  .factText {
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   .factGrid {
@@ -453,102 +516,37 @@
     padding-inline: 0;
   }
 
-  .hearingsHeader {
-    align-items: start;
-  }
-}
-
-@media (max-width: 768px) {
-  .sectionShell {
-    width: calc(100% - 1rem);
-  }
-
-  .hero,
-  .didYouKnow,
-  .features,
-  .hearings {
-    padding: 1rem 0;
-  }
-
-  .hero {
-    gap: 0.9rem;
-    min-height: auto;
-    padding-top: 0.5rem;
-  }
-
-  .heroVisual {
-    min-height: 14.6rem;
-  }
-
-  .heroMap {
-    height: 12.8rem;
-    width: 100%;
-  }
-
-  .statehouse {
-    width: min(16rem, 84%);
-    left: 0.25rem;
-  }
-
-  .heroTitle {
-    font-size: 1.35rem;
-    margin-bottom: 0.65rem;
-  }
-
-  .heroBody,
-  .factText {
-    font-size: 0.68rem;
-  }
-
-  .heroActions {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.45rem;
-  }
-
-  .primaryAction,
-  .secondaryAction {
-    width: 100%;
-    min-height: 1.55rem;
-    padding: 0.3rem 0.75rem;
-    font-size: 0.58rem;
-  }
-
-  .sectionTitle {
-    font-size: 1.18rem;
-    margin-bottom: 0.8rem;
-  }
-
-  .factGrid {
-    gap: 0.45rem;
-  }
-
-  .factIcon {
-    width: 2.7rem;
-    height: 2.7rem;
-    margin-bottom: 0.55rem;
-  }
-
   .explainerInner {
-    padding: 1.4rem 0;
-    gap: 0.8rem;
+    grid-template-columns: 1fr;
+    padding: 0;
   }
 
-  .explainerTitle,
+  .explainerCopy {
+    max-width: none;
+  }
+
+  .explainerTitle {
+    font-size: 1.55rem;
+  }
+
   .hearingsTitle {
-    font-size: 1.1rem;
+    font-size: 1.55rem;
   }
 
   .explainerBody {
-    font-size: 0.66rem;
-    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .featureLayout {
+    grid-template-columns: 1fr;
   }
 
   .featureItem {
     grid-template-columns: 1fr;
     gap: 0.4rem;
     justify-items: center;
-    text-align: left;
+    text-align: center;
   }
 
   .featureIconWrap {
@@ -563,25 +561,28 @@
 
   .appPreview,
   .featurePreview {
-    width: min(100%, 14.25rem);
+    width: min(100%, 16rem);
   }
 
   .featurePreviewWrap {
-    justify-content: flex-start;
+    justify-content: center;
+    margin-bottom: 1.5rem;
   }
 
   .featureList {
+    grid-template-columns: 1fr;
     gap: 1.45rem;
   }
 
   .featureBody {
     max-width: none;
-    font-size: 0.72rem;
-    line-height: 1.38;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   .hearingsHeader {
     margin-bottom: 0.7rem;
+    align-items: start;
   }
 
   .hearingsActionDesktop {
@@ -595,6 +596,7 @@
   }
 
   .hearingGrid {
+    grid-template-columns: 1fr;
     gap: 0.45rem;
   }
 
@@ -610,32 +612,32 @@
   }
 
   .hearingMonth {
-    font-size: 0.48rem;
+    font-size: 0.7rem;
   }
 
   .hearingDay {
-    font-size: 0.72rem;
-    padding-top: 0.8rem;
+    font-size: 1rem;
+    padding-top: 0.4rem;
   }
 
   .hearingMeta {
     margin-bottom: 0.2rem;
     padding-left: 0.75rem;
-    font-size: 0.48rem;
+    font-size: 0.7rem;
   }
 
   .hearingMeta::before {
     width: 0.38rem;
     height: 0.38rem;
-    top: 0.1rem;
+    top: 0.25rem;
   }
 
   .hearingLink {
-    font-size: 0.56rem;
+    font-size: 0.85rem;
     margin-bottom: 0.24rem;
   }
 
   .hearingTopic {
-    font-size: 0.5rem;
+    font-size: 0.75rem;
   }
 }
