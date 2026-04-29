@@ -11,15 +11,15 @@ export default function FeaturesSection() {
   const { t } = useTranslation("homepage")
   const features: FeatureItem[] = [
     {
-      icon: "/homepage/feature-opinion.svg",
+      icon: "/homepage/feature-1.svg",
       body: t("features.research")
     },
     {
-      icon: "/homepage/feature-person.svg",
+      icon: "/homepage/feature-2.svg",
       body: t("features.publish")
     },
     {
-      icon: "/homepage/feature-report.svg",
+      icon: "/homepage/feature-3.svg",
       body: t("features.share")
     }
   ]

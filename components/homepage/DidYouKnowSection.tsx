@@ -11,7 +11,7 @@ export default function DidYouKnowSection() {
   const { t } = useTranslation("homepage")
   const facts: FactItem[] = [
     {
-      icon: "/speaker-with-pen.svg",
+      icon: "/handpen.svg",
       text: t("didYouKnow.submit")
     },
     {
@@ -19,7 +19,7 @@ export default function DidYouKnowSection() {
       text: t("didYouKnow.deadline")
     },
     {
-      icon: "/open-envelope.svg",
+      icon: "/envelope.svg",
       text: t("didYouKnow.legislators")
     }
   ]
