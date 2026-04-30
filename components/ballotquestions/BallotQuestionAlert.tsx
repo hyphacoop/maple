@@ -12,19 +12,19 @@ export function BallotQuestionAlert({
 
   return (
     <aside
-      className="ballot-question-alert d-flex align-items-start gap-3 rounded-4 px-3 py-3"
+      className="ballot-question-alert d-flex align-items-center gap-3 rounded-4 px-3 py-3"
       aria-label="Important ballot question notice"
     >
       <span className="ballot-question-alert-icon" aria-hidden="true">
         !
       </span>
-      <div className="d-flex align-items-start gap-2 flex-grow-1">
+      <div className="ballot-question-alert-content d-flex align-items-center gap-2 flex-wrap">
         <ReactMarkdown
-          className="ballot-question-alert-content"
           components={{
             a: ({ node: _node, ...props }) => (
               <a {...props} target="_blank" rel="noopener noreferrer" />
-            )
+            ),
+            p: ({ node: _node, ...props }) => <span {...props} />
           }}
         >
           {alertFlag}
