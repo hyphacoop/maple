@@ -18,18 +18,22 @@ export function BallotQuestionAlert({
       <span className="ballot-question-alert-icon" aria-hidden="true">
         !
       </span>
-      <div className="ballot-question-alert-content d-flex align-items-center gap-2 flex-wrap">
+      <div className="ballot-question-alert-content">
         <ReactMarkdown
           components={{
             a: ({ node: _node, ...props }) => (
               <a {...props} target="_blank" rel="noopener noreferrer" />
             ),
-            p: ({ node: _node, ...props }) => <span {...props} />
+            p: ({ node: _node, ...props }) => (
+              <span {...props}>
+                {props.children}
+                {alertTip && <QuestionTooltip text={alertTip} />}
+              </span>
+            )
           }}
         >
           {alertFlag}
         </ReactMarkdown>
-        {alertTip ? <QuestionTooltip text={alertTip} /> : null}
       </div>
     </aside>
   )

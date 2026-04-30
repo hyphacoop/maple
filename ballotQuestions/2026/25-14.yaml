@@ -9,6 +9,8 @@ ballotStatus: expectedOnBallot
 ballotQuestionNumber: null
 relatedBillIds: []
 description: null
+alertFlag: "This ballot question is currently active. [Learn more](https://example.com)"
+alertTip: "Your vote will be recorded when you submit."
 atAGlance: null
 voteEffectYes: null
 voteEffectNo: null
