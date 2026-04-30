@@ -54,19 +54,19 @@ interface BallotQuestion {
 
 These fields are written by hand in YAML and synced to Firestore. All are optional (`null` until ready).
 
-| Field                 | Figma element                 | Quality standard                                                                              |
-| --------------------- | ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `description`         | "What this question would do" | 1–3 sentences of plain voter-friendly prose. Avoid legalese.                                  |
-| `atAGlance`           | "Key Details" bullets         | Structured `label`/`value` pairs, 3–6 items. Scannable at a glance.                           |
-| `voteEffectYes`       | "Vote YES means"              | Clear explanation of what a YES vote accomplishes.                                            |
-| `voteEffectNo`        | "Vote NO means"               | Clear explanation of what a NO vote accomplishes.                                             |
-| `fiscalConsequences`  | "Fiscal impact"               | Expected fiscal impact on state and municipal budgets.                                        |
-| `inFavor`             | "Arguments in favor"          | Arguments supporting the question (may be sourced from campaign materials).                    |
-| `against`             | "Arguments against"           | Arguments opposing the question (may be sourced from campaign materials).                      |
-| `fullSummary`         | "Final Summary"               | Official voter-guide quality language. May be sourced from the initiative petition.            |
-| `pdfUrl`              | PDF link                      | Direct URL to the initiative petition PDF (usually from mass.gov).                             |
-| `alertFlag`           | Alert banner                  | Time-sensitive notice with optional Markdown links. Renders as a bright header banner.         |
-| `alertTip`            | Alert tooltip                 | Optional plain-text context for the alert (appears as a tooltip).                             |
+| Field                | Figma element                 | Quality standard                                                                       |
+| -------------------- | ----------------------------- | -------------------------------------------------------------------------------------- |
+| `description`        | "What this question would do" | 1–3 sentences of plain voter-friendly prose. Avoid legalese.                           |
+| `atAGlance`          | "Key Details" bullets         | Structured `label`/`value` pairs, 3–6 items. Scannable at a glance.                    |
+| `voteEffectYes`      | "Vote YES means"              | Clear explanation of what a YES vote accomplishes.                                     |
+| `voteEffectNo`       | "Vote NO means"               | Clear explanation of what a NO vote accomplishes.                                      |
+| `fiscalConsequences` | "Fiscal impact"               | Expected fiscal impact on state and municipal budgets.                                 |
+| `inFavor`            | "Arguments in favor"          | Arguments supporting the question (may be sourced from campaign materials).            |
+| `against`            | "Arguments against"           | Arguments opposing the question (may be sourced from campaign materials).              |
+| `fullSummary`        | "Final Summary"               | Official voter-guide quality language. May be sourced from the initiative petition.    |
+| `pdfUrl`             | PDF link                      | Direct URL to the initiative petition PDF (usually from mass.gov).                     |
+| `alertFlag`          | Alert banner                  | Time-sensitive notice with optional Markdown links. Renders as a bright header banner. |
+| `alertTip`           | Alert tooltip                 | Optional plain-text context for the alert (appears as a tooltip).                      |
 
 Fields can be added to a YAML at any time and will be live after the next sync.
 
