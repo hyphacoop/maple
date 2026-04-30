@@ -57,8 +57,8 @@ YAML files must export a document whose shape matches the `BallotQuestion` type 
   - Each committee entry has `committee`, `cashRaised`, `spent`, `inKind`
 - `fullSummary`: Official summary text from the voter guide
 - `pdfUrl`: URL to official voter guide PDF
-- `alertTitle`: Optional title for an alert banner (if ballot question needs special notice)
-- `alertText`: Optional text for the alert banner
+- `alertFlag`: Optional notice text with Markdown link support (renders as a bright header banner)
+- `alertTip`: Optional tooltip text to accompany the alert
 
 #### Example YAML
 
@@ -90,6 +90,13 @@ campaignFinancials:
   oppose: []
 fullSummary: "Official summary text from the voter guide."
 pdfUrl: "https://..."
+alertFlag: "Legal challenge pending. [Read more](https://example.com)."
+alertTip: "This question may not appear on the ballot."
+voteEffectYes: "..."
+voteEffectNo: "..."
+fiscalConsequences: "..."
+inFavor: "..."
+against: "..."
 ```
 
 ## Backfilling Testimony Counters
