@@ -72,7 +72,7 @@ interface BallotQuestion {
 }
 ```
 
-`billId` (already in the schema) provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition. All voter-facing fields are nullable — render their sections only when the value is non-null. `alertFlag` renders as a bright header banner above the title; `alertTip` appears as a tooltip icon next to the alert.
+`billId` provides the bill link in the header. `pdfUrl` is manually set in the YAML file for each petition. All voter-facing fields are nullable — render their sections only when the value is non-null. `alertFlag` renders as a bright header banner above the title; `alertTip` appears as a tooltip icon next to the alert.
 
 ---
 
