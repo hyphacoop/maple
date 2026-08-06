@@ -68,6 +68,17 @@ git pull upstream main
 - `yarn dev:down`: Stop the application.
 - `yarn dev:update`: Update the application images. Run this whenever dependencies in `package.json` change.
 
+### ATProto Dev Environment (spike)
+
+Run a throwaway local ATProto network (in-process PLC + PDS backed by SQLite, no AppView) for the ATProto spike. The spike's consolidated findings — demo walkthrough, hard problems, production architecture, go/no-go — live in [docs/atproto-spike-findings.md](docs/atproto-spike-findings.md).
+
+- `yarn atp:dev`: Boot the network. The PDS listens at http://localhost:2583 and the PLC at http://localhost:2582. The script prints a curl smoke check (`/xrpc/com.atproto.server.describeServer`) and an example `createAccount` call (handles must end in `.test`, no invite code required). Press Ctrl+C to stop; all data lives in your OS temp directory and is discarded.
+- `yarn atp:seed` (with the network running): Create the authoritative `maple.test` identity plus `alice.test`/`bob.test` test users (password `<name>-pass`), publish sample MA bills to the maple repo and one bob testimony, and print the `NEXT_PUBLIC_ATP_PDS_URL`/`NEXT_PUBLIC_MAPLE_DID` values to put in `.env.local`. Safe to re-run; run it again after every `atp:dev` restart (fresh network ⇒ new DIDs).
+- With those values in `.env.local` and `yarn dev` running, sign in at [localhost:3000/atp/login](http://localhost:3000/atp/login) (e.g. `alice.test`/`alice-pass`). The session persists in localStorage independently of the regular Firebase login; note a PDS restart invalidates it (sign in again after re-seeding).
+- Browse the seeded bills from the ATProto repo at [localhost:3000/atp/bills](http://localhost:3000/atp/bills) (list + per-bill detail pages, no sign-in required). If the pages show a setup alert instead, `NEXT_PUBLIC_MAPLE_DID` is unset or stale — re-seed and restart `yarn dev`.
+- While signed in via `/atp/login`, each bill detail page shows a "Your Testimony (ATProto)" panel: pick a position, write testimony, and publish it into your own PDS repo. Resubmitting updates the same record in place (one testimony per bill per user).
+- Each bill detail page also lists **every** user's testimony with real endorse/oppose/neutral counts in the header, gathered by fanning out over all repos on the PDS (there is no AppView). Reload the page to pick up newly published testimony; the browser console logs a `[atp] #65 fan-out` line with the request count and timing per fetch.
+
 ### Storybook Firebase Guard
 
 Storybook blocks real Firebase Auth and Firestore calls by default to prevent accidental network access from stories.

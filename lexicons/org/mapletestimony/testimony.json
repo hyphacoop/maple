@@ -1,0 +1,50 @@
+{
+  "lexicon": 1,
+  "id": "org.mapletestimony.testimony",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A user's testimony on a bill, stored in the user's own repo. Record key convention: '{court}-{billId}' — at most one testimony per bill per user; putRecord with the same key is an edit. Author identity comes from the repo DID; display names, roles, and legislator routing are resolved by an AppView. No version history: the PDS keeps only the latest record.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "bill",
+          "court",
+          "billId",
+          "position",
+          "content",
+          "createdAt"
+        ],
+        "properties": {
+          "bill": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Strong reference to the org.mapletestimony.bill record this testimony addresses."
+          },
+          "court": {
+            "type": "integer",
+            "description": "Denormalized general court number, for filtering without resolving the bill ref."
+          },
+          "billId": {
+            "type": "string",
+            "maxLength": 32,
+            "description": "Denormalized bill identifier, e.g. 'H1234'."
+          },
+          "position": {
+            "type": "string",
+            "knownValues": ["endorse", "oppose", "neutral"],
+            "description": "The author's stance on the bill."
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxGraphemes": 10000,
+            "description": "Testimony text. Limit matches MAPLE's maxTestimonyLength."
+          },
+          "createdAt": { "type": "string", "format": "datetime" }
+        }
+      }
+    }
+  }
+}

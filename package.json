@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "atp:dev": "ts-node --swc -P tsconfig.script.json scripts/atproto/dev-env.ts",
+    "atp:seed": "ts-node --swc -P tsconfig.script.json scripts/atproto/seed.ts",
+    "atp:validate": "ts-node --swc -P tsconfig.script.json scripts/atproto/validate-lexicons.ts",
     "build:dev": "MAPLE_ENV=dev next build",
     "build:prod": "MAPLE_ENV=prod next build",
     "build:functions": "next lint -d functions/src && yarn --cwd functions build && yarn copy-handlebars",
@@ -70,6 +73,7 @@
     ]
   },
   "dependencies": {
+    "@atproto/api": "^0.19.19",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@emotion/weak-memoize": "^0.3.1",
@@ -143,6 +147,8 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@atproto/dev-env": "0.4.9",
+    "@atproto/lexicon": "0.6.2",
     "@babel/core": "^7.18.13",
     "@playwright/test": "^1.43.1",
     "@storybook/addon-actions": "^7.6.4",
@@ -206,6 +212,10 @@
     "yargs": "^17.5.1"
   },
   "resolutions": {
+    "@atproto/bsky": "0.0.230",
+    "@atproto/bsync": "0.0.25",
+    "@atproto/ozone": "0.1.174",
+    "@atproto/pds": "0.4.223",
     "jackspeak": "2.1.1"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"

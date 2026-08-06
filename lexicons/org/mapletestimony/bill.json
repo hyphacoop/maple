@@ -1,0 +1,135 @@
+{
+  "lexicon": 1,
+  "id": "org.mapletestimony.bill",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A Massachusetts legislature bill mirrored into an ATProto repo. Record key convention: '{court}-{billId}' (e.g. '193-H1234'). Aggregates (testimony counts, latest testimony) and full document text are intentionally omitted; they belong to an AppView or blob storage.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["court", "billId", "content", "history", "fetchedAt"],
+        "properties": {
+          "court": {
+            "type": "integer",
+            "description": "General court (legislative session) number, e.g. 193."
+          },
+          "billId": {
+            "type": "string",
+            "maxLength": 32,
+            "description": "Bill identifier within the court, e.g. 'H1234'."
+          },
+          "content": { "type": "ref", "ref": "#billContent" },
+          "history": {
+            "type": "array",
+            "items": { "type": "ref", "ref": "#historyAction" },
+            "description": "Legislative history actions."
+          },
+          "currentCommittee": { "type": "ref", "ref": "#committee" },
+          "city": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "City name, for city council bills."
+          },
+          "topics": {
+            "type": "array",
+            "items": { "type": "ref", "ref": "#topic" }
+          },
+          "summary": {
+            "type": "string",
+            "maxGraphemes": 10000,
+            "description": "Generated plain-language summary."
+          },
+          "hearingIds": {
+            "type": "array",
+            "items": { "type": "string", "maxLength": 32 }
+          },
+          "nextHearingAt": { "type": "string", "format": "datetime" },
+          "fetchedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this bill was last fetched from the upstream legislature API."
+          }
+        }
+      }
+    },
+    "billContent": {
+      "type": "object",
+      "description": "Bill content as published by the legislature. DocumentText is omitted (too large for a record; would be a blob).",
+      "required": [
+        "title",
+        "billNumber",
+        "docketNumber",
+        "generalCourtNumber",
+        "cosponsors",
+        "legislationTypeName",
+        "pinslip"
+      ],
+      "properties": {
+        "title": { "type": "string", "maxGraphemes": 2000 },
+        "billNumber": { "type": "string", "maxLength": 32 },
+        "docketNumber": { "type": "string", "maxLength": 32 },
+        "generalCourtNumber": { "type": "integer" },
+        "primarySponsor": { "type": "ref", "ref": "#memberReference" },
+        "cosponsors": {
+          "type": "array",
+          "items": { "type": "ref", "ref": "#memberReference" }
+        },
+        "legislationTypeName": { "type": "string", "maxLength": 64 },
+        "pinslip": { "type": "string", "maxGraphemes": 2000 }
+      }
+    },
+    "memberReference": {
+      "type": "object",
+      "required": ["id", "name", "memberType"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 32 },
+        "name": { "type": "string", "maxGraphemes": 256 },
+        "memberType": {
+          "type": "integer",
+          "description": "1 = Legislative Member, 2 = Committee, 3 = Public Request, 4 = Special Request."
+        }
+      }
+    },
+    "historyAction": {
+      "type": "object",
+      "required": ["branch", "action"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Upstream legislature date string, preserved verbatim. Not format=datetime: the upstream API emits timestamps without timezone offsets, which ATProto's datetime validation rejects."
+        },
+        "branch": { "type": "string", "maxLength": 64 },
+        "action": { "type": "string", "maxGraphemes": 2000 }
+      }
+    },
+    "committee": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 32 },
+        "name": { "type": "string", "maxGraphemes": 256 },
+        "houseChair": { "type": "ref", "ref": "#committeeMember" },
+        "senateChair": { "type": "ref", "ref": "#committeeMember" }
+      }
+    },
+    "committeeMember": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 32 },
+        "name": { "type": "string", "maxGraphemes": 256 },
+        "email": { "type": "string", "maxLength": 256 }
+      }
+    },
+    "topic": {
+      "type": "object",
+      "required": ["category", "topic"],
+      "properties": {
+        "category": { "type": "string", "maxLength": 128 },
+        "topic": { "type": "string", "maxLength": 128 }
+      }
+    }
+  }
+}

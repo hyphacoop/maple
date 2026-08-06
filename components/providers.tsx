@@ -1,12 +1,13 @@
 import { QueryClient, QueryClientProvider } from "react-query"
 import { Provider as Auth } from "../components/auth"
+import { Provider as AtpAuth } from "./atproto/auth"
 import { Provider as Profile } from "./db/profile/service"
 import { Provider as Firebase } from "./firebase"
 import { LogRocketProvider as LogRocket } from "./logRocket"
 import { Provider as Search } from "./search"
 import { ServiceProvider } from "./service"
 
-const providers = [Firebase, Auth, Profile, Search, LogRocket]
+const providers = [Firebase, Auth, Profile, Search, LogRocket, AtpAuth]
 
 const queryClient = new QueryClient()
 
