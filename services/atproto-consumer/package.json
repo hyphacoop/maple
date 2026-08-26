@@ -1,0 +1,27 @@
+{
+  "name": "@maple/atproto-consumer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Jetstream v2 firehose consumer: indexes atproto events into Firestore",
+  "type": "module",
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@atproto/lex": "^0.3.6",
+    "@bsky/jetstream": "^1.0.0",
+    "@bsky/sdk": "^1.0.1",
+    "firebase-admin": "^14.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

@@ -64,6 +64,22 @@ jobs:
         run: yarn test
         working-directory: services/atproto-identity
 
+  check_atproto_consumer:
+    name: Consumer Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # The consumer is a standalone node-22 ESM package excluded from the
+      # root tsconfig, so root check-types can't see it.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-consumer
+      - run: yarn typecheck
+        working-directory: services/atproto-consumer
+
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest
