@@ -1,0 +1,168 @@
+# Local atproto harness
+
+    PDS -> relay -> jetstream -> services/atproto-consumer -> Firestore emulator
+
+A containerised atproto stack you can break on purpose. It exists because the
+questions that matter about a firehose consumer — what happens when something
+dies mid-stream, when a cursor is wrong, when the upstream skips — cannot be
+asked of a shared dev environment and cannot be asked of Bluesky's production
+network. The cheap component-level tier is the consumer's own test harness,
+`services/atproto-consumer/test`.
+
+Nothing here is deployment-shaped. It buys **debugging**, not deployment: no
+TLS, no real relay acceptance, no Cloud Run websocket behaviour, no ADC, no
+Secret Manager. A local relay is not the relay a deployment will face and must never be
+cited as evidence about one.
+
+## Run it
+
+    infra/atproto/bootstrap.sh          # up from cold, register the PDS, seed a record
+
+Then, from the repo root, in separate terminals:
+
+    yarn --cwd services/atproto-consumer emulator
+
+    JETSTREAM_URL=http://localhost:6008 GCLOUD_PROJECT=demo-atp-local \
+      yarn --cwd services/atproto-consumer dev
+
+    infra/atproto/seed.sh               # write a record while the consumer is live
+    infra/atproto/check.sh              # assert it completed the trip
+
+`check.sh` compares against the cid `seed.sh` last wrote, so an old document
+left over from a previous run cannot pass for a fresh delivery.
+
+To drive compose by hand, pass both env files — without them the stack has no
+image references and no ports:
+
+    docker compose --env-file infra/atproto/images.env \
+      --env-file infra/atproto/endpoints.env -f infra/atproto/compose.yml ps
+
+The consumer needs node >= 22.15; the repo root is pinned to node 20, so use a
+node 22 on PATH for that terminal only.
+
+|                    | port |                                           |
+| ------------------ | ---- | ----------------------------------------- |
+| PLC                | 2582 |                                           |
+| PDS                | 2583 | `PDS_HOSTNAME=localhost`                  |
+| relay              | 2470 | admin API + firehose; metrics on 2471     |
+| jetstream          | 6008 | `/healthz`, `/readyz`, `/metrics` on 6060 |
+| Firestore emulator | 8080 | on the host, not in the stack             |
+
+Ports come from `endpoints.env`; change one there and compose and all four
+scripts follow. Teardown, including all state, is that same compose invocation
+with `down -v`.
+
+## Destructive scenarios
+
+    infra/atproto/recovery.sh consumer-restart
+    infra/atproto/recovery.sh cursor-rewind
+    infra/atproto/recovery.sh jetstream-outage
+    infra/atproto/recovery.sh all
+
+`recovery.sh` owns the consumer process itself — do not leave one running
+alongside it, or two writers race for the same document and every assertion
+becomes meaningless.
+
+**consumer-restart** — the consumer dies mid-stream while records keep being
+written, then restarts. It must resume from its stored cursor (not the live
+tip), catch up on what it missed, and land exactly on the record the PDS holds.
+This is the one that tests our own code: the cursor, the resume, the idempotent
+write.
+
+**cursor-rewind** — the stored cursor is rewound by hand and the consumer is
+restarted, so it replays events it has already applied. The end state must be
+byte-identical (ignoring `indexedAt`). Catches non-idempotent writes.
+
+**jetstream-outage** — jetstream is stopped, a record is written, jetstream
+comes back. See the finding below: the outcome legitimately varies, and the
+scenario reports which one happened while asserting the consumer stays coherent
+either way.
+
+Others worth adding as they become relevant: driving the cursor outside
+`--cursor-lookback` (36h), a sequence reset, `ConsumerTooSlow` backpressure.
+
+## Findings
+
+**A healthy consumer cursor is not evidence that nothing was missed.**
+jetstream v0.2.1 persists its upstream relay cursor only from `onDurableBatch`
+(`internal/ingest/live/consumer.go`) — when a segment block is durably flushed.
+On restart it therefore resumes from the last _flushed block_, not the last
+event it saw. Both outcomes were observed here:
+
+- cold instance, nothing flushed yet: stored cursor `0`, it resubscribes at the
+  live tail (`start_cursor:0`, relay logs `cursor:null`), and everything the
+  relay emitted during the outage is skipped permanently on the livestream path;
+- after a block has flushed: it resubscribes at that cursor (observed
+  `start_cursor:20`) and the relay replays the gap.
+
+The gap opens upstream of us, silently, bounded by a flush cadence we do not
+control. Gap detection must compare against the PDS — the parity checker —
+never against jetstream's own stream. This is the harness's first real result.
+
+**requestCrawl cannot work against any local address.** The supported way to
+attach a PDS to a relay is `com.atproto.sync.requestCrawl`. Its handler does
+allow a `localhost:PORT` host, but only via the admin endpoint — and before
+that, `relay.HostChecker.CheckHost` dials through `ssrf.PublicOnlyTransport`,
+which rejects loopback and RFC1918 addresses _and_ every port that isn't 80 or 443. No local topology can satisfy that. `cmd/relay/HACKING.md` describes a
+localhost exemption, and one does exist — in the slurper's websocket dialer
+(`if !host.NoSSL`), not in the requestCrawl pre-flight.
+
+So `bootstrap.sh` attempts the real call first (if upstream relaxes the check,
+the harness starts using the production path with no edit) and otherwise writes
+the same `host` row the handler would have written, then restarts the relay so
+`ResubscribeAllHosts` picks it up. Everything after that — subscription,
+validation, sequencing — is the relay's normal path.
+
+**`PDS_HOSTNAME` must be the literal string `localhost`.** The PDS derives its
+public URL from it (`http://localhost:${port}`, port defaulting to 2583) and
+there is no override. Any other hostname bakes `https://` into the DID document,
+after which anything that resolves the DID dials https and fails. Since the
+relay and jetstream both resolve the DID and dial what it says, they must reach
+the PDS on their own localhost — which is why every service shares one network
+namespace via the `net` anchor. It also means `PDS_DEV_MODE=true` is required:
+the PDS refuses to start when its OAuth resource URL is not https.
+
+**Two of the four images are amd64-only** (indigo/relay and jetstream), so they
+run emulated on an arm64 Mac. Local friction only — Cloud Run is amd64 native.
+
+**The official PLC images stop at 2023-09.** The repo moved to the
+`did-method-plc` org and the new org publishes nothing public, so PLC is built
+from a pinned upstream commit. First `up` pays for that build once.
+
+## Configuration
+
+Two env files, read by `compose.yml` and by every script (through `lib.sh`), so
+no boundary value is written down twice:
+
+- `images.env` — image pins only. This is the file `infra/gcp/`'s Terraform is
+  meant to read as well, so that local and dev cannot drift apart silently
+  (`infra/gcp/` does not exist yet, so treat that as the intent rather
+  than something already enforced).
+- `endpoints.env` — ports, project id, handle, and the local-only credentials.
+  Those passwords are deliberately literal and in the repository; nothing here
+  is used off this machine.
+
+The scripts themselves are `bootstrap.sh` (up + register + first seed),
+`seed.sh` (write one record, record its cid), `check.sh` (the acceptance
+assertion), `recovery.sh` (the destructive scenarios), and `lib.sh` — sourced,
+not run — which holds the compose invocation, the emulator REST helpers and the
+wait loops they all share.
+
+`GCLOUD_PROJECT` is `demo-atp-local`, deliberately not the `demo-dtp` the
+consumer defaults to and the dev stack uses: a jetstream cursor is a seq in one
+host's sequence space, so harness runs and dev runs must not share a cursor
+document. Separate projects make that structural instead of something to
+remember.
+
+`services/atproto-consumer/` runs here **unmodified**, pointed by env alone:
+`JETSTREAM_URL`, `GCLOUD_PROJECT`, `FIRESTORE_EMULATOR_HOST`. If a change to
+`src/` ever looks necessary to run locally, that is a finding about the seam,
+not an edit to make.
+
+One consumer change did come out of this work, and it is not an `if-local`: the
+cursor document is keyed by jetstream host (`atpJetstreamMeta/cursor-<host>`),
+via `cursorDocPath()` in `src/cursor-store.ts`. A v2 cursor is a seq in one
+jetstream's sequence space; resuming a local run on a cursor the public network
+wrote would replay from a meaningless offset. `recovery.sh` reads the chosen
+path back out of the consumer's startup log rather than re-deriving it, so
+there is one implementation of that rule.

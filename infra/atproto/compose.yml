@@ -1,0 +1,259 @@
+# Local end-to-end atproto harness:
+#
+#   PDS -> relay -> jetstream -> services/atproto-consumer -> Firestore emulator
+#
+# The consumer and the Firestore emulator run on the HOST, unchanged and
+# pointed here by env; only the four atproto services are containerised.
+#
+#   ./bootstrap.sh   # brings the stack up and registers the PDS with the relay
+#
+# To drive compose directly, both env files are required — without them the
+# stack has no image references and no ports:
+#
+#   docker compose --env-file images.env --env-file endpoints.env -f compose.yml ...
+#
+# ── why every service shares one network namespace ───────────────────────────
+# The PDS derives its public URL from PDS_HOSTNAME and offers no override; with
+# hostname "localhost" that is http://localhost:${PDS_PORT}, and THAT is the URL that
+# lands in the account's DID document. The relay and jetstream both resolve the
+# DID and dial whatever the document says, so they must reach the PDS on their
+# own localhost. Hence the `net` anchor: one namespace, one localhost, distinct
+# ports, and every port published on the anchor.
+#
+# Nothing here branches on "is local". Ports, identities and local credentials
+# come from endpoints.env and image pins from images.env — the same two files
+# the scripts source, so no boundary value is written down twice.
+
+name: maple-atproto
+
+services:
+  # Owns the network namespace and every published port. Nothing else.
+  net:
+    image: ${ANCHOR_IMAGE}
+    init: true
+    command: ["sleep", "infinity"]
+    ports:
+      - "${RELAY_PORT}:${RELAY_PORT}" # relay: XRPC + firehose
+      - "${RELAY_METRICS_PORT}:${RELAY_METRICS_PORT}" # relay: prometheus
+      - "${PLC_PORT}:${PLC_PORT}"
+      - "${PDS_PORT}:${PDS_PORT}"
+      - "${JETSTREAM_PORT}:${JETSTREAM_PORT}"
+      - "${JETSTREAM_DEBUG_PORT}:${JETSTREAM_DEBUG_PORT}" # /healthz, /readyz, /metrics
+
+  postgres:
+    image: ${POSTGRES_IMAGE}
+    network_mode: "service:net"
+    environment:
+      POSTGRES_USER: plc
+      POSTGRES_PASSWORD: plc
+      POSTGRES_DB: plc
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plc -d plc"]
+      interval: 15s
+      start_period: 45s
+      start_interval: 1s
+      timeout: 3s
+      retries: 5
+
+  # Built, not pulled: see the plc note in images.env.
+  plc:
+    build:
+      context: "${PLC_GIT_REPO}#${PLC_GIT_REF}"
+      dockerfile: packages/server/Dockerfile
+    network_mode: "service:net"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: ${PLC_PORT}
+      # The service entrypoint reads DB_CREDS_JSON, not DATABASE_URL.
+      DB_CREDS_JSON: '{"username":"plc","password":"plc","host":"localhost","port":"5432","database":"plc"}'
+      DB_MIGRATE_CREDS_JSON: '{"username":"plc","password":"plc","host":"localhost","port":"5432","database":"plc"}'
+      ENABLE_MIGRATIONS: "true"
+      LOG_ENABLED: "true"
+      LOG_LEVEL: info
+      NODE_ENV: development
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:${PLC_PORT}/_health"
+        ]
+      interval: 15s
+      start_period: 60s
+      start_interval: 1s
+      timeout: 3s
+      retries: 5
+
+  pds:
+    image: ${PDS_IMAGE}
+    network_mode: "service:net"
+    depends_on:
+      plc:
+        condition: service_healthy
+    environment:
+      # LOAD-BEARING. Any other hostname bakes https:// into the DID document
+      # and into describeServer, after which everything that resolves the DID
+      # dials https and fails. There is no PDS_PUBLIC_URL to override it.
+      PDS_HOSTNAME: localhost
+      PDS_PORT: ${PDS_PORT}
+      # Required whenever publicUrl is http://. The OAuth protected-resource
+      # metadata is built from publicUrl and the PDS refuses to start on a
+      # non-https resource URL unless dev mode is on (auth-routes.ts). Dev mode
+      # also relaxes SSRF protection on outbound fetch/proxy.
+      PDS_DEV_MODE: "true"
+      PDS_SERVICE_DID: did:web:localhost
+      PDS_DID_PLC_URL: http://localhost:${PLC_PORT}
+      PDS_DATA_DIRECTORY: /pds/data
+      PDS_BLOBSTORE_DISK_LOCATION: /pds/data/blocks
+      PDS_SERVICE_HANDLE_DOMAINS: .test
+      # The PDS would call the PUBLIC requestCrawl, which rejects localhost
+      # hosts outright. bootstrap.sh makes the admin call instead.
+      PDS_CRAWLERS: ""
+      PDS_INVITE_REQUIRED: "false"
+      # Local-only credentials. Not secrets; do not copy into any deployment.
+      PDS_ADMIN_PASSWORD: ${PDS_ADMIN_PASSWORD}
+      PDS_JWT_SECRET: harness-jwt-secret-not-for-production
+      PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      # NOTE: both SMTP vars must be absent. Setting one of the two makes the
+      # container exit at startup with "Partial email config".
+      LOG_ENABLED: "true"
+      NODE_ENV: development
+    volumes:
+      - pds-data:/pds/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:${PDS_PORT}/xrpc/_health"
+        ]
+      interval: 15s
+      start_period: 60s
+      start_interval: 1s
+      timeout: 3s
+      retries: 5
+
+  relay:
+    image: ${RELAY_IMAGE}
+    # indigo and jetstream publish linux/amd64 only, so on an arm64 Mac these
+    # two run emulated. Local-only friction: Cloud Run is amd64 native.
+    platform: linux/amd64
+    network_mode: "service:net"
+    depends_on:
+      pds:
+        condition: service_healthy
+    environment:
+      RELAY_API_BIND: ":${RELAY_PORT}"
+      RELAY_METRICS_LISTEN: ":${RELAY_METRICS_PORT}"
+      RELAY_PLC_HOST: http://localhost:${PLC_PORT}
+      DATABASE_URL: sqlite:///data/relay/relay.sqlite
+      RELAY_PERSIST_DIR: /data/relay/persist
+      # Fixed rather than generated, so bootstrap.sh can authenticate without
+      # scraping it back out of the startup log. Local-only.
+      RELAY_ADMIN_PASSWORD: ${RELAY_ADMIN_PASSWORD}
+      # Permits http:// upstreams. The admin endpoint bypasses this check
+      # anyway; set explicitly so the intent is readable.
+      RELAY_ALLOW_INSECURE_HOSTS: "true"
+      # Sync 1.1 messages that fail validation are logged, not dropped. Turn
+      # this off once the pinned pds image is known to be conformant — that is
+      # how open question 7 gets an answer with evidence behind it.
+      RELAY_LENIENT_SYNC_VALIDATION: "true"
+      RELAY_LOG_LEVEL: info
+    volumes:
+      - relay-data:/data/relay
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:${RELAY_PORT}/_health"
+        ]
+      interval: 15s
+      start_period: 60s
+      start_interval: 1s
+      timeout: 3s
+      retries: 5
+
+  # jetstream's image is distroless and runs as uid 65532, so the named volume
+  # (created root-owned) has to be handed over before it starts.
+  jetstream-init:
+    image: ${ANCHOR_IMAGE}
+    command: ["sh", "-c", "mkdir -p /data && chown -R 65532:65532 /data"]
+    volumes:
+      - jetstream-data:/data
+
+  jetstream:
+    image: ${JETSTREAM_IMAGE}
+    platform: linux/amd64
+    network_mode: "service:net"
+    depends_on:
+      relay:
+        condition: service_healthy
+      jetstream-init:
+        condition: service_completed_successfully
+    environment:
+      JETSTREAM_ADDR: ":${JETSTREAM_PORT}"
+      # /healthz and /readyz live on the debug listener, not the public one.
+      JETSTREAM_DEBUG_ADDR: ":${JETSTREAM_DEBUG_PORT}"
+      JETSTREAM_RELAY_URL: http://localhost:${RELAY_PORT}
+      # Empty would mean https://plc.directory, where locally-minted DIDs do
+      # not exist and therefore will not verify.
+      JETSTREAM_PLC_URL: http://localhost:${PLC_PORT}
+      JETSTREAM_DATA_DIR: /data
+      JETSTREAM_LOG_LEVEL: info
+      # NOTE: an unrecognised JETSTREAM_* variable is a hard startup error, not
+      # a warning. A typo below stops the container.
+    volumes:
+      - jetstream-data:/data
+    # No healthcheck: the image is distroless, so there is no shell or wget for
+    # a CMD probe to run. bootstrap.sh waits on /healthz from outside instead.
+
+  # Escape hatch, not part of `up` — see the requestCrawl note in bootstrap.sh
+  # and README.md. Registers the PDS by writing the row requestCrawl would have
+  # written. A compose service rather than a bare `docker run` so that compose
+  # owns the volume name: hardcoding it means a project rename silently creates
+  # a NEW empty volume and the insert appears to succeed.
+  #
+  # The columns mirror indigo's models.Host as of RELAY_IMAGE in images.env.
+  # Re-check them when that pin moves. python is here only for its stdlib
+  # sqlite3 — the relay image has no sqlite client.
+  relay-register:
+    image: ${SQLITE_IMAGE}
+    profiles: ["tools"]
+    volumes:
+      - relay-data:/data
+    environment:
+      PDS_HOST_PORT: "localhost:${PDS_PORT}"
+      ACCOUNT_LIMIT: "100"
+    command:
+      - python
+      - -c
+      - |
+        import os, sqlite3
+        host = os.environ["PDS_HOST_PORT"]
+        db = sqlite3.connect("/data/relay.sqlite")
+        db.execute(
+            "INSERT INTO host (created_at, updated_at, hostname, no_ssl,"
+            " account_limit, trusted, status, last_seq, account_count)"
+            " VALUES (datetime('now'), datetime('now'), ?, 1, ?, 0, 'active', -1, 0)"
+            " ON CONFLICT(hostname) DO NOTHING",
+            (host, int(os.environ["ACCOUNT_LIMIT"])),
+        )
+        db.commit()
+        print(f"registered {host}: {db.execute('select count(*) from host').fetchone()[0]} host row(s)")
+
+volumes:
+  pg-data: {}
+  pds-data: {}
+  relay-data: {}
+  jetstream-data: {}

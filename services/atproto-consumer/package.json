@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "tsx src/index.ts",
+    "emulator": "npx -y firebase-tools@14 emulators:start --config ../../firebase.json --project demo-atp-local --only firestore",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "node --import tsx --test \"test/**/*.test.ts\"",

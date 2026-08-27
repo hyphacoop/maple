@@ -1,5 +1,5 @@
 import { Jetstream } from "@bsky/jetstream"
-import { FirestoreCursorStore } from "./cursor-store.js"
+import { FirestoreCursorStore, cursorDocPath } from "./cursor-store.js"
 import { initFirestore } from "./db.js"
 import { buildIndexer } from "./indexer.js"
 
@@ -24,10 +24,10 @@ async function main() {
   console.log(
     `[consumer] jetstream=${JETSTREAM_URL} project=${PROJECT_ID} firestore=${
       process.env.FIRESTORE_EMULATOR_HOST ?? "LIVE"
-    }`
+    } cursor=${cursorDocPath(JETSTREAM_URL)}`
   )
 
-  const cursor = new FirestoreCursorStore(db)
+  const cursor = FirestoreCursorStore.forJetstream(db, JETSTREAM_URL)
   const resumeSeq = await cursor.load()
   console.log(
     resumeSeq === undefined

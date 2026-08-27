@@ -108,3 +108,6 @@ CLAUDE.md
 # come from prod outright. See tests/search-eval/README.md. Labeling sheets are
 # authoring scratch.
 tests/search-eval/labeling-sheet-*.md
+
+# local atproto harness state (DID/cid of the last seeded record)
+infra/atproto/.harness-state
