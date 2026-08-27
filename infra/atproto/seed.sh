@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# Write one app.bsky.actor.profile record to the local PDS and record what was
+# Write one org.mapletestimony.bill record to the local PDS and record what was
 # written in .harness-state, so check.sh and recovery.sh can assert against THIS
 # record rather than whatever happens to be in Firestore.
+#
+# The record is the consumer's own fixture — the same file the lexicon validator
+# checks and the unit tests drive events from — with fetchedAt stamped to now.
+# One source of truth for "a valid MAPLE bill", and a fresh fetchedAt gives every
+# seed a distinct cid, which is what lets the assertions tell a new delivery from
+# a document an earlier run left behind.
 #
 # Split out of bootstrap.sh because the recovery scenarios seed repeatedly, and
 # they must do it with `set -e` intact: a silently failed seed would leave a
@@ -46,12 +52,47 @@ DID=$(printf '%s' "$session" | jqp did)
 JWT=$(printf '%s' "$session" | jqp accessJwt)
 [ -n "$DID" ] && [ -n "$JWT" ] || fail "could not obtain a DID/session from $PDS_URL"
 
+# The rkey is the PUBLISHER's convention, and seeding is what the publisher
+# will eventually do, so deriving it here is right. The document path is
+# the consumer's -- src/records.ts owns `atpBills` and `billDocId` -- and it is
+# spelled again below only because reading it out of the TS package would put a
+# node 22 dependency into a script that otherwise needs curl and python3. Today
+# the two conventions coincide; if they stop, check.sh fails loudly rather than
+# passing, and its hint block says to look here.
+BODY_FILE=$(mktemp)
+trap 'rm -f "$BODY_FILE"' EXIT
+meta=$(FIXTURE="$FIXTURE_DIR/bill.record.json" REPO="$DID" OUT="$BODY_FILE" python3 <<'PY'
+import datetime, json, os
+
+record = json.load(open(os.environ["FIXTURE"]))
+record["fetchedAt"] = (
+    datetime.datetime.now(datetime.timezone.utc)
+    .isoformat(timespec="milliseconds")
+    .replace("+00:00", "Z")
+)
+collection = record["$type"]
+rkey = f'{record["court"]}-{record["billId"]}'
+json.dump(
+    {"repo": os.environ["REPO"], "collection": collection, "rkey": rkey, "record": record},
+    open(os.environ["OUT"], "w"),
+)
+print(collection, rkey, f"atpBills/{rkey}")
+PY
+)
+read -r COLLECTION RKEY DOC_PATH <<< "$meta"
+
 put=$(curl -fsS -X POST "$PDS_URL/xrpc/com.atproto.repo.putRecord" \
   -H "authorization: Bearer $JWT" \
   -H 'content-type: application/json' \
-  -d "{\"repo\":\"$DID\",\"collection\":\"app.bsky.actor.profile\",\"rkey\":\"self\",\"record\":{\"\$type\":\"app.bsky.actor.profile\",\"displayName\":\"$DISPLAY_NAME\",\"description\":\"seeded by infra/atproto/seed.sh at $(date -u +%FT%TZ)\"}}")
+  --data-binary "@$BODY_FILE")
 CID=$(printf '%s' "$put" | jqp cid)
 [ -n "$CID" ] || fail "putRecord returned no cid: $put"
 
-printf 'DID=%s\nCID=%s\n' "$DID" "$CID" > "$STATE_FILE"
-echo "seeded $DID cid=$CID"
+cat > "$STATE_FILE" <<STATE
+DID=$DID
+CID=$CID
+COLLECTION=$COLLECTION
+RKEY=$RKEY
+DOC_PATH=$DOC_PATH
+STATE
+echo "seeded $COLLECTION/$RKEY in $DID cid=$CID"

@@ -21,16 +21,6 @@
   dependencies:
     "@atproto-labs/pipe" "^0.2.4"
 
-"@atproto-labs/handle-resolver@^0.4.6":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@atproto-labs/handle-resolver/-/handle-resolver-0.4.8.tgz#33636e113b9cfafe60c339490e31bbe410549324"
-  integrity sha512-38I+j8Efs+cCgW/NX9RFKKu7qv/AF+FqxlKS8sWjXlNZSHQZqPj5cnKVQhSsJCs4ypPB84iKch8w4/STd33bLg==
-  dependencies:
-    "@atproto-labs/simple-store" "^0.5.1"
-    "@atproto-labs/simple-store-memory" "^0.2.6"
-    "@atproto/did" "^0.5.4"
-    zod "^3.23.8"
-
 "@atproto-labs/pipe@^0.2.4":
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@atproto-labs/pipe/-/pipe-0.2.4.tgz#5a3fb21957b71131f33fed163bf4e94240cd9d26"
@@ -209,7 +199,7 @@
     varint "^6.0.0"
     zod "^3.23.8"
 
-"@atproto/syntax@^0.7.2", "@atproto/syntax@^0.7.4":
+"@atproto/syntax@^0.7.4":
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/@atproto/syntax/-/syntax-0.7.4.tgz#88e4bbbe91c4a4f99673c302a4d6acbaac945415"
   integrity sha512-EHsEHtasH/DGPljBYecVDjweGMQ5eTu6Ns0GZ5z0qdqpOI8ipBvldWnMIxWkA+5HfZ9Dsu4V1MX0WP7wgL8cuA==
@@ -231,15 +221,6 @@
   dependencies:
     "@atproto/lex-cbor" "^0.1.6"
     "@atproto/ws-client" "^0.2.0"
-
-"@bsky/sdk@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@bsky/sdk/-/sdk-1.0.1.tgz#138ab8c7403eb6218e9db77427e94ca87d67f1fc"
-  integrity sha512-COhrmIZFsUJ1gj4gvqm2UWkRhTbmXZAL1osTZKgSaFftD4Xy0RRl8S9SRluCxo4/VPw/R3p7NQZ4X3BQFbUjVQ==
-  dependencies:
-    "@atproto-labs/handle-resolver" "^0.4.6"
-    "@atproto/syntax" "^0.7.2"
-    tlds "^1.261.0"
 
 "@esbuild/aix-ppc64@0.28.2":
   version "0.28.2"
@@ -1949,11 +1930,6 @@ tinyglobby@^0.2.14:
   dependencies:
     fdir "^6.5.0"
     picomatch "^4.0.4"
-
-tlds@^1.261.0:
-  version "1.261.0"
-  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.261.0.tgz#055e412e92f01f84a9c8ac0504d3472d68b3c4c9"
-  integrity sha512-QXqwfEl9ddlGBaRFXIvNKK6OhipSiLXuRuLJX5DErz0o0Q0rYxulWLdFryTkV5PkdZct5iMInwYEGe/eR++1AA==
 
 tr46@~0.0.3:
   version "0.0.3"

@@ -79,14 +79,29 @@ jobs:
         working-directory: services/atproto-consumer
       - run: yarn typecheck
         working-directory: services/atproto-consumer
+      # Generated lexicon types are committed, so a lexicon edited without a
+      # regen would otherwise ship types that describe the old schema.
+      - name: Lexicon Codegen Is Current
+        # --porcelain, not `git diff`: a newly added lexicon generates untracked
+        # files, which a diff would not see.
+        run: |
+          yarn codegen
+          if [ -n "$(git status --porcelain -- src/lexicons)" ]; then
+            git status --short -- src/lexicons
+            echo "::error::lexicons/ changed without re-running 'yarn codegen'"
+            exit 1
+          fi
+        working-directory: services/atproto-consumer
+      - name: Lexicon Documents And Fixtures
+        run: yarn validate
+        working-directory: services/atproto-consumer
       - name: Cache Emulators
         uses: actions/cache@v4
         with:
           path: /home/runner/.cache/firebase/emulators
+          # ft14 tracks the firebase-tools@14 that the consumer's test:emulated
+          # script fetches via npx; bump both together.
           key: ${{ runner.os }}-firebase-emulators-ft14
-      # test:emulated fetches firebase-tools via npx rather than a root yarn
-      # install because the root is engines-locked to node 20 while this job
-      # runs the consumer's node 22.
       - name: Consumer Tests
         run: yarn test:emulated
         working-directory: services/atproto-consumer

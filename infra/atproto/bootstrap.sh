@@ -95,10 +95,11 @@ cat <<NEXT
 
     # terminal 2 — consumer (needs node >= 22.15)
     JETSTREAM_URL=$JETSTREAM_URL GCLOUD_PROJECT=$GCLOUD_PROJECT \\
-      yarn --cwd services/atproto-consumer dev
+      MAPLE_DIDS=$DID yarn --cwd services/atproto-consumer dev
 
     # terminal 3 — write a record while it watches, then assert it arrived
     infra/atproto/seed.sh && infra/atproto/check.sh
 
-  the DID to look for is $DID (doc id in atpJetstreamProfiles).
+  the record to look for is $COLLECTION/$RKEY in $DID,
+  which the consumer indexes to $DOC_PATH.
 NEXT

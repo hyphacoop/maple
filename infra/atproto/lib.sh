@@ -6,6 +6,9 @@
 HARNESS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd "$HARNESS_DIR/../.." && pwd)
 CONSUMER_DIR="$REPO_ROOT/services/atproto-consumer"
+# The record fixtures the consumer's own tests and lexicon validator use; the
+# harness seeds from the same files so "valid record" means one thing.
+FIXTURE_DIR="$CONSUMER_DIR/fixtures"
 STATE_FILE="$HARNESS_DIR/.harness-state"
 
 set -a
@@ -58,5 +61,8 @@ load_state() {
   [ -f "$STATE_FILE" ] || fail "no .harness-state — run ./bootstrap.sh first"
   # shellcheck disable=SC1090
   . "$STATE_FILE"
-  [ -n "${DID:-}" ] && [ -n "${CID:-}" ] || fail "$STATE_FILE is missing DID or CID — re-run ./bootstrap.sh"
+  local k
+  for k in DID CID COLLECTION RKEY DOC_PATH; do
+    [ -n "${!k:-}" ] || fail "$STATE_FILE is missing $k — re-run ./seed.sh"
+  done
 }

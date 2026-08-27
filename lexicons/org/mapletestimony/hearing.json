@@ -1,0 +1,119 @@
+{
+  "lexicon": 1,
+  "id": "org.mapletestimony.hearing",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A Massachusetts legislature hearing mirrored into an ATProto repo. Record key convention: the upstream EventId as a string (e.g. '4837'), which consumers must treat as opaque — hearingId is carried as a field. Video transcription state (transcript ids, fetch bookkeeping) is our own pipeline's operational state, not legislative data, and is deliberately absent.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["hearingId", "content", "startsAt", "fetchedAt"],
+        "properties": {
+          "hearingId": {
+            "type": "integer",
+            "description": "Upstream EventId. Unique across general courts."
+          },
+          "content": { "type": "ref", "ref": "#hearingContent" },
+          "startsAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Start instant, resolved from the upstream local date and time in the legislature's time zone. Unlike content.eventDate/startTime this is unambiguous."
+          },
+          "videoUrl": { "type": "string", "format": "uri" },
+          "committeeChairs": {
+            "type": "array",
+            "items": { "type": "string", "maxGraphemes": 256 },
+            "description": "Names of the hosting committee's chairs, joined from the committee record at scrape time."
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this hearing was last fetched from the upstream legislature API."
+          }
+        }
+      }
+    },
+    "hearingContent": {
+      "type": "object",
+      "description": "Hearing content as published by the legislature, minus EventId which is carried on the record itself.",
+      "required": [
+        "eventDate",
+        "startTime",
+        "description",
+        "status",
+        "agendas"
+      ],
+      "properties": {
+        "eventDate": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Upstream date string, preserved verbatim. Not format=datetime: the upstream API emits local times with no timezone offset. Use startsAt for an actual instant."
+        },
+        "startTime": { "type": "string", "maxLength": 64 },
+        "description": { "type": "string", "maxGraphemes": 2000 },
+        "name": { "type": "string", "maxGraphemes": 512 },
+        "status": { "type": "string", "maxLength": 64 },
+        "host": { "type": "ref", "ref": "#hearingHost" },
+        "location": { "type": "ref", "ref": "#location" },
+        "agendas": {
+          "type": "array",
+          "items": { "type": "ref", "ref": "#agenda" }
+        },
+        "rescheduledTo": { "type": "ref", "ref": "#reschedule" }
+      }
+    },
+    "hearingHost": {
+      "type": "object",
+      "description": "The hosting committee. Both fields are nullable upstream.",
+      "properties": {
+        "committeeCode": { "type": "string", "maxLength": 32 },
+        "generalCourtNumber": { "type": "integer" }
+      }
+    },
+    "location": {
+      "type": "object",
+      "description": "Every field is nullable upstream, so none is required here.",
+      "properties": {
+        "locationName": { "type": "string", "maxGraphemes": 256 },
+        "addressLine1": { "type": "string", "maxGraphemes": 256 },
+        "addressLine2": { "type": "string", "maxGraphemes": 256 },
+        "city": { "type": "string", "maxGraphemes": 128 },
+        "state": { "type": "string", "maxLength": 64 },
+        "zipCode": { "type": "string", "maxLength": 16 }
+      }
+    },
+    "agenda": {
+      "type": "object",
+      "required": ["startTime", "endTime", "topic", "documents"],
+      "properties": {
+        "startTime": { "type": "string", "maxLength": 64 },
+        "endTime": { "type": "string", "maxLength": 64 },
+        "topic": { "type": "string", "maxGraphemes": 512 },
+        "documents": {
+          "type": "array",
+          "items": { "type": "ref", "ref": "#agendaDocument" }
+        }
+      }
+    },
+    "agendaDocument": {
+      "type": "object",
+      "description": "A bill scheduled at this hearing. billNumber + generalCourtNumber is the ONLY bill<->hearing key the upstream API provides; it is deliberately a plain identifier rather than a strongRef, because the publisher has no CID for the bill record at the time it writes a hearing.",
+      "required": ["billNumber", "generalCourtNumber", "title"],
+      "properties": {
+        "billNumber": { "type": "string", "maxLength": 32 },
+        "generalCourtNumber": { "type": "integer" },
+        "primarySponsorId": { "type": "string", "maxLength": 32 },
+        "title": { "type": "string", "maxGraphemes": 2000 }
+      }
+    },
+    "reschedule": {
+      "type": "object",
+      "required": ["eventDate", "startTime"],
+      "properties": {
+        "eventDate": { "type": "string", "maxLength": 64 },
+        "startTime": { "type": "string", "maxLength": 64 }
+      }
+    }
+  }
+}

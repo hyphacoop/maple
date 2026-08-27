@@ -12,6 +12,7 @@ set -euo pipefail
 TIMEOUT=${TIMEOUT:-60}
 load_state
 
+echo "record:   $COLLECTION/$RKEY"
 echo "did:      $DID"
 echo "project:  $GCLOUD_PROJECT"
 echo "emulator: $FIRESTORE_EMULATOR_HOST"
@@ -26,11 +27,11 @@ echo "ok:       relay knows the repo"
 # document left by an earlier run cannot pass for a fresh delivery.
 printf 'waiting for the document (up to %ss) ' "$TIMEOUT"
 for _ in $(seq 1 "$TIMEOUT"); do
-  if body=$(fsget "atpJetstreamProfiles/$DID") && printf '%s' "$body" | grep -q "$CID"; then
+  if body=$(fsget "$DOC_PATH") && printf '%s' "$body" | grep -q "$CID"; then
     printf ' found\n\n'
     printf '%s' "$body" | python3 -m json.tool
-    pass "a record put on the local PDS arrived in the Firestore emulator,
-      via PDS -> relay -> jetstream -> consumer. cid=$CID"
+    pass "a $COLLECTION record put on the local PDS arrived in the Firestore
+      emulator at $DOC_PATH, via PDS -> relay -> jetstream -> consumer. cid=$CID"
     exit 0
   fi
   printf .
@@ -44,7 +45,9 @@ FAIL: the newest seeded record never reached Firestore (an older document for
 this DID may well be sitting there — that is not a pass). In order:
   - is the consumer running, and against THIS jetstream?
       JETSTREAM_URL=$JETSTREAM_URL GCLOUD_PROJECT=$GCLOUD_PROJECT \\
-        yarn --cwd services/atproto-consumer dev
+        MAPLE_DIDS=$DID yarn --cwd services/atproto-consumer dev
+  - is MAPLE_DIDS set to a DID other than $DID? that filters this record out
+    server-side and looks exactly like an idle stream.
   - is it pointed at THIS emulator/project? a different GCLOUD_PROJECT writes
     to a different emulator namespace and looks identical to "nothing arrived".
   - did it resume from a stale cursor? a cursor left by a previous run of a

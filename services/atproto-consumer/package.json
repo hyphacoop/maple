@@ -9,6 +9,8 @@
   },
   "scripts": {
     "dev": "tsx src/index.ts",
+    "codegen": "lex build --lexicons ../../lexicons --out ./src/lexicons --clear --index-file",
+    "validate": "tsx scripts/validate-lexicons.ts",
     "emulator": "npx -y firebase-tools@14 emulators:start --config ../../firebase.json --project demo-atp-local --only firestore",
     "build": "tsc",
     "start": "node dist/index.js",
@@ -19,7 +21,6 @@
   "dependencies": {
     "@atproto/lex": "^0.3.6",
     "@bsky/jetstream": "^1.0.0",
-    "@bsky/sdk": "^1.0.1",
     "firebase-admin": "^14.3.0"
   },
   "devDependencies": {

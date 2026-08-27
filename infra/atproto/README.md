@@ -23,13 +23,21 @@ Then, from the repo root, in separate terminals:
     yarn --cwd services/atproto-consumer emulator
 
     JETSTREAM_URL=http://localhost:6008 GCLOUD_PROJECT=demo-atp-local \
+      MAPLE_DIDS=<the DID bootstrap.sh printed> \
       yarn --cwd services/atproto-consumer dev
 
     infra/atproto/seed.sh               # write a record while the consumer is live
     infra/atproto/check.sh              # assert it completed the trip
 
-`check.sh` compares against the cid `seed.sh` last wrote, so an old document
-left over from a previous run cannot pass for a fresh delivery.
+The record is an `org.mapletestimony.bill` built from the consumer's own
+fixture (`services/atproto-consumer/fixtures/bill.record.json`) with `fetchedAt`
+stamped to now — so every seed has a distinct cid, and `check.sh` compares
+against the cid `seed.sh` last wrote. An old document left over from a previous
+run cannot pass for a fresh delivery.
+
+`.harness-state` carries the collection, rkey and target document path along
+with the DID and cid, so the scripts assert against the record that was
+actually written rather than re-deriving conventions in three places.
 
 To drive compose by hand, pass both env files — without them the stack has no
 image references and no ports:
@@ -155,9 +163,9 @@ document. Separate projects make that structural instead of something to
 remember.
 
 `services/atproto-consumer/` runs here **unmodified**, pointed by env alone:
-`JETSTREAM_URL`, `GCLOUD_PROJECT`, `FIRESTORE_EMULATOR_HOST`. If a change to
-`src/` ever looks necessary to run locally, that is a finding about the seam,
-not an edit to make.
+`JETSTREAM_URL`, `GCLOUD_PROJECT`, `FIRESTORE_EMULATOR_HOST`, `MAPLE_DIDS`. If
+a change to `src/` ever looks necessary to run locally, that is a finding about
+the seam, not an edit to make.
 
 One consumer change did come out of this work, and it is not an `if-local`: the
 cursor document is keyed by jetstream host (`atpJetstreamMeta/cursor-<host>`),

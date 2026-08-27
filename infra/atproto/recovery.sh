@@ -35,6 +35,11 @@ node22() {
 }
 NODE=${NODE:-$(node22)}
 
+# Up front, so a missing state file says "run ./bootstrap.sh" instead of failing
+# obscurely later — and so the DID is known before the first consumer starts,
+# which is what lets it run with the same MAPLE_DIDS filter a deployment uses.
+load_state
+
 start_consumer() {
   stop_consumer   # a second consumer on the same document invalidates everything
   : > "$LOG"
@@ -43,6 +48,7 @@ start_consumer() {
   ( cd "$CONSUMER_DIR" && exec env "$MARKER" \
       JETSTREAM_URL="$JETSTREAM_URL" GCLOUD_PROJECT="$GCLOUD_PROJECT" \
       FIRESTORE_EMULATOR_HOST="$FIRESTORE_EMULATOR_HOST" \
+      MAPLE_DIDS="$DID" \
       "$NODE" --import tsx src/index.ts >> "$LOG" 2>&1 ) &
   echo $! > "$PIDFILE"
   for _ in $(seq 1 30); do
@@ -74,14 +80,21 @@ seed() { "$HARNESS_DIR/seed.sh" >/dev/null; load_state; }
 
 # The document as the consumer holds it, minus the index-time stamp.
 doc_state() {
-  fsget "atpJetstreamProfiles/$DID" | python3 -c '
+  fsget "$DOC_PATH" | python3 -c '
 import sys, json
 try:
     d = json.load(sys.stdin)
 except Exception:
     print(""); raise SystemExit
 f = d.get("fields", {})
-f.pop("indexedAt", None)
+# Strip the index-time stamp. Raising beats popping-with-a-default: if the
+# envelope is ever renamed or flattened, a silent no-op would leave indexedAt
+# in the comparison and every scenario would fail intermittently, far from the
+# change that caused it.
+atp = f.get("atp", {}).get("mapValue", {}).get("fields")
+if atp is None or "indexedAt" not in atp:
+    raise SystemExit("doc has no atp.indexedAt — the envelope shape changed; update recovery.sh")
+del atp["indexedAt"]
 print(json.dumps(f, sort_keys=True))
 '
 }
@@ -127,7 +140,7 @@ baseline() {
 # truth for the whole pipeline.
 assert_matches_pds() {
   local pds_cid
-  pds_cid=$(curl -fsS "$PDS_URL/xrpc/com.atproto.repo.getRecord?repo=$DID&collection=app.bsky.actor.profile&rkey=self" | jqp cid)
+  pds_cid=$(curl -fsS "$PDS_URL/xrpc/com.atproto.repo.getRecord?repo=$DID&collection=$COLLECTION&rkey=$RKEY" | jqp cid)
   doc_state | grep -q "$pds_cid" || fail "consumer state does not match the PDS record ($pds_cid)"
   echo "end state matches the PDS record: $pds_cid"
 }

@@ -1,4 +1,9 @@
-import { Jetstream } from "@bsky/jetstream"
+import { isDidString, type DidString } from "@atproto/lex"
+import {
+  Jetstream,
+  type JetstreamConsumer,
+  type LexIndexer
+} from "@bsky/jetstream"
 import { FirestoreCursorStore, cursorDocPath } from "./cursor-store.js"
 import { initFirestore } from "./db.js"
 import { buildIndexer } from "./indexer.js"
@@ -17,6 +22,50 @@ if (
 const JETSTREAM_URL =
   process.env.JETSTREAM_URL ?? "https://jetstream.us-east.bsky.network"
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "demo-dtp"
+
+/**
+ * Repos to accept records from, comma-separated. Unset means no DID filter:
+ * the NSID filter alone is already safe on the public network, where nothing
+ * emits org.mapletestimony.*. A filter that defaulted to matching NOTHING
+ * would instead make a misconfigured consumer look exactly like a healthy
+ * idle one, which is the failure mode the local harness exists to catch.
+ * Deployments pin it to MAPLE's own DID.
+ */
+function parseDids(raw: string): DidString[] {
+  const dids = raw
+    .split(",")
+    .map(d => d.trim())
+    .filter(Boolean)
+  // Validate rather than cast. A typo'd DID — a handle, a stray quote, a
+  // trailing character — is accepted by the server as a filter matching
+  // nothing, which produces exactly the healthy-looking idle consumer this
+  // setting's default was chosen to avoid. Fail at startup instead.
+  const invalid = dids.filter(d => !isDidString(d))
+  if (invalid.length)
+    throw new Error(`MAPLE_DIDS contains invalid DIDs: ${invalid.join(", ")}`)
+  return dids as DidString[]
+}
+
+const MAPLE_DIDS = parseDids(process.env.MAPLE_DIDS ?? "")
+
+/** The runner reads `collections`/`dids`/`kinds` off the consumer to build the
+ * server-side filter; LexIndexer declares the first two but has no place to
+ * put DIDs, so the filter is declared at this seam. Enumerating the interface
+ * by hand is the cost: a future fourth declaration would be honoured when
+ * MAPLE_DIDS is unset and silently dropped when it is set. Pushing `dids` into
+ * LexIndexerOpts upstream would retire this wrapper. */
+function withDidFilter(
+  indexer: LexIndexer,
+  dids: DidString[]
+): JetstreamConsumer {
+  if (dids.length === 0) return indexer
+  return {
+    collections: indexer.collections,
+    kinds: indexer.kinds,
+    dids,
+    run: (stream, ctx) => indexer.run(stream, ctx)
+  }
+}
 
 async function main() {
   const db = initFirestore(PROJECT_ID)
@@ -52,7 +101,7 @@ async function main() {
 
   const jetstream = new Jetstream(JETSTREAM_URL)
   try {
-    await jetstream.runner(indexer).live({
+    await jetstream.runner(withDidFilter(indexer, MAPLE_DIDS)).live({
       cursor,
       signal: abort.signal,
       onError: err => console.warn(`[consumer] recoverable: ${err.message}`),

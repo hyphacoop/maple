@@ -1,0 +1,61 @@
+{
+  "$type": "org.mapletestimony.bill",
+  "court": 194,
+  "billId": "H72",
+  "content": {
+    "title": "An Act relative to the oversight of cable contracts",
+    "docketNumber": "HD301",
+    "primarySponsor": {
+      "id": "J_B1",
+      "name": "John Barrett, III",
+      "memberType": 1
+    },
+    "cosponsors": [
+      {
+        "id": "J_B1",
+        "name": "John Barrett, III",
+        "memberType": 1
+      },
+      {
+        "id": "SGX1",
+        "name": "Steven George Xiarhos",
+        "memberType": 1
+      }
+    ],
+    "legislationTypeName": "Bill",
+    "pinslip": "By Representative Barrett of North Adams, a petition (accompanied by bill, House, No. 72) of John Barrett, III relative to the oversight of cable contracts.  Advanced Information Technology, the Internet and Cybersecurity."
+  },
+  "history": [
+    {
+      "date": "2025-02-27T00:00:00",
+      "branch": "House",
+      "action": "Referred to the committee on Advanced Information Technology, the Internet and Cybersecurity"
+    },
+    {
+      "date": "2025-06-30T10:39:35.04",
+      "branch": "Joint",
+      "action": "Hearing scheduled for 07/10/2025 from 01:00 PM-05:00 PM in A-2"
+    }
+  ],
+  "similar": ["S38"],
+  "currentCommittee": {
+    "id": "J33",
+    "name": "Joint Committee on Advanced Information Technology, the Internet and Cybersecurity",
+    "houseChair": {
+      "id": "J_B1",
+      "name": "John Barrett, III",
+      "email": "John.Barrett@mahouse.gov"
+    }
+  },
+  "topics": [
+    {
+      "category": "Commerce",
+      "topic": "Telecommunications"
+    }
+  ],
+  "summary": "Requires that license violations by cable operators be referred to the Department of Telecommunications and Cable, and that the department review settlement agreements between issuing authorities and licensees.",
+  "hearingIds": [5142],
+  "nextHearingId": 5142,
+  "nextHearingAt": "2025-07-10T17:00:00.000Z",
+  "fetchedAt": "2026-07-28T00:00:00.000Z"
+}

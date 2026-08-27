@@ -1,4 +1,12 @@
+import { readFileSync } from "node:fs"
 import type { EventBatch, RawEvent } from "@bsky/jetstream"
+import {
+  billRecord,
+  hearingRecord,
+  type BillRecord,
+  type HearingRecord,
+  type RecordType
+} from "../src/records.js"
 
 /**
  * Builders for synthetic Jetstream v2 wire events, typed as the SDK's own
@@ -6,13 +14,33 @@ import type { EventBatch, RawEvent } from "@bsky/jetstream"
  * This module is the single branded-type boundary: identifiers must be
  * well-formed (handler-facing uri/cid are lazy getters that validate on
  * first read), and the one `as RawEvent` cast lives in commitEvent().
+ *
+ * Default records come from fixtures/, the same files the lexicon validator
+ * checks and infra/atproto/seed.sh puts on the local PDS — so a fixture that
+ * stops satisfying the lexicon fails here, in the unit tests, rather than as
+ * an unexplained skipped record in the e2e harness.
  */
 
 const DEFAULT_DID = "did:plc:harness0000000000000000"
-const PROFILE_NSID = "app.bsky.actor.profile"
 const DEFAULT_REV = "3juf3jt2t2c2x"
 const DEFAULT_CID =
   "bafyreihgx7zaladfyv6uxdc4le37yqi3azfhawvlbmnzpvbmjmoiabx3wa"
+
+const load = <R>(type: RecordType<R>): R =>
+  JSON.parse(
+    readFileSync(
+      new URL(`../fixtures/${type.fixture}`, import.meta.url),
+      "utf8"
+    )
+  )
+
+export const billFixture: BillRecord = load(billRecord)
+export const hearingFixture: HearingRecord = load(hearingRecord)
+
+/** Matches the publisher's rkey conventions. Nothing in src/ may depend
+ * on these; they exist so the synthetic events look like the real ones. */
+export const BILL_RKEY = `${billFixture.court}-${billFixture.billId}`
+export const HEARING_RKEY = String(hearingFixture.hearingId)
 
 let seqCounter = 1000
 export const nextSeq = () => ++seqCounter
@@ -26,7 +54,7 @@ function commitEvent(fields: {
   return { kind: "commit", ...fields } as RawEvent
 }
 
-export type ProfileEventOpts = {
+export type EventOpts = {
   did?: string
   seq?: number
   rkey?: string
@@ -34,7 +62,7 @@ export type ProfileEventOpts = {
   cid?: string
   time?: string
   /**
-   * Merged over the default record, which always carries $type. An
+   * Merged over the fixture record, which always carries $type. An
    * explicitly-undefined value removes that field from the wire record
    * (records are plain JSON; an undefined property would not survive the
    * wire and must not reach the SDK's record parsing).
@@ -48,51 +76,48 @@ function withoutUndefined(record: Record<string, unknown>) {
   )
 }
 
-export function profilePut(
-  operation: "create" | "update",
-  opts: ProfileEventOpts = {}
-): RawEvent {
-  return commitEvent({
-    did: opts.did ?? DEFAULT_DID,
-    seq: opts.seq ?? nextSeq(),
-    time: opts.time ?? new Date().toISOString(),
-    commit: {
-      operation,
-      collection: PROFILE_NSID,
-      rkey: opts.rkey ?? "self",
-      rev: opts.rev ?? DEFAULT_REV,
+/** One collection's put/delete builders. The NSID comes from the record type
+ * rather than a literal, so a namespace rename stays the single-file change
+ * the lexicons were designed for. */
+function builders<R>(type: RecordType<R>, defaultRkey: string, base: R) {
+  const event = (operation: string, opts: EventOpts, extra: object) =>
+    commitEvent({
+      did: opts.did ?? DEFAULT_DID,
+      seq: opts.seq ?? nextSeq(),
+      time: opts.time ?? new Date().toISOString(),
+      commit: {
+        operation,
+        collection: type.nsid,
+        rkey: opts.rkey ?? defaultRkey,
+        rev: opts.rev ?? DEFAULT_REV,
+        ...extra
+      }
+    })
+
+  const put = (operation: "create" | "update", opts: EventOpts = {}) =>
+    event(operation, opts, {
       cid: opts.cid ?? DEFAULT_CID,
-      record: withoutUndefined({
-        $type: PROFILE_NSID,
-        displayName: "Harness User",
-        description: "synthetic",
-        createdAt: "2026-08-27T00:00:00.000Z",
-        ...opts.record
-      })
-    }
-  })
+      record: withoutUndefined({ ...base, ...opts.record })
+    })
+
+  return {
+    create: (opts: EventOpts = {}) => put("create", opts),
+    update: (opts: EventOpts = {}) => put("update", opts),
+    del: (opts: Omit<EventOpts, "record" | "cid"> = {}) =>
+      event("delete", opts, {})
+  }
 }
 
-export const profileCreate = (opts: ProfileEventOpts = {}) =>
-  profilePut("create", opts)
-export const profileUpdate = (opts: ProfileEventOpts = {}) =>
-  profilePut("update", opts)
+export const billEvent = builders(billRecord, BILL_RKEY, billFixture)
+export const hearingEvent = builders(
+  hearingRecord,
+  HEARING_RKEY,
+  hearingFixture
+)
 
-export function profileDelete(
-  opts: Omit<ProfileEventOpts, "record" | "cid"> = {}
-): RawEvent {
-  return commitEvent({
-    did: opts.did ?? DEFAULT_DID,
-    seq: opts.seq ?? nextSeq(),
-    time: opts.time ?? new Date().toISOString(),
-    commit: {
-      operation: "delete",
-      collection: PROFILE_NSID,
-      rkey: opts.rkey ?? "self",
-      rev: opts.rev ?? DEFAULT_REV
-    }
-  })
-}
+/** The AT-URI the indexer stores and resolves deletes by. */
+export const uriFor = (did: string, collection: string, rkey: string) =>
+  `at://${did}/${collection}/${rkey}`
 
 export function batch(events: RawEvent[]): EventBatch<RawEvent> {
   return { events, lastCursor: events[events.length - 1]?.seq ?? 0 }
