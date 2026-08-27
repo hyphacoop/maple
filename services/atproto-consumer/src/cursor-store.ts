@@ -1,8 +1,6 @@
 import type { DocumentReference, Firestore } from "firebase-admin/firestore"
 import type { CursorStore } from "@bsky/jetstream"
 
-const SAVE_COALESCE_MS = 1000
-
 /**
  * Durable cursor for the Jetstream runner, persisted as a single Firestore
  * document. v2 cursors are `seq` values and are not portable to a v1
@@ -20,7 +18,11 @@ export class FirestoreCursorStore implements CursorStore {
   private nextSeq = 0
   private pendingSave?: Promise<void>
 
-  constructor(db: Firestore, docPath = "atpJetstreamMeta/cursor") {
+  constructor(
+    db: Firestore,
+    docPath = "atpJetstreamMeta/cursor",
+    private readonly coalesceMs = 1000
+  ) {
     this.ref = db.doc(docPath)
   }
 
@@ -37,7 +39,7 @@ export class FirestoreCursorStore implements CursorStore {
   }
 
   private async writeSoon(): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, SAVE_COALESCE_MS))
+    await new Promise(resolve => setTimeout(resolve, this.coalesceMs))
     this.pendingSave = undefined
     await this.ref.set({ seq: this.nextSeq })
   }

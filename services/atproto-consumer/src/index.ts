@@ -1,9 +1,7 @@
-import { initializeApp } from "firebase-admin/app"
-import { getFirestore } from "firebase-admin/firestore"
-import { Jetstream, LexIndexer } from "@bsky/jetstream"
-import { app } from "@bsky/sdk/lexicons"
+import { Jetstream } from "@bsky/jetstream"
 import { FirestoreCursorStore } from "./cursor-store.js"
-import { toProfileDoc } from "./mapper.js"
+import { initFirestore } from "./db.js"
+import { buildIndexer } from "./indexer.js"
 
 // This slice only ever writes to a local Firestore emulator. Default
 // FIRESTORE_EMULATOR_HOST before firebase-admin initializes so an unset
@@ -21,10 +19,7 @@ const JETSTREAM_URL =
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "demo-dtp"
 
 async function main() {
-  initializeApp({ projectId: PROJECT_ID })
-  const db = getFirestore()
-  db.settings({ ignoreUndefinedProperties: true })
-  const profiles = db.collection("atpJetstreamProfiles")
+  const db = initFirestore(PROJECT_ID)
 
   console.log(
     `[consumer] jetstream=${JETSTREAM_URL} project=${PROJECT_ID} firestore=${
@@ -40,39 +35,11 @@ async function main() {
       : `[consumer] resuming from stored cursor seq=${resumeSeq}`
   )
 
-  const stats = { creates: 0, updates: 0, deletes: 0, invalid: 0 }
+  const { indexer, stats } = buildIndexer(db)
   const logStats = (tag: string) =>
     console.log(
       `[consumer] ${tag} creates=${stats.creates} updates=${stats.updates} deletes=${stats.deletes} invalid=${stats.invalid}`
     )
-
-  const indexer = new LexIndexer()
-    .commit(app.bsky.actor.profile, {
-      put: async e => {
-        if (e.operation === "update") {
-          stats.updates++
-          return
-        }
-        stats.creates++
-        const doc = toProfileDoc(e, new Date().toISOString())
-        await profiles.doc(e.did).set(doc)
-        console.log(
-          `[consumer] indexed new profile ${e.did}${
-            doc.displayName ? ` (${doc.displayName})` : ""
-          }`
-        )
-      },
-      del: async e => {
-        stats.deletes++
-        await profiles.doc(e.did).delete()
-      }
-    })
-    .onValidationError(e => {
-      stats.invalid++
-      console.warn(
-        `[consumer] skipped schema-invalid record ${e.uri}: ${e.error.message}`
-      )
-    })
 
   setInterval(() => logStats("stats"), 30_000).unref()
 

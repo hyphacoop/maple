@@ -79,6 +79,17 @@ jobs:
         working-directory: services/atproto-consumer
       - run: yarn typecheck
         working-directory: services/atproto-consumer
+      - name: Cache Emulators
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators-ft14
+      # test:emulated fetches firebase-tools via npx rather than a root yarn
+      # install because the root is engines-locked to node 20 while this job
+      # runs the consumer's node 22.
+      - name: Consumer Tests
+        run: yarn test:emulated
+        working-directory: services/atproto-consumer
 
   integration_tests:
     name: Integration Tests

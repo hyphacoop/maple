@@ -11,7 +11,9 @@
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "test": "node --import tsx --test \"test/**/*.test.ts\"",
+    "test:emulated": "npx -y firebase-tools@14 emulators:exec --config ../../firebase.json --project demo-dtp --only firestore \"yarn test\"",
+    "typecheck": "tsc -p tsconfig.test.json"
   },
   "dependencies": {
     "@atproto/lex": "^0.3.6",
