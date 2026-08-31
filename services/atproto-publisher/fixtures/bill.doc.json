@@ -1,0 +1,68 @@
+{
+  "id": "H72",
+  "court": 194,
+  "content": {
+    "Title": "An Act relative to the oversight of cable contracts",
+    "BillNumber": "H72",
+    "GeneralCourtNumber": 194,
+    "DocketNumber": "HD301",
+    "LegislationTypeName": "Bill",
+    "PrimarySponsor": {
+      "Id": "J_B1",
+      "Name": "John Barrett, III",
+      "Type": 1
+    },
+    "Cosponsors": [
+      {
+        "Id": "J_B1",
+        "Name": "John Barrett, III",
+        "Type": 1
+      },
+      {
+        "Id": "SGX1",
+        "Name": "Steven George Xiarhos",
+        "Type": 1
+      }
+    ],
+    "Pinslip": "By Representative Barrett of North Adams, a petition (accompanied by bill, House, No. 72) of John Barrett, III relative to the oversight of cable contracts.  Advanced Information Technology, the Internet and Cybersecurity."
+  },
+  "cosponsorCount": 2,
+  "history": [
+    {
+      "Date": "2025-02-27T00:00:00",
+      "Branch": "House",
+      "Action": "Referred to the committee on Advanced Information Technology, the Internet and Cybersecurity"
+    },
+    {
+      "Date": "2025-06-30T10:39:35.04",
+      "Branch": "Joint",
+      "Action": "Hearing scheduled for 07/10/2025 from 01:00 PM-05:00 PM in A-2"
+    }
+  ],
+  "similar": ["S38"],
+  "currentCommittee": {
+    "id": "J33",
+    "name": "Joint Committee on Advanced Information Technology, the Internet and Cybersecurity",
+    "houseChair": {
+      "id": "J_B1",
+      "name": "John Barrett, III",
+      "email": "John.Barrett@mahouse.gov"
+    },
+    "senateChair": null
+  },
+  "topics": [
+    {
+      "category": "Commerce",
+      "topic": "Telecommunications"
+    }
+  ],
+  "summary": "Requires that license violations by cable operators be referred to the Department of Telecommunications and Cable, and that the department review settlement agreements between issuing authorities and licensees.",
+  "hearingIds": ["hearing-5142"],
+  "nextHearingId": "hearing-5142",
+  "nextHearingAt": {
+    "__ts": "2025-07-10T17:00:00.000Z"
+  },
+  "fetchedAt": {
+    "__ts": "2026-07-28T00:00:00.000Z"
+  }
+}

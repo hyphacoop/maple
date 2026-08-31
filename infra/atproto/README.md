@@ -65,10 +65,40 @@ node 22 on PATH for that terminal only.
 | relay              | 2470 | admin API + firehose; metrics on 2471     |
 | jetstream          | 6008 | `/healthz`, `/readyz`, `/metrics` on 6060 |
 | Firestore emulator | 8080 | on the host, not in the stack             |
+| e2e emulators      | 8081 | `publish-check.sh` only; functions on 5011 |
 
 Ports come from `endpoints.env`; change one there and compose and all four
 scripts follow. Teardown, including all state, is that same compose invocation
 with `down -v`.
+
+## The publish loop
+
+`test:smoke` proves the READ half, from a record it writes by hand. The write
+half — the publisher in `services/atproto-publisher` — has its own check,
+which needs no arguments and no running consumer:
+
+    infra/atproto/publish-check.sh
+
+It writes a bill document in the shape `functions/src/scraper.ts` actually
+stores, then asserts it comes back around the whole loop:
+
+    Firestore -> publishBill -> PDS -> relay -> jetstream -> consumer -> Firestore
+
+and then asserts the property the publisher turns on: a re-scrape that moves only
+`fetchedAt` must produce NO commit. The scraper rewrites every bill daily with
+a fresh `fetchedAt`, so without that diff the publisher would put ~8000 no-op
+commits a day on the firehose, each one minting a new cid and invalidating
+every testimony strongRef pinned to the old one. That assertion is the reason
+this script exists; a unit test cannot make it, because "nothing happened" is
+only meaningful against the real pipeline.
+
+Unlike the other scripts here it runs its OWN Firestore emulator, functions
+emulator and consumer, on `firebase.atproto-e2e.json`'s ports, and tears all
+three down on the way out. The functions emulator can only fire triggers against
+a Firestore emulator it started itself, so it cannot reuse the one
+`yarn --cwd services/atproto-consumer emulator` runs — which also means this
+script coexists with a stack you already have up. It does need the compose stack
+and an account, so `bootstrap.sh` first.
 
 ## Destructive scenarios
 
@@ -161,9 +191,9 @@ no boundary value is written down twice:
   is used off this machine.
 
 The scripts themselves are `bootstrap.sh` (up + register + create the account),
-`recovery.sh` (the destructive scenarios), and `lib.sh` — sourced, not run —
-which holds the compose invocation, the emulator REST helpers and the wait loops
-they all share.
+`recovery.sh` (the destructive scenarios), `publish-check.sh` (the publish loop,
+above), and `lib.sh` — sourced, not run — which holds the compose invocation, the
+emulator REST helpers and the wait loops they all share.
 
 Seeding and asserting are TypeScript, in the consumer package:
 `yarn --cwd services/atproto-consumer test:smoke` is the acceptance test, and

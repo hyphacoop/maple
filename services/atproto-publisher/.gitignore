@@ -1,0 +1,6 @@
+dist/
+node_modules/
+# Local emulator secret values (firebase-tools reads this from the functions
+# source directory). Never commit PDS credentials.
+.secret.local
+.env.local

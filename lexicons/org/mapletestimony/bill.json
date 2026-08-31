@@ -76,12 +76,17 @@
           "items": { "type": "ref", "ref": "#memberReference" }
         },
         "legislationTypeName": { "type": "string", "maxLength": 64 },
-        "pinslip": { "type": "string", "maxGraphemes": 2000 }
+        "pinslip": {
+          "type": "string",
+          "maxGraphemes": 50000,
+          "description": "The petition text as published. Typically short — measured across 7056 real pinslips: p50 224, p99 531 — but with a long tail where a petition names every signatory, and 20 bills exceed 2000 with a maximum of 28049. This is the field that governs how large a bill record can get; 50000 leaves headroom over the observed maximum while keeping the worst case around a third of the PDS's 150 KiB request cap."
+        }
       }
     },
     "memberReference": {
       "type": "object",
-      "required": ["id", "name", "memberType"],
+      "description": "A bill sponsor. Only name and memberType are guaranteed: the upstream API returns a null Id for every Public Request (memberType 3) and Special Request (memberType 4) sponsor — private citizens and agencies petitioning, who have no legislative member record to point at — and occasionally for a legislator too. Measured across 7337 real bill documents: 535/535 type-3, 63/63 type-4, 48/51056 type-1 and 8/392 type-2 references carry no Id.",
+      "required": ["name", "memberType"],
       "properties": {
         "id": { "type": "string", "maxLength": 32 },
         "name": { "type": "string", "maxGraphemes": 256 },

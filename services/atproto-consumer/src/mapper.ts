@@ -51,8 +51,13 @@ const timestamp = (iso: string): Timestamp =>
 const orNull = <T, U>(v: T | undefined, f: (v: T) => U): U | null =>
   v === undefined ? null : f(v)
 
+/** `id` is optional on the record because it is genuinely absent upstream for
+ * Public Request and Special Request sponsors. The live document still carries
+ * the key with a null value in that case, so it is spelled out here rather than
+ * left undefined — otherwise the shadow document would differ from the live one
+ * by a missing key and the parity check would flag every such bill. */
 const member = (m: BillLex.MemberReference) => ({
-  Id: m.id,
+  Id: m.id ?? null,
   Name: m.name,
   Type: m.memberType
 })

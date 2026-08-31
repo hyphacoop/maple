@@ -1,0 +1,31 @@
+{
+  "_comment": [
+    "Emulator config for infra/atproto/publish-check.sh only. Never deployed.",
+    "It exists because the functions emulator can only fire Firestore triggers",
+    "against a Firestore emulator it started itself, so the end-to-end check",
+    "cannot reuse the one `yarn dev:up` is already running. Ports are offset",
+    "from firebase.json's for exactly that reason: both stacks coexist.",
+    "Lives at the repo root because firebase-tools resolves `source` relative",
+    "to the directory holding the config."
+  ],
+  "functions": [
+    {
+      "source": "services/atproto-publisher",
+      "codebase": "maple-atproto",
+      "runtime": "nodejs22"
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "firestore": { "port": 8081 },
+    "functions": { "port": 5011 },
+    "hub": { "port": 4410 },
+    "logging": { "port": 4510 },
+    "eventarc": { "port": 9310 },
+    "tasks": { "port": 9599 },
+    "ui": { "enabled": false }
+  }
+}

@@ -14,6 +14,15 @@
     },
     {
       "predeploy": [
+        "yarn --cwd services/atproto-publisher install --frozen-lockfile",
+        "yarn --cwd services/atproto-publisher build"
+      ],
+      "source": "services/atproto-publisher",
+      "codebase": "maple-atproto",
+      "runtime": "nodejs22"
+    },
+    {
+      "predeploy": [
         "python3.11 -m venv llm/venv",
         ". llm/venv/bin/activate && python3.11 -m pip install -r llm/requirements.txt --require-virtualenv"
       ],

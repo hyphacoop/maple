@@ -1,0 +1,31 @@
+{
+  "name": "@maple/atproto-publisher",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Publishes scraped MA legislative data from Firestore into the maple atproto repo",
+  "type": "module",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "codegen": "lex build --lexicons ../../lexicons --out ./src/lexicons --clear --index-file",
+    "validate": "tsx scripts/validate-targets.ts",
+    "test": "node --import tsx --test \"test/**/*.test.ts\"",
+    "backfill": "tsx src/backfill.ts",
+    "test:emulated": "npx -y firebase-tools@15 emulators:exec --config ../../firebase.json --project demo-dtp --only firestore \"yarn test\""
+  },
+  "dependencies": {
+    "@atproto/api": "^0.20.42",
+    "@atproto/lex": "^0.3.8",
+    "firebase-admin": "^14.3.0",
+    "firebase-functions": "^7.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

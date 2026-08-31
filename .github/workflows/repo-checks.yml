@@ -106,6 +106,51 @@ jobs:
         run: yarn test:emulated
         working-directory: services/atproto-consumer
 
+  check_atproto_publisher:
+    name: Publisher Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # Same reason as Consumer Checks: a standalone node-22 ESM package that
+      # the root tsconfig excludes, so root check-types cannot see it.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-publisher
+      - run: yarn typecheck
+        working-directory: services/atproto-publisher
+      # Both atproto packages generate from the same lexicons/*.json. The JSON
+      # is the shared artifact; the generated TypeScript is a build output each
+      # package commits, so each needs its own drift check.
+      - name: Lexicon Codegen Is Current
+        run: |
+          yarn codegen
+          if [ -n "$(git status --porcelain -- src/lexicons)" ]; then
+            git status --short -- src/lexicons
+            echo "::error::lexicons/ changed without re-running 'yarn codegen'"
+            exit 1
+          fi
+        working-directory: services/atproto-publisher
+      # Catches a lexicon added without anywhere to publish it from, which is
+      # otherwise silent: the record type simply never gets written.
+      - name: Every Lexicon Has A Publisher Target
+        run: yarn validate
+        working-directory: services/atproto-publisher
+      - name: Cache Emulators
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/firebase/emulators
+          # ft15 tracks the firebase-tools@15 this package's test:emulated
+          # fetches. Deliberately the same major as the deploy action pin in
+          # deploy-backend-dev.yml, since that is what actually deploys this
+          # codebase; the consumer's ft14 is independent.
+          key: ${{ runner.os }}-firebase-emulators-ft15
+      - name: Publisher Tests
+        run: yarn test:emulated
+        working-directory: services/atproto-publisher
+
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest

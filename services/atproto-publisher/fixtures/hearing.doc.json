@@ -1,0 +1,50 @@
+{
+  "id": "hearing-5142",
+  "type": "hearing",
+  "content": {
+    "EventId": 5142,
+    "EventDate": "2025-07-10T00:00:00",
+    "StartTime": "2025-07-10T13:00:00",
+    "Description": "Joint Committee on Advanced Information Technology, the Internet and Cybersecurity",
+    "Name": "Hearing on cable oversight legislation",
+    "Status": "Scheduled",
+    "HearingHost": {
+      "CommitteeCode": "J33",
+      "GeneralCourtNumber": 194
+    },
+    "Location": {
+      "LocationName": "Hearing Room A-2",
+      "AddressLine1": null,
+      "AddressLine2": null,
+      "City": "Boston",
+      "State": "MA",
+      "ZipCode": "02133"
+    },
+    "HearingAgendas": [
+      {
+        "StartTime": "2025-07-10T13:00:00",
+        "EndTime": "2025-07-10T17:00:00",
+        "Topic": "Cable and telecommunications oversight",
+        "DocumentsInAgenda": [
+          {
+            "BillNumber": "H72",
+            "GeneralCourtNumber": 194,
+            "PrimarySponsor": {
+              "Id": "J_B1"
+            },
+            "Title": "An Act relative to the oversight of cable contracts"
+          }
+        ]
+      }
+    ],
+    "RescheduledHearing": null
+  },
+  "startsAt": {
+    "__ts": "2025-07-10T17:00:00.000Z"
+  },
+  "fetchedAt": {
+    "__ts": "2026-07-28T00:00:00.000Z"
+  },
+  "videoURL": "https://malegislature.gov/videos/5142.mp4",
+  "committeeChairs": ["John Barrett, III"]
+}
