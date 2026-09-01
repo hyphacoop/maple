@@ -16,7 +16,7 @@ import {
  * first read), and the one `as RawEvent` cast lives in commitEvent().
  *
  * Default records come from fixtures/, the same files the lexicon validator
- * checks and infra/atproto/seed.sh puts on the local PDS — so a fixture that
+ * checks and test/pds.ts puts on the local PDS — so a fixture that
  * stops satisfying the lexicon fails here, in the unit tests, rather than as
  * an unexplained skipped record in the e2e harness.
  */

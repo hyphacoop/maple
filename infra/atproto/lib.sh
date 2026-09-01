@@ -1,4 +1,4 @@
-# Shared by bootstrap.sh, seed.sh, check.sh and recovery.sh. Source it, don't
+# Shared by bootstrap.sh and recovery.sh. Source it, don't
 # run it. Every value the scripts and compose both need lives in the two env
 # files rather than being re-typed per script.
 
@@ -6,9 +6,6 @@
 HARNESS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd "$HARNESS_DIR/../.." && pwd)
 CONSUMER_DIR="$REPO_ROOT/services/atproto-consumer"
-# The record fixtures the consumer's own tests and lexicon validator use; the
-# harness seeds from the same files so "valid record" means one thing.
-FIXTURE_DIR="$CONSUMER_DIR/fixtures"
 STATE_FILE="$HARNESS_DIR/.harness-state"
 
 set -a
@@ -24,6 +21,10 @@ JETSTREAM_DEBUG_URL=http://localhost:$JETSTREAM_DEBUG_PORT
 # What the relay knows the PDS as. Must match the DID document's service
 # endpoint, which the PDS derives from PDS_HOSTNAME=localhost and PDS_PORT.
 PDS_HOST_PORT=localhost:$PDS_PORT
+# Exported, like the values sourced above: a child process started after
+# sourcing this (the consumer, in recovery.sh and in CI) must see the harness's
+# jetstream, not the consumer's public-network default.
+export PLC_URL PDS_URL RELAY_URL JETSTREAM_URL JETSTREAM_DEBUG_URL
 
 # Always invoke compose this way. Without --env-file the stack has no image
 # references at all ("service pds has neither an image nor a build context"), so
@@ -50,6 +51,20 @@ wait_for() { # wait_for <name> <url> [seconds]
   return 1
 }
 
+# The line the consumer prints once it is attached to the jetstream tail, either
+# way round. One spelling: recovery.sh and the CI job both wait on this, and a
+# rename in the consumer must break them together rather than one at a time.
+CONSUMER_READY='stored cursor|live tip'
+
+wait_for_log() { # wait_for_log <file> <extended-regex> [seconds]
+  local file=$1 pattern=$2 limit=${3:-30}
+  for _ in $(seq 1 "$limit"); do
+    grep -qE "$pattern" "$file" 2>/dev/null && return 0
+    sleep 1
+  done
+  return 1
+}
+
 # Firestore emulator REST. "Bearer owner" is the emulator's admin credential;
 # without it the REST API evaluates firestore.rules and answers
 # PERMISSION_DENIED, which reads exactly like an absent document.
@@ -57,12 +72,19 @@ fsurl() { printf 'http://%s/v1/projects/%s/databases/(default)/documents/%s' "$F
 fsget() { curl -fsS -H "Authorization: Bearer owner" "$(fsurl "$1")" 2>/dev/null; }
 fspatch() { curl -fsS -X PATCH -H "Authorization: Bearer owner" -H 'content-type: application/json' "$(fsurl "$1")" -d "$2" >/dev/null; }
 
+# load_state [KEY...] — source .harness-state and require the given keys,
+# defaulting to everything `yarn seed` writes. bootstrap.sh writes DID alone, so
+# a caller that only needs the identity must say `load_state DID` rather than
+# demanding record keys that do not exist until something has been seeded.
 load_state() {
   [ -f "$STATE_FILE" ] || fail "no .harness-state — run ./bootstrap.sh first"
   # shellcheck disable=SC1090
   . "$STATE_FILE"
-  local k
-  for k in DID CID COLLECTION RKEY DOC_PATH; do
-    [ -n "${!k:-}" ] || fail "$STATE_FILE is missing $k — re-run ./seed.sh"
+  local k keys=("$@")
+  if [ ${#keys[@]} -eq 0 ]; then
+    keys=(DID CID COLLECTION RKEY DOC_PATH)
+  fi
+  for k in "${keys[@]}"; do
+    [ -n "${!k:-}" ] || fail "$STATE_FILE is missing $k — re-run 'yarn --cwd services/atproto-consumer seed'"
   done
 }

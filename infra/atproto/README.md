@@ -16,7 +16,7 @@ cited as evidence about one.
 
 ## Run it
 
-    infra/atproto/bootstrap.sh          # up from cold, register the PDS, seed a record
+    infra/atproto/bootstrap.sh          # up from cold, register the PDS, create the account
 
 Then, from the repo root, in separate terminals:
 
@@ -26,18 +26,28 @@ Then, from the repo root, in separate terminals:
       MAPLE_DIDS=<the DID bootstrap.sh printed> \
       yarn --cwd services/atproto-consumer dev
 
-    infra/atproto/seed.sh               # write a record while the consumer is live
-    infra/atproto/check.sh              # assert it completed the trip
+    yarn --cwd services/atproto-consumer test:smoke   # write a record, assert it arrives
+
+`test:smoke` is the acceptance test. It reads its endpoints from
+`endpoints.env`, so it takes no arguments and the identical command runs here
+and in CI (`.github/workflows/atproto-harness.yml`) — CI just brings the stack
+up with `bootstrap.sh` first.
 
 The record is an `org.mapletestimony.bill` built from the consumer's own
 fixture (`services/atproto-consumer/fixtures/bill.record.json`) with `fetchedAt`
-stamped to now — so every seed has a distinct cid, and `check.sh` compares
-against the cid `seed.sh` last wrote. An old document left over from a previous
-run cannot pass for a fresh delivery.
+stamped to now, so every seed has a distinct cid and the assertion matches on
+it. An old document left over from a previous run cannot pass for a fresh
+delivery.
 
-`.harness-state` carries the collection, rkey and target document path along
-with the DID and cid, so the scripts assert against the record that was
-actually written rather than re-deriving conventions in three places.
+Because seeding and asserting now happen in one process, the conventions are
+imported rather than respelled: the collection, rkey and target document path
+come from `src/records.ts` and the generated lexicons. `.harness-state` is
+reduced to what a _shell_ still needs — the DID that `bootstrap.sh` writes, plus
+the record keys `yarn seed` writes for `recovery.sh`.
+
+Records are written after `bootstrap.sh`, not by it, and that ordering is
+forced: a consumer with no cursor starts from the live tip, so it has to be
+running before a record is put — and it cannot start without the DID.
 
 To drive compose by hand, pass both env files — without them the stack has no
 image references and no ports:
@@ -150,11 +160,17 @@ no boundary value is written down twice:
   Those passwords are deliberately literal and in the repository; nothing here
   is used off this machine.
 
-The scripts themselves are `bootstrap.sh` (up + register + first seed),
-`seed.sh` (write one record, record its cid), `check.sh` (the acceptance
-assertion), `recovery.sh` (the destructive scenarios), and `lib.sh` — sourced,
-not run — which holds the compose invocation, the emulator REST helpers and the
-wait loops they all share.
+The scripts themselves are `bootstrap.sh` (up + register + create the account),
+`recovery.sh` (the destructive scenarios), and `lib.sh` — sourced, not run —
+which holds the compose invocation, the emulator REST helpers and the wait loops
+they all share.
+
+Seeding and asserting are TypeScript, in the consumer package:
+`yarn --cwd services/atproto-consumer test:smoke` is the acceptance test, and
+`yarn --cwd services/atproto-consumer seed` writes a record without asserting,
+which is what `recovery.sh` drives while jetstream or the relay is deliberately
+stopped. Both share one implementation (`test/pds.ts`), so there is one seeder
+and one checker.
 
 `GCLOUD_PROJECT` is `demo-atp-local`, deliberately not the `demo-dtp` the
 consumer defaults to and the dev stack uses: a jetstream cursor is a seq in one

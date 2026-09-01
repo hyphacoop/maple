@@ -11,10 +11,12 @@
     "dev": "tsx src/index.ts",
     "codegen": "lex build --lexicons ../../lexicons --out ./src/lexicons --clear --index-file",
     "validate": "tsx scripts/validate-lexicons.ts",
+    "seed": "tsx scripts/seed.ts",
     "emulator": "npx -y firebase-tools@14 emulators:start --config ../../firebase.json --project demo-atp-local --only firestore",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "node --import tsx --test \"test/**/*.test.ts\"",
+    "test:smoke": "node --import tsx --test test/smoke.e2e.ts",
     "test:emulated": "npx -y firebase-tools@14 emulators:exec --config ../../firebase.json --project demo-dtp --only firestore \"yarn test\"",
     "typecheck": "tsc -p tsconfig.test.json"
   },
@@ -24,6 +26,7 @@
     "firebase-admin": "^14.3.0"
   },
   "devDependencies": {
+    "@atproto/api": "^0.20.42",
     "@types/node": "^24.0.0",
     "tsx": "^4.20.0",
     "typescript": "^5.9.0"

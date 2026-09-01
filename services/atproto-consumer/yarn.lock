@@ -39,6 +39,30 @@
   resolved "https://registry.yarnpkg.com/@atproto-labs/simple-store/-/simple-store-0.5.1.tgz#649b3f7c8dd6abaf280130cf878656b8cdd90ddd"
   integrity sha512-vfvoDhu6ds6BT3Pqe+d2/LBU1WpDRtt69y6zltlfMCoucPm82m1j50/Wb6xTvv+oZ+2j0JyZVXsmXQ12SWYQJg==
 
+"@atproto/api@^0.20.42":
+  version "0.20.42"
+  resolved "https://registry.yarnpkg.com/@atproto/api/-/api-0.20.42.tgz#fbbf560736abea7962c3938ce09374b26fae8c99"
+  integrity sha512-x86WgkHFcNqDIo8gf52npc1KvFXlIPDLAJdIhiH1uUAwiQxDw8/WU0iH3pTl1OXMKkB93kwxG0ihx0fTi5FPbw==
+  dependencies:
+    "@atproto/common-web" "^0.5.10"
+    "@atproto/lexicon" "^0.7.12"
+    "@atproto/syntax" "^0.7.5"
+    "@atproto/xrpc" "^0.8.11"
+    await-lock "^3.0.0"
+    multiformats "^13.0.0"
+    tlds "^1.234.0"
+    zod "^3.23.8"
+
+"@atproto/common-web@^0.5.10":
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/@atproto/common-web/-/common-web-0.5.10.tgz#b30fc870503e732cfbaf2da346b8386d918c779c"
+  integrity sha512-w4JUdsJ3VXt8ewkavYh5m/u0UbxDtFdCKhNZPEpJ0U1vcWIjDaSInIexteETDgD7fBJAhidIEi30MGz1kk49ug==
+  dependencies:
+    "@atproto/lex-data" "^0.1.7"
+    "@atproto/lex-json" "^0.1.6"
+    "@atproto/syntax" "^0.7.5"
+    zod "^3.23.8"
+
 "@atproto/common-web@^0.5.9":
   version "0.5.9"
   resolved "https://registry.yarnpkg.com/@atproto/common-web/-/common-web-0.5.9.tgz#f9302c1bb8867a343c9ac6df27cb5229f822d6ae"
@@ -185,6 +209,16 @@
     tslib "^2.8.1"
     yargs "^18.0.0"
 
+"@atproto/lexicon@^0.7.12":
+  version "0.7.12"
+  resolved "https://registry.yarnpkg.com/@atproto/lexicon/-/lexicon-0.7.12.tgz#eb356bd875863dfa1dabcf1c7f3823984801a8da"
+  integrity sha512-bXVWXc2+ctVVUc3CEuWV9mVXRMMQcWmdzmyRE7w2Rli0B36HADU49Vvi7PWTw26zFFqumYVl9b23bW3vrzAzbg==
+  dependencies:
+    "@atproto/common-web" "^0.5.10"
+    "@atproto/syntax" "^0.7.5"
+    multiformats "^13.0.0"
+    zod "^3.23.8"
+
 "@atproto/repo@^0.10.11":
   version "0.10.11"
   resolved "https://registry.yarnpkg.com/@atproto/repo/-/repo-0.10.11.tgz#ca69e14304d485cc8d1d279659baeb57ad71800d"
@@ -207,12 +241,28 @@
     iso-datestring-validator "^2.2.2"
     tslib "^2.8.1"
 
+"@atproto/syntax@^0.7.5":
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/@atproto/syntax/-/syntax-0.7.5.tgz#b314a560ea32185f6d676e3c2fc1e1c19a80547e"
+  integrity sha512-6vnLQK8OAzg0dO6z/xnvuXn5zMV0UMI54zbxk7G7BXhGlIlLMb1yo+JVYtAlv8Nxzr+AaFdNZ8AJt+L/QhJMFQ==
+  dependencies:
+    iso-datestring-validator "^2.2.2"
+    tslib "^2.8.1"
+
 "@atproto/ws-client@^0.2.0":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@atproto/ws-client/-/ws-client-0.2.1.tgz#e96572bce1562adbbbcdb8f7b004a38b37265856"
   integrity sha512-HCGkqH/Ksxpgg/xCyIvH5hK6o8Lg2PxcEA790GCEV9MspCZB/xIesHZVgJN0cEvklGe+6pNCOZE1B5kj9q1ONA==
   dependencies:
     ws "^8.19.0"
+
+"@atproto/xrpc@^0.8.11":
+  version "0.8.11"
+  resolved "https://registry.yarnpkg.com/@atproto/xrpc/-/xrpc-0.8.11.tgz#3cd3b4ebe1a9dc932bd3c3fa74258f9e0da975d1"
+  integrity sha512-5M38m9REQouVIA4/Gh0wqo6Vncr3QbG7rb5oqlEbqB+f77pruCk4JLDipfrOrsXH+pdnVnU2IaPXvpsSAC7Mqw==
+  dependencies:
+    "@atproto/lexicon" "^0.7.12"
+    zod "^3.23.8"
 
 "@bsky/jetstream@^1.0.0":
   version "1.0.0"
@@ -725,6 +775,11 @@ atomic-sleep@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/atomic-sleep/-/atomic-sleep-1.0.0.tgz#eb85b77a601fc932cfe432c5acd364a9e2c9075b"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
+
+await-lock@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/await-lock/-/await-lock-3.0.0.tgz#d6c6c5554d1a734509f5c0f6fa49a24457043d19"
+  integrity sha512-eO6fLiSnrJrMdjWMNK8zbVRXPs2TKJg78iKZd9wDpN3na5tcoV6EoeiOlMgk2QaAQ1gIrK1YuMsJHXWqz89tSA==
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -1930,6 +1985,11 @@ tinyglobby@^0.2.14:
   dependencies:
     fdir "^6.5.0"
     picomatch "^4.0.4"
+
+tlds@^1.234.0:
+  version "1.261.0"
+  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.261.0.tgz#055e412e92f01f84a9c8ac0504d3472d68b3c4c9"
+  integrity sha512-QXqwfEl9ddlGBaRFXIvNKK6OhipSiLXuRuLJX5DErz0o0Q0rYxulWLdFryTkV5PkdZct5iMInwYEGe/eR++1AA==
 
 tr46@~0.0.3:
   version "0.0.3"

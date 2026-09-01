@@ -20,7 +20,8 @@ import { hearingDocId, type BillRecord, type HearingRecord } from "./records.js"
  */
 
 /** Provenance of the indexed write, kept in one nested key so a parity check
- * can ignore exactly one field, and `check.sh` can match on the cid. */
+ * can ignore exactly one field, and the smoke test can match on the
+ * cid. */
 export type AtpEnvelope = {
   did: string
   uri: string

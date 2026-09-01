@@ -70,8 +70,15 @@ JETSTREAM_URL=http://localhost:6008 GCLOUD_PROJECT=demo-atp-local \
   yarn --cwd services/atproto-consumer dev
 ```
 
-Then `infra/atproto/seed.sh && infra/atproto/check.sh` writes a bill and
-asserts it made the whole trip.
+Then, in terminal 4:
+
+```
+yarn --cwd services/atproto-consumer test:smoke
+```
+
+writes a bill and asserts it made the whole trip. It reads its endpoints from
+`infra/atproto/endpoints.env`, so it takes no arguments and the identical
+command runs against a local stack and in CI.
 
 ## Lexicons
 
@@ -85,7 +92,7 @@ yarn validate   # lexicon documents + the fixtures/ records
 
 `fixtures/*.record.json` are the one definition of "a valid MAPLE record": the
 validator checks them, the unit tests build synthetic events from them, and
-`infra/atproto/seed.sh` puts them on the local PDS.
+`test/pds.ts` puts them on the local PDS.
 
 ## Tests
 
@@ -108,6 +115,16 @@ yarn test:emulated
 These pin mapper semantics. They do **not** substitute for the e2e check
 above: nothing here exercises transport, and a record that validates in
 isolation can still be rejected by a real PDS.
+
+`test/smoke.e2e.ts` is that e2e check. Its `.e2e.ts` suffix keeps it out of
+`yarn test`'s `test/**/*.test.ts` glob on purpose — it needs a live PDS, relay
+and jetstream, which the emulator-only job does not have. It asserts the same
+document `indexer.test.ts` does, through `test/expected.ts`, so the real wire
+path cannot drift from the unit expectation unnoticed. CI runs it in
+`.github/workflows/atproto-harness.yml`.
+
+`yarn seed` writes a record without asserting; `infra/atproto/recovery.sh` uses
+it to seed while jetstream or the relay is deliberately stopped.
 
 ## Environment
 

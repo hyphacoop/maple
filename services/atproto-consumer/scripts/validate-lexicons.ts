@@ -10,7 +10,7 @@
  *
  *  2. Every registered fixture validates against its schema. The fixtures are
  *     the single source of the sample records used by the unit tests AND by
- *     infra/atproto/seed.sh, so an invalid fixture would otherwise surface as
+ *     the harness seeder, so an invalid fixture would otherwise surface as
  *     a mysterious onValidationError in the e2e harness.
  *
  * Cross-checking mapper output against the app's runtypes (functions/src/…)

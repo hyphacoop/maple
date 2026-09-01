@@ -1,0 +1,109 @@
+name: ATProto Harness
+
+# The only job that exercises the real wire path: a record put on a real PDS,
+# carried by a real relay and a real jetstream into the consumer and on into
+# Firestore. Everything else in CI tests logic in isolation, so a PDS_IMAGE bump
+# that broke record acceptance would otherwise merge green.
+#
+# Its own workflow rather than a job in repo-checks.yml because that workflow is
+# ungated (`on: ["push", "pull_request"]`) and GitHub has no per-job path
+# filter; this stack is far too expensive to run on every frontend change.
+on:
+  pull_request:
+    paths:
+      - services/atproto-consumer/**
+      - infra/atproto/**
+      - lexicons/**
+      - .github/workflows/atproto-harness.yml
+  push:
+    branches:
+      - main
+    paths:
+      - services/atproto-consumer/**
+      - infra/atproto/**
+      - lexicons/**
+      - .github/workflows/atproto-harness.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  harness_smoke:
+    name: Harness Smoke
+    runs-on: ubuntu-latest
+    # Cold runs pay a full PLC image build from a pinned git ref (compose.yml
+    # builds it; there is no published image), so the budget is generous
+    # relative to the ~6-10 min this should take.
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v2
+      # Same reason as repo-checks.yml's atproto jobs: a standalone node-22 ESM
+      # package with its own lockfile, excluded from the root tsconfig.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          # Not .github/actions/setup-repo: that installs the ROOT lockfile.
+          # This package has its own, so it caches against its own.
+          cache: yarn
+          cache-dependency-path: services/atproto-consumer/yarn.lock
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-consumer
+
+      - name: Cache Emulators
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/firebase/emulators
+          # ft14 tracks the firebase-tools@14 that the consumer's `emulator`
+          # script fetches via npx; bump both together.
+          key: ${{ runner.os }}-firebase-emulators-ft14
+
+      # Started BEFORE bootstrap, and waited on after: it needs nothing from the
+      # stack, so its npx download and JVM boot hide inside bootstrap's minutes
+      # instead of being paid on top of them.
+      - name: Start The Firestore Emulator
+        run: nohup yarn emulator > "$RUNNER_TEMP/emulator.log" 2>&1 &
+        working-directory: services/atproto-consumer
+
+      # Brings up plc/pds/relay/jetstream on compose healthchecks, registers the
+      # PDS with the relay, and creates the harness account. Bounded waits
+      # throughout, so a hang fails rather than idles.
+      - name: Bootstrap The Stack
+        run: infra/atproto/bootstrap.sh
+
+      # MUST be running before the record is written: with no stored cursor the
+      # consumer starts from the live tip, so anything put before this point is
+      # published into a window nobody is listening to.
+      #
+      # lib.sh is sourced rather than restated: it owns the endpoint values, the
+      # wait loops and the readiness pattern, so CI cannot drift from what
+      # bootstrap.sh and recovery.sh use.
+      - name: Start The Consumer
+        run: |
+          . infra/atproto/lib.sh
+          load_state DID
+          wait_for firestore "http://$FIRESTORE_EMULATOR_HOST/" 90 \
+            || { cat "$RUNNER_TEMP/emulator.log"; fail "the emulator never came up"; }
+          MAPLE_DIDS="$DID" nohup yarn --cwd services/atproto-consumer dev \
+            > "$RUNNER_TEMP/consumer.log" 2>&1 &
+          wait_for_log "$RUNNER_TEMP/consumer.log" "$CONSUMER_READY" 60 \
+            || { cat "$RUNNER_TEMP/consumer.log"; fail "the consumer never reached the jetstream tail"; }
+
+      # The assertion. Identical to what a developer runs against a local stack.
+      - name: Smoke Test
+        run: yarn test:smoke
+        working-directory: services/atproto-consumer
+
+      - name: Collect Logs
+        if: failure()
+        run: |
+          . infra/atproto/lib.sh
+          dc logs --no-color > "$RUNNER_TEMP/compose.log" 2>&1 || true
+      - name: Upload Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-logs
+          path: ${{ runner.temp }}/*.log
+          if-no-files-found: warn

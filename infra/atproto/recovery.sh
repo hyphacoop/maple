@@ -38,7 +38,9 @@ NODE=${NODE:-$(node22)}
 # Up front, so a missing state file says "run ./bootstrap.sh" instead of failing
 # obscurely later — and so the DID is known before the first consumer starts,
 # which is what lets it run with the same MAPLE_DIDS filter a deployment uses.
-load_state
+# Only the DID: bootstrap.sh writes that alone, and the record-level keys arrive
+# with the first seed() below.
+load_state DID
 
 start_consumer() {
   stop_consumer   # a second consumer on the same document invalidates everything
@@ -51,11 +53,8 @@ start_consumer() {
       MAPLE_DIDS="$DID" \
       "$NODE" --import tsx src/index.ts >> "$LOG" 2>&1 ) &
   echo $! > "$PIDFILE"
-  for _ in $(seq 1 30); do
-    grep -qE 'stored cursor|live tip' "$LOG" && break
-    sleep 1
-  done
-  grep -qE 'stored cursor|live tip' "$LOG" || { cat "$LOG" >&2; fail "consumer did not start"; }
+  wait_for_log "$LOG" "$CONSUMER_READY" 30 \
+    || { cat "$LOG" >&2; fail "consumer did not start"; }
   # The consumer logs the cursor document it chose. Reading it back beats
   # re-deriving the host-keyed path here, which would silently diverge from
   # cursorDocPath() in the consumer the moment either side changed.
@@ -76,7 +75,18 @@ stop_consumer() {
 }
 trap stop_consumer EXIT
 
-seed() { "$HARNESS_DIR/seed.sh" >/dev/null; load_state; }
+# One checker, one seeder: the record is built by the consumer package, which
+# owns the conventions, and `load_state` then picks up the CID it wrote. The
+# harness env is already exported (lib.sh uses `set -a`), so the child needs no
+# plumbing. Seeding stays separate from test:smoke because these scenarios seed
+# while jetstream or the relay is deliberately dead, where asserting would hang.
+# PREVIOUS_CID makes a repeat seed that somehow produced identical content fail
+# loudly here, rather than leaving a scenario asserting against a stale document.
+seed() {
+  PATH="$(dirname "$NODE"):$PATH" PREVIOUS_CID="${CID:-}" \
+    yarn --cwd "$CONSUMER_DIR" seed >/dev/null
+  load_state
+}
 
 # The document as the consumer holds it, minus the index-time stamp.
 doc_state() {

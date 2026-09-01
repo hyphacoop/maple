@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Bring the harness up from cold, attach the PDS to the relay, and seed a record.
+# Bring the harness up from cold, attach the PDS to the relay, and create the
+# harness account.
 #
 #   ./bootstrap.sh
 #
@@ -8,7 +9,10 @@
 # to be registered BEFORE the account and the record exist, or the record is
 # published into a window nobody is listening to and never arrives.
 #
-# To write another record into an already-running stack, use ./seed.sh.
+# Records are NOT written here. The consumer starts from the live tip when it
+# has no cursor, so it has to be running before a record is put — and it cannot
+# start without the DID this creates. So writing and asserting both belong to
+# `yarn --cwd services/atproto-consumer test:smoke`, which runs afterwards.
 
 set -euo pipefail
 # shellcheck source=lib.sh
@@ -72,9 +76,29 @@ case "$status" in
   *) fail "$status — $DC_CMD logs relay" ;;
 esac
 
-say "seeding a record"
-"$HARNESS_DIR/seed.sh"
-load_state
+say "creating the harness account"
+# The account, NOT a record. Ordering forces the split: the consumer starts from
+# the live tip when it has no cursor, so it must be running BEFORE a record is
+# written -- and it cannot start without MAPLE_DIDS, which is this DID. So the
+# identity is set up here and the record is written afterwards, by
+# `yarn --cwd services/atproto-consumer test:smoke`.
+created=$(curl -sS -X POST "$PDS_URL/xrpc/com.atproto.server.createAccount" \
+  -H 'content-type: application/json' \
+  -d "{\"email\":\"$ACCOUNT_EMAIL\",\"handle\":\"$HANDLE\",\"password\":\"$ACCOUNT_PASSWORD\"}")
+DID=$(printf '%s' "$created" | jqp did)
+if [ -z "$DID" ]; then
+  # Already exists -- a PDS volume that survived a previous run.
+  echo "createAccount refused, reusing the account: $created" >&2
+  DID=$(curl -fsS -X POST "$PDS_URL/xrpc/com.atproto.server.createSession" \
+    -H 'content-type: application/json' \
+    -d "{\"identifier\":\"$HANDLE\",\"password\":\"$ACCOUNT_PASSWORD\"}" | jqp did)
+fi
+[ -n "$DID" ] || fail "could not obtain a DID from $PDS_URL"
+
+# Only the DID: the record-level keys are written by `yarn seed`, which is what
+# recovery.sh drives. Callers that need only the identity say `load_state DID`.
+echo "DID=$DID" > "$STATE_FILE"
+echo "account: $HANDLE -> $DID"
 
 say "checking the DID document resolves through the local PLC"
 # If this is not http://localhost:$PDS_PORT, the relay and jetstream will dial
@@ -88,7 +112,7 @@ print("service endpoint:", svc[0]["serviceEndpoint"] if svc else "MISSING")
 
 cat <<NEXT
 
-==> up and seeded. now run the consumer against it:
+==> up. now run the consumer against it:
 
     # terminal 1 — Firestore emulator
     yarn --cwd services/atproto-consumer emulator
@@ -97,9 +121,10 @@ cat <<NEXT
     JETSTREAM_URL=$JETSTREAM_URL GCLOUD_PROJECT=$GCLOUD_PROJECT \\
       MAPLE_DIDS=$DID yarn --cwd services/atproto-consumer dev
 
-    # terminal 3 — write a record while it watches, then assert it arrived
-    infra/atproto/seed.sh && infra/atproto/check.sh
+    # terminal 3 — write a record while it watches, and assert it arrives
+    yarn --cwd services/atproto-consumer test:smoke
 
-  the record to look for is $COLLECTION/$RKEY in $DID,
-  which the consumer indexes to $DOC_PATH.
+  test:smoke seeds an org.mapletestimony.bill into $DID and asserts it
+  completes the trip. It reads its endpoints from endpoints.env, so it takes no
+  arguments and means the same thing here as it does in CI.
 NEXT
