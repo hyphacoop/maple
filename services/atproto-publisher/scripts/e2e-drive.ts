@@ -5,6 +5,7 @@ import { Timestamp } from "firebase-admin/firestore"
 import { initFirestore } from "../src/db.js"
 import { billRkey } from "../src/records.js"
 import { billDoc, hearingDoc } from "../test/fixtures.js"
+import { waitForDoc } from "../../atproto-consumer/test/wait.js"
 
 /**
  * Drives the end-to-end check. Run by infra/atproto/publish-check.sh inside a
@@ -32,6 +33,15 @@ const SETTLE_MS = Number(process.env.E2E_SETTLE_MS ?? 30_000)
 
 const db = initFirestore(project)
 
+/** Named after the three things that actually go wrong here, in the order worth
+ * checking. The consumer's own hints cannot name the functions emulator,
+ * because nothing on the read half has one. */
+const HINT =
+  `  - is the consumer running against THIS emulator ` +
+  `(${process.env.FIRESTORE_EMULATOR_HOST}) and project ${project}?\n` +
+  `  - is MAPLE_DIDS the DID in infra/atproto/.harness-state?\n` +
+  `  - did the trigger fire? check the functions emulator log above.`
+
 const doc = billDoc()
 const hearing = hearingDoc()
 const COURT = doc.court as number
@@ -39,30 +49,20 @@ const BILL_ID = doc.id as string
 const source = db.doc(`/generalCourts/${COURT}/bills/${BILL_ID}`)
 const shadow = db.doc(`atpBills/${billRkey(COURT, BILL_ID)}`)
 
-async function waitFor(
+/** Wait for a shadow document to show `matches` AND carry a cid, then hand
+ * back that cid. An indexed document without one did not come from the
+ * consumer, so it must not satisfy any wait here. */
+const arrive = async (
   ref: DocumentReference,
-  matches: (data: DocumentData) => boolean,
+  matches: (d: DocumentData) => boolean,
   what: string
-): Promise<string> {
-  const deadline = Date.now() + ARRIVE_TIMEOUT_MS
-  process.stdout.write(`waiting for ${what} at ${ref.path} `)
-  while (Date.now() < deadline) {
-    const data = (await ref.get()).data()
-    if (data && matches(data) && data.atp?.cid) {
-      process.stdout.write(` arrived\n`)
-      return data.atp.cid as string
-    }
-    process.stdout.write(".")
-    await sleep(2000)
-  }
-  process.stdout.write(" TIMED OUT\n")
-  throw new Error(
-    `${ref.path} never showed ${what}.\n` +
-      `  - is the consumer running against THIS emulator ` +
-      `(${process.env.FIRESTORE_EMULATOR_HOST}) and project ${project}?\n` +
-      `  - is MAPLE_DIDS the DID in infra/atproto/.harness-state?\n` +
-      `  - did the trigger fire? check the functions emulator log above.`
+): Promise<string> => {
+  const data = await waitForDoc<DocumentData>(
+    ref,
+    d => matches(d) && Boolean(d.atp?.cid),
+    { timeoutMs: ARRIVE_TIMEOUT_MS, hint: HINT, label: what }
   )
+  return data.atp.cid as string
 }
 
 const stamp = Date.now()
@@ -71,7 +71,7 @@ const revised = `e2e revised content ${stamp}`
 
 console.log(`\n== 1. publish a freshly scraped bill ==`)
 await source.set({ ...doc, summary: first, fetchedAt: Timestamp.now() })
-const cidA = await waitFor(shadow, d => d.summary === first, `"${first}"`)
+const cidA = await arrive(shadow, d => d.summary === first, `"${first}"`)
 console.log(`   cid A = ${cidA}`)
 
 console.log(`\n== 2. two things that must produce NO commit ==`)
@@ -114,7 +114,7 @@ console.log(`   neither committed. Correct.`)
 
 console.log(`\n== 3. change real content ==`)
 await source.update({ summary: revised, fetchedAt: Timestamp.now() })
-const cidB = await waitFor(shadow, d => d.summary === revised, `"${revised}"`)
+const cidB = await arrive(shadow, d => d.summary === revised, `"${revised}"`)
 assert.notEqual(
   cidB,
   cidA,
@@ -130,7 +130,7 @@ await db.doc(`/events/hearing-${hearingId}`).set({
   content: { ...hearing.content, Description: hearingMark },
   fetchedAt: Timestamp.now()
 })
-await waitFor(
+await arrive(
   db.doc(`atpHearings/hearing-${hearingId}`),
   d => d.content?.Description === hearingMark,
   `"${hearingMark}"`

@@ -1,9 +1,22 @@
 name: ATProto Harness
 
-# The only job that exercises the real wire path: a record put on a real PDS,
-# carried by a real relay and a real jetstream into the consumer and on into
-# Firestore. Everything else in CI tests logic in isolation, so a PDS_IMAGE bump
-# that broke record acceptance would otherwise merge green.
+# The only job that exercises the real wire path, in both directions:
+#
+#   read   a record put on a real PDS, carried by a real relay and a real
+#          jetstream into the consumer and on into Firestore
+#   write  a scraped Firestore document published by services/atproto-publisher,
+#          all the way back round to Firestore -- plus the assertion no unit test
+#          can make, that a re-scrape moving only fetchedAt commits NOTHING
+#
+# Everything else in CI tests logic in isolation, so a PDS_IMAGE bump that broke
+# record acceptance would otherwise merge green.
+#
+# Both halves in ONE job, though the publish half insists on its own Firestore
+# and functions emulators (firebase.atproto-e2e.json: 8081/5011 -- the functions
+# emulator only fires triggers against a Firestore emulator it started itself).
+# The emulators cannot be shared; the compose stack underneath them can, and
+# bringing that up is most of the runtime, since a cold run pays a full PLC image
+# build from a pinned git ref. One bootstrap, one build, both assertions.
 #
 # Its own workflow rather than a job in repo-checks.yml because that workflow is
 # ungated (`on: ["push", "pull_request"]`) and GitHub has no per-job path
@@ -12,16 +25,20 @@ on:
   pull_request:
     paths:
       - services/atproto-consumer/**
+      - services/atproto-publisher/**
       - infra/atproto/**
       - lexicons/**
+      - firebase.atproto-e2e.json
       - .github/workflows/atproto-harness.yml
   push:
     branches:
       - main
     paths:
       - services/atproto-consumer/**
+      - services/atproto-publisher/**
       - infra/atproto/**
       - lexicons/**
+      - firebase.atproto-e2e.json
       - .github/workflows/atproto-harness.yml
 
 concurrency:
@@ -30,12 +47,13 @@ concurrency:
 
 jobs:
   harness_smoke:
-    name: Harness Smoke
+    name: Harness Smoke (read + publish)
     runs-on: ubuntu-latest
     # Cold runs pay a full PLC image build from a pinned git ref (compose.yml
-    # builds it; there is no published image), so the budget is generous
-    # relative to the ~6-10 min this should take.
-    timeout-minutes: 30
+    # builds it; there is no published image), and the two halves run in
+    # sequence, so the budget is generous relative to what this should take.
+    # Publishing that image is the obvious saving; measure first.
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v2
@@ -45,19 +63,33 @@ jobs:
         with:
           node-version: 22
           # Not .github/actions/setup-repo: that installs the ROOT lockfile.
-          # This package has its own, so it caches against its own.
+          # Both packages have their own, so the cache keys on both.
           cache: yarn
-          cache-dependency-path: services/atproto-consumer/yarn.lock
+          cache-dependency-path: |
+            services/atproto-consumer/yarn.lock
+            services/atproto-publisher/yarn.lock
       - run: yarn install --frozen-lockfile
         working-directory: services/atproto-consumer
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-publisher
 
       - name: Cache Emulators
         uses: actions/cache@v4
         with:
-          path: /home/runner/.cache/firebase/emulators
-          # ft14 tracks the firebase-tools@14 that the consumer's `emulator`
-          # script fetches via npx; bump both together.
-          key: ${{ runner.os }}-firebase-emulators-ft14
+          # The emulator JARs, and the npx cache that fetches firebase-tools
+          # itself. Without the second, both `yarn emulator` and
+          # publish-check.sh re-resolve the whole firebase-tools tree from
+          # the registry on every run; the consumer's is backgrounded into
+          # bootstrap's minutes, but publish-check.sh's is not covered by
+          # anything and would be paid serially at the end of the job.
+          path: |
+            /home/runner/.cache/firebase/emulators
+            ~/.npm/_npx
+          # One cache, two firebase-tools majors: the consumer's `emulator`
+          # script fetches 14, publish-check.sh fetches 15 (the same major as
+          # the deploy action that ships this codebase). Three pins move
+          # together -- those two and repo-checks.yml's Publisher Checks.
+          key: ${{ runner.os }}-firebase-emulators-ft14-ft15
 
       # Started BEFORE bootstrap, and waited on after: it needs nothing from the
       # stack, so its npx download and JVM boot hide inside bootstrap's minutes
@@ -85,15 +117,42 @@ jobs:
           load_state DID
           wait_for firestore "http://$FIRESTORE_EMULATOR_HOST/" 90 \
             || { cat "$RUNNER_TEMP/emulator.log"; fail "the emulator never came up"; }
+          # Job control, so the consumer gets a process group of its own and
+          # the step that stops it can take the whole tree -- see
+          # stop_consumer_group in lib.sh.
+          set -m
           MAPLE_DIDS="$DID" nohup yarn --cwd services/atproto-consumer dev \
             > "$RUNNER_TEMP/consumer.log" 2>&1 &
-          wait_for_log "$RUNNER_TEMP/consumer.log" "$CONSUMER_READY" 60 \
+          # Steps are separate shells, so the pid (= the pgid, given `set -m`)
+          # has to be written down for the step that stops it again.
+          echo $! > "$RUNNER_TEMP/consumer.pid"
+          set +m
+          wait_for_consumer "$RUNNER_TEMP/consumer.log" 60 "$(cat "$RUNNER_TEMP/consumer.pid")" \
             || { cat "$RUNNER_TEMP/consumer.log"; fail "the consumer never reached the jetstream tail"; }
 
-      # The assertion. Identical to what a developer runs against a local stack.
+      # The read half's assertion. Identical to what a developer runs against a
+      # local stack.
       - name: Smoke Test
         run: yarn test:smoke
         working-directory: services/atproto-consumer
+
+      # publish-check.sh runs a consumer of its own, against its own emulator.
+      # Two consumers tailing the same jetstream write to two different
+      # emulators, so this is not a correctness problem -- but the next step
+      # asserts that certain writes did NOT happen, and a second writer alive
+      # during that is what turns a failure into an afternoon.
+      - name: Stop The Consumer
+        run: |
+          . infra/atproto/lib.sh
+          stop_consumer_group "$(cat "$RUNNER_TEMP/consumer.pid")"
+
+      # The write half, and the same command a developer runs locally. It brings
+      # up its own Firestore + functions emulators on 8081/5011 and its own
+      # consumer, and reuses the compose stack bootstrap.sh already started.
+      - name: Publish Loop Check
+        run: infra/atproto/publish-check.sh
+        env:
+          E2E_CONSUMER_LOG: ${{ runner.temp }}/publish-consumer.log
 
       - name: Collect Logs
         if: failure()

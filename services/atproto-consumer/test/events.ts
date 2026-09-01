@@ -7,6 +7,7 @@ import {
   type HearingRecord,
   type RecordType
 } from "../src/records.js"
+import { billRkey, hearingRkey } from "../../atproto-publisher/src/rkeys.js"
 
 /**
  * Builders for synthetic Jetstream v2 wire events, typed as the SDK's own
@@ -37,10 +38,24 @@ const load = <R>(type: RecordType<R>): R =>
 export const billFixture: BillRecord = load(billRecord)
 export const hearingFixture: HearingRecord = load(hearingRecord)
 
-/** Matches the publisher's rkey conventions. Nothing in src/ may depend
- * on these; they exist so the synthetic events look like the real ones. */
-export const BILL_RKEY = `${billFixture.court}-${billFixture.billId}`
-export const HEARING_RKEY = String(hearingFixture.hearingId)
+/**
+ * The publisher's rkey conventions, imported rather than respelled, so
+ * the synthetic events and the record test/pds.ts puts on a real PDS are keyed
+ * exactly where a real publisher would key them.
+ *
+ * Nothing in src/ may depend on these: the indexer derives every document id
+ * from record FIELDS (src/records.ts), never from the rkey, precisely so a
+ * publisher-side rename is not a Firestore migration. What the import protects
+ * is the harness's claim to be exercising the real path — spelled out by hand
+ * here, the two agreed only by coincidence, and a change on the publisher side
+ * would have left the smoke test green against an rkey nothing produces.
+ *
+ * Reaching into the other package is safe only because src/rkeys.ts is a leaf
+ * with no imports of its own: this is test-only code, and it drags none of the
+ * publisher's dependencies into `yarn test`.
+ */
+export const BILL_RKEY = billRkey(billFixture.court, billFixture.billId)
+export const HEARING_RKEY = hearingRkey(hearingFixture.hearingId)
 
 let seqCounter = 1000
 export const nextSeq = () => ++seqCounter

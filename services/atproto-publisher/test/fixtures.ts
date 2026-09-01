@@ -32,8 +32,11 @@ export const hearingDoc = () => load("hearing.doc.json")
  * boundary on purpose: they are the one canonical definition of "a valid MAPLE
  * record", shared by the consumer's validator, its synthetic event builders and
  * its smoke test's seeder. Copying them here would let the two drift silently.
- * This is a plain file read at test time only — the packages never import each
- * other's code, and nothing ships across the boundary.
+ * This is a plain file read at test time only. The two packages are separate
+ * deploy units, so what may cross the boundary is narrow: data like this, and
+ * modules with no imports of their own (src/rkeys.js, the consumer's
+ * test/wait.js). Nothing with dependencies, and nothing from either src/ that
+ * ships.
  */
 const CONSUMER_FIXTURES = "../atproto-consumer/fixtures/"
 export const billRecordFixture = () =>

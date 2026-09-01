@@ -1,6 +1,6 @@
-# Shared by bootstrap.sh and recovery.sh. Source it, don't
-# run it. Every value the scripts and compose both need lives in the two env
-# files rather than being re-typed per script.
+# Shared by bootstrap.sh, recovery.sh, publish-check.sh and the CI job. Source
+# it, don't run it. Every value the scripts and compose both need lives in the
+# two env files rather than being re-typed per script.
 
 # shellcheck disable=SC2034  # these are consumed by the sourcing scripts
 HARNESS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -51,18 +51,53 @@ wait_for() { # wait_for <name> <url> [seconds]
   return 1
 }
 
-# The line the consumer prints once it is attached to the jetstream tail, either
-# way round. One spelling: recovery.sh and the CI job both wait on this, and a
-# rename in the consumer must break them together rather than one at a time.
-CONSUMER_READY='stored cursor|live tip'
+# The line the consumer prints once it is ATTACHED to the jetstream tail. It
+# comes from the transport's onConnect (src/index.ts), so it means the websocket
+# is up -- not, as the cursor-decision line above it in the log does, that the
+# consumer is about to open one. recovery.sh, publish-check.sh and the CI job all
+# wait on it, and a rename in the consumer must break them together rather than
+# one at a time.
+#
+# Waiting on the wrong line is not a slow start, it is a lost record: .live() is
+# called after the cursor decision is logged, and on a cursorless start -- which
+# is every harness run -- anything published in between is gone, surfacing two
+# minutes later as a timeout blaming the consumer.
+CONSUMER_READY='\[consumer\] subscribed'
 
-wait_for_log() { # wait_for_log <file> <extended-regex> [seconds]
-  local file=$1 pattern=$2 limit=${3:-30}
+# Wait until a consumer whose output goes to <log-file> is attached to the tail.
+# Everything that starts a consumer and then writes a record must use this.
+#
+# Given the consumer's pid it also gives up the moment that process dies, rather
+# than waiting out the whole budget: a consumer that exits during startup is the
+# usual failure, and its log is the answer, so the caller should print it.
+wait_for_consumer() { # wait_for_consumer <log-file> [seconds] [pid]
+  local log=$1 limit=${2:-30} pid=${3:-}
   for _ in $(seq 1 "$limit"); do
-    grep -qE "$pattern" "$file" 2>/dev/null && return 0
+    grep -qE "$CONSUMER_READY" "$log" 2>/dev/null && return 0
+    [ -z "$pid" ] || kill -0 "$pid" 2>/dev/null || return 1
     sleep 1
   done
   return 1
+}
+
+# Stop a consumer started in its own process group (`set -m`) and make sure it
+# is actually gone.
+#
+# SIGTERM to the GROUP first: `yarn dev` runs tsx which runs node, so signalling
+# the pid alone kills yarn and orphans the node process. Then SIGKILL, because
+# TERM alone is not reliable here -- the consumer's shutdown aborts an in-flight
+# websocket read and does not always finish, which was observed leaving two
+# orphaned nodes behind. A survivor keeps tailing jetstream and joins the next
+# run as a second writer: the race recovery.sh warns about, arriving from a
+# previous run.
+stop_consumer_group() { # stop_consumer_group <pgid> [seconds]
+  local pgid=$1 limit=${2:-10}
+  kill -- -"$pgid" 2>/dev/null || true
+  for _ in $(seq 1 "$limit"); do
+    kill -0 -- -"$pgid" 2>/dev/null || return 0
+    sleep 1
+  done
+  kill -9 -- -"$pgid" 2>/dev/null || true
 }
 
 # Firestore emulator REST. "Bearer owner" is the emulator's admin credential;

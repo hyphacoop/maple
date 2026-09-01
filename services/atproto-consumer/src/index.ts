@@ -1,6 +1,7 @@
 import { isDidString, type DidString } from "@atproto/lex"
 import {
   Jetstream,
+  websocketTransport,
   type JetstreamConsumer,
   type LexIndexer
 } from "@bsky/jetstream"
@@ -108,7 +109,18 @@ async function main() {
       onInfo: info =>
         console.warn(
           `[consumer] server advisory ${info.name}: ${info.message ?? ""}`
-        )
+        ),
+      // The line that means "attached to the tail", and the one every harness
+      // waiter greps for (lib.sh's CONSUMER_READY). It has to come from the
+      // transport: the cursor decision above is logged BEFORE .live() opens the
+      // websocket, so waiting on that resumes roughly a second early, and on a
+      // cursorless start anything published in that window is not late, it is
+      // gone. onConnect fires per connection, so the line stays honest across a
+      // reconnect too.
+      liveTransport: websocketTransport({
+        onConnect: () =>
+          console.log(`[consumer] subscribed to ${JETSTREAM_URL}`)
+      })
     })
   } catch (err) {
     // The underlying ws-client raises AbortError on signal abort, so a

@@ -2,6 +2,7 @@ import type { Query } from "firebase-admin/firestore"
 import { bill, hearing } from "./lexicons/org/mapletestimony.js"
 import type { BillDoc, HearingDoc } from "./mapper.js"
 import { toBillRecord, toHearingRecord } from "./mapper.js"
+import { billRkey, hearingRkey } from "./rkeys.js"
 
 /**
  * What every MAPLE record type is, from the publishing side, in one table.
@@ -15,22 +16,20 @@ import { toBillRecord, toHearingRecord } from "./mapper.js"
  * loudly when they weren't. Adding a record type should be an entry here plus a
  * mapper function, and nothing else.
  *
- * The two packages are separate Firebase deploy units sharing only
- * lexicons/*.json, so this is a deliberate mirror rather than shared code.
+ * The two packages are separate Firebase deploy units. What they share is only
+ * what can cross that boundary safely: lexicons/*.json, and — read by the
+ * consumer's TESTS, never by its src/ — the rkey conventions in ./rkeys.js and
+ * the consumer's own fixtures. This table is a deliberate mirror, not shared
+ * code.
  */
 
 export type BillRecord = bill.Main
 export type HearingRecord = hearing.Main
 
-/**
- * Record key conventions. These live here and nowhere else.
- *
- * The lexicons declare `"key": "any"` and tell consumers to treat the rkey as
- * opaque, precisely so these can change without becoming a Firestore
- * migration. Nothing may parse them back.
- */
-export const billRkey = (court: number, billId: string) => `${court}-${billId}`
-export const hearingRkey = (hearingId: number) => String(hearingId)
+/** The rkey conventions live in their own dependency-free module so the
+ * consumer's test event builders can import them; re-exported here so every
+ * call site in this package still reads them off the record table. */
+export { billRkey, hearingRkey }
 
 /** What the generated lexicon schemas expose, structurally, so this table does
  * not have to name a type from @atproto/lex's internals. */

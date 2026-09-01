@@ -1,7 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": ".",
+    // The repo root, not this package: test-only code reaches across the
+    // package boundary (the consumer's test/wait.ts and the publisher's
+    // src/rkeys.ts, both dependency-free leaves), and an explicit rootDir
+    // rejects any file outside it. Safe here and nowhere else because this
+    // config is noEmit -- tsconfig.json keeps rootDir "src", so `yarn build`
+    // still emits dist/ with the layout package.json's `main` expects.
+    "rootDir": "../..",
     "noEmit": true
   },
   "include": ["src", "test", "scripts"]

@@ -8,10 +8,10 @@ import {
   harnessEnv,
   seedBill,
   session,
-  waitForDoc,
   type HarnessEnv,
   type SeededBill
 } from "./pds.js"
+import { waitForDoc } from "./wait.js"
 
 /**
  * The end-to-end acceptance test for the local harness:
@@ -89,25 +89,27 @@ test("leg 3-4: the record arrives in Firestore via jetstream and the consumer", 
   // Matching on the cid is what makes this a real assertion: a document left by
   // an earlier run cannot pass for a fresh delivery.
   const data = await waitForDoc(
-    db,
-    seeded.docPath,
+    db.doc(seeded.docPath),
     d => d.atp?.cid === seeded.cid,
-    DOC_TIMEOUT_MS,
-    [
-      `expected atp.cid=${seeded.cid}. In order:`,
-      "  - is the consumer running, and against THIS jetstream?",
-      `      JETSTREAM_URL=${env.jetstreamUrl} GCLOUD_PROJECT=${env.projectId} \\`,
-      `        MAPLE_DIDS=${seeded.did} yarn --cwd services/atproto-consumer dev`,
-      `  - is MAPLE_DIDS set to a DID other than ${seeded.did}? that filters this`,
-      "    record out server-side and looks exactly like an idle stream.",
-      "  - is it pointed at THIS emulator/project? a different GCLOUD_PROJECT writes",
-      '    to a different emulator namespace and looks identical to "nothing arrived".',
-      "  - did it resume from a stale cursor? a cursor left by a previous run of a",
-      "    DIFFERENT jetstream is a meaningless seq here (jetstream sequence spaces",
-      "    are per-host). Check atpJetstreamMeta in the emulator.",
-      "  - is jetstream itself ingesting?",
-      `      ${DC} logs jetstream`
-    ].join("\n")
+    {
+      timeoutMs: DOC_TIMEOUT_MS,
+      label: `atp.cid=${seeded.cid}`,
+      hint: [
+        "In order:",
+        "  - is the consumer running, and against THIS jetstream?",
+        `      JETSTREAM_URL=${env.jetstreamUrl} GCLOUD_PROJECT=${env.projectId} \\`,
+        `        MAPLE_DIDS=${seeded.did} yarn --cwd services/atproto-consumer dev`,
+        `  - is MAPLE_DIDS set to a DID other than ${seeded.did}? that filters this`,
+        "    record out server-side and looks exactly like an idle stream.",
+        "  - is it pointed at THIS emulator/project? a different GCLOUD_PROJECT writes",
+        '    to a different emulator namespace and looks identical to "nothing arrived".',
+        "  - did it resume from a stale cursor? a cursor left by a previous run of a",
+        "    DIFFERENT jetstream is a meaningless seq here (jetstream sequence spaces",
+        "    are per-host). Check atpJetstreamMeta in the emulator.",
+        "  - is jetstream itself ingesting?",
+        `      ${DC} logs jetstream`
+      ].join("\n")
+    }
   )
 
   // The whole document, against the same expectation the unit test uses. The

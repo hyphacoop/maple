@@ -53,7 +53,7 @@ start_consumer() {
       MAPLE_DIDS="$DID" \
       "$NODE" --import tsx src/index.ts >> "$LOG" 2>&1 ) &
   echo $! > "$PIDFILE"
-  wait_for_log "$LOG" "$CONSUMER_READY" 30 \
+  wait_for_consumer "$LOG" 30 "$(cat "$PIDFILE")" \
     || { cat "$LOG" >&2; fail "consumer did not start"; }
   # The consumer logs the cursor document it chose. Reading it back beats
   # re-deriving the host-keyed path here, which would silently diverge from

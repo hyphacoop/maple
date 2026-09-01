@@ -179,33 +179,3 @@ export async function seedBill(
     fetchedAt
   }
 }
-
-/**
- * Poll a document until it satisfies `matches`, or throw with `hint`.
- *
- * Firestore's onSnapshot would be tidier, but the emulator holds the listener
- * open past the deadline; polling keeps the timeout honest.
- */
-export async function waitForDoc(
-  db: Firestore,
-  path: string,
-  matches: (data: FirebaseFirestore.DocumentData) => boolean,
-  timeoutMs: number,
-  hint: string
-): Promise<FirebaseFirestore.DocumentData> {
-  const ref = db.doc(path)
-  const deadline = Date.now() + timeoutMs
-  for (;;) {
-    const data = (await ref.get()).data()
-    if (data && matches(data)) return data
-    if (Date.now() >= deadline)
-      throw new Error(
-        `timed out after ${timeoutMs}ms waiting for ${path}\n` +
-          (data
-            ? "a document IS present but does not match -- an older run left it there; that is not a pass\n"
-            : "no document at that path at all\n") +
-          hint
-      )
-    await new Promise(resolve => setTimeout(resolve, 1000))
-  }
-}
