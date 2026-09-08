@@ -7,6 +7,9 @@ jest.mock("../firebase", () => ({
   Timestamp: { now: () => ({}) }
 }))
 
+jest.mock("./forceGc", () => ({ forceGc: jest.fn() }))
+import { forceGc } from "./forceGc"
+
 const imports: any[][] = []
 jest.mock("./client", () => ({
   createClient: () => ({
@@ -57,21 +60,26 @@ function fakeSource(docs: { id: string; body: string; path?: string }[]) {
 
 const pad = (n: number) => String(n).padStart(6, "0")
 
-const makeIndexer = (docs: { id: string; body: string }[]) =>
+const makeIndexer = (
+  docs: { id: string; body: string }[],
+  batchSize?: number
+) =>
   new SearchIndexer({
     alias: "widgets",
     schema: { fields: [{ name: "body", type: "string" }] },
     sourceCollection: fakeSource(docs) as any,
     documentTrigger: "widgets/{id}",
     idField: "id",
-    convert: (data: any) => ({ id: data.id, body: data.body })
+    convert: (data: any) => ({ id: data.id, body: data.body }),
+    batchSize
   } as CollectionConfig)
 
 beforeEach(() => {
   imports.length = 0
+  jest.mocked(forceGc).mockClear()
 })
 
-describe("importInSlices", () => {
+describe("importPage", () => {
   const chunk = { startAfter: null, budgetMs: 60_000 }
 
   it("imports a page that fits the byte budget in one call", async () => {
@@ -163,6 +171,61 @@ describe("backfillChunk", () => {
       budgetMs: 60_000
     })
     expect(first.documents + resumed.documents).toBe(600)
+  })
+
+  it("pages at the size its config asks for", async () => {
+    const result = await makeIndexer(docs, 50).backfillChunk({
+      startAfter: null,
+      maxBatches: 1,
+      budgetMs: 60_000
+    })
+    expect(result.documents).toBe(50)
+    expect(result.cursor).toBe(pad(49))
+  })
+
+  it("reports the serialized size of everything it imported", async () => {
+    const body = "x".repeat(1000)
+    const result = await makeIndexer(
+      [1, 2, 3].map(n => ({ id: pad(n), body }))
+    ).backfillChunk({ startAfter: null, budgetMs: 60_000 })
+
+    // Exactly the JSONL the stub was handed: each line plus its newline.
+    const expected = imports
+      .flat()
+      .reduce((sum, d) => sum + Buffer.byteLength(JSON.stringify(d)) + 1, 0)
+    expect(result.bytes).toBe(expected)
+  })
+
+  /** The chunk total spans every page, so it is the peak that says how much
+   * sits in memory at once — the number `batchSize` is chosen against. */
+  it("collects after every page and reports resident memory", async () => {
+    const result = await makeIndexer(docs).backfillChunk({
+      startAfter: null,
+      budgetMs: 60_000
+    })
+    expect(result.batches).toBe(3)
+    expect(forceGc).toHaveBeenCalledTimes(3)
+    expect(result.peakRssBytes).toBeGreaterThan(0)
+    expect(result.peakRssAfterGcBytes).toBeGreaterThan(0)
+  })
+
+  it("reports the largest single page, not just the chunk total", async () => {
+    const small = "x".repeat(1000)
+    const large = "x".repeat(50_000)
+    // 250 to a page: the first page is all small, the second holds the large.
+    const mixed = Array.from({ length: 300 }, (_, n) => ({
+      id: pad(n),
+      body: n < 250 ? small : large
+    }))
+
+    const result = await makeIndexer(mixed).backfillChunk({
+      startAfter: null,
+      budgetMs: 60_000
+    })
+    expect(result.batches).toBe(2)
+    expect(result.peakPageBytes).toBeLessThan(result.bytes)
+    // The 50-document tail page dwarfs the 250-document head page.
+    expect(result.peakPageBytes).toBeGreaterThan(result.bytes / 2)
   })
 
   it("counts documents that fail to convert without aborting the chunk", async () => {

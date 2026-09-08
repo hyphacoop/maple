@@ -15,9 +15,22 @@ import { z } from "zod"
  * and create the successor after the budget runs out mid-page. */
 export const CHUNK_BUDGET_MS = 300_000
 
-/** Loop guard. Nothing legitimate reaches this — bills is ~49k documents at 250
- * per batch, and one chunk covers hundreds of batches — so hitting it means the
- * cursor stopped advancing, and the run fails loudly instead of chaining. */
+/** Ceiling on the batches one invocation moves, independent of the time budget.
+ *
+ * Not a memory bound: chained events mostly land on the same warm instance, so
+ * a chunk boundary is usually the same heap, and it is the forced collection
+ * after each page (see ./forceGc.ts) that reclaims what a page allocates. What
+ * the cap bounds is the cost of losing a chunk. An instance the container
+ * kills is gone, its retry lands on a fresh one and resumes from the persisted
+ * cursor, and the cap keeps that unit of loss to a few minutes of work rather
+ * than the whole five-minute budget's worth.
+ */
+export const MAX_BATCHES_PER_CHUNK = 25
+
+/** Loop guard. Nothing legitimate reaches this — bills is ~49k documents at 100
+ * per batch, and `MAX_BATCHES_PER_CHUNK` puts that at roughly twenty chunks —
+ * so hitting it means the cursor stopped advancing, and the run fails loudly
+ * instead of chaining. */
 export const MAX_CHUNKS = 500
 
 /** `failurePolicy: true` retries the same event for up to seven days. Past this
@@ -84,6 +97,19 @@ export const UpgradeRun = BackfillConfig.extend({
   chunks: z.number().int().positive()
 })
 export type UpgradeRun = z.infer<typeof UpgradeRun>
+
+/** How many batches the chunk about to run may move: `MAX_BATCHES_PER_CHUNK`,
+ * or whatever is left of the run's `numBatches` budget if that is less. Floored
+ * at zero so a spent budget hands its chunk no batches, which returns the
+ * cursor untouched and lets `nextChunk` end the run rather than chaining. Kept
+ * pure alongside `nextChunk`, for the reason given there. */
+export const chunkBatchBudget = ({
+  numBatches = Infinity,
+  batchesSoFar
+}: {
+  numBatches?: number
+  batchesSoFar: number
+}) => Math.min(Math.max(numBatches - batchesSoFar, 0), MAX_BATCHES_PER_CHUNK)
 
 export type NextChunk =
   | { type: "done" }

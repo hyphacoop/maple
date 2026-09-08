@@ -1,9 +1,11 @@
 import { EventContext, runWith } from "firebase-functions"
 import { nanoid } from "nanoid"
+import { getHeapStatistics } from "v8"
 import { db, QueryDocumentSnapshot, Timestamp } from "../firebase"
 import {
   BackfillConfig,
   ChunkDoc,
+  chunkBatchBudget,
   chunkPath,
   CHUNK_BUDGET_MS,
   MAX_EVENT_AGE_MS,
@@ -38,10 +40,13 @@ export function createSearchIndexer<T extends BaseRecord = BaseRecord>(
      * cursor, imports upserts into a collection nothing is aliased to yet, and
      * writes totals relative to the baseline on its own document, so running it
      * more than once converges rather than double-counting.
+     *
+     * What bounds a chunk's footprint is `MAX_BATCHES_PER_CHUNK` and the
+     * config's `batchSize`, not the memory tier.
      */
     runBackfillChunk: runWith({
       timeoutSeconds: 540,
-      memory: "512MB",
+      memory: "1GB",
       secrets: ["TYPESENSE_API_KEY"],
       failurePolicy: true
     })
@@ -173,10 +178,10 @@ async function advanceBackfill(
   try {
     const result = await indexer.backfillChunk({
       startAfter: chunk.cursor,
-      maxBatches:
-        run.numBatches === undefined
-          ? undefined
-          : Math.max(run.numBatches - chunk.before.batches, 0),
+      maxBatches: chunkBatchBudget({
+        numBatches: run.numBatches,
+        batchesSoFar: chunk.before.batches
+      }),
       budgetMs: CHUNK_BUDGET_MS
     })
 
@@ -187,8 +192,21 @@ async function advanceBackfill(
       documents: chunk.before.documents + result.documents,
       convertFailures: chunk.before.convertFailures + result.convertFailures
     }
+    // Sizing figures, for reading against the function's memory tier. The heap
+    // limit is V8's own: above the tier, it is the container that kills first
+    // and the forced collection in backfillChunk is what keeps RSS down; below
+    // it, V8 collects on its own and the forced one is redundant.
+    const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)} MB`
     console.log(
-      `Chunk ${chunk.index} of ${alias}: ${result.batches} batches, ${result.documents} documents, cursor ${result.cursor}`
+      `Chunk ${chunk.index} of ${alias}: ${result.batches} batches, ${
+        result.documents
+      } documents, ${mb(result.bytes)} (peak page ${mb(
+        result.peakPageBytes
+      )}); rss peak ${mb(result.peakRssBytes)}, after gc ${mb(
+        result.peakRssAfterGcBytes
+      )}, heap limit ${mb(getHeapStatistics().heap_size_limit)}; cursor ${
+        result.cursor
+      }`
     )
 
     const progress = {

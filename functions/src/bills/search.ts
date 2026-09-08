@@ -14,6 +14,10 @@ export const {
   alias: "bills",
   idField: "id",
   convertVersion: billNumberVariantsVersion,
+  /** Below the default: `body` carries the bill's full text, so a page of this
+   * source is the largest the backfill handles anywhere. The per-chunk log
+   * line's peak-page figure is what to read if this needs revisiting. */
+  batchSize: 100,
   schema: {
     /** Hyphens do not split tokens by default, so "vote-by-mail" indexes as one
      * token and the spaced form people type cannot reach it — the two spellings
@@ -55,11 +59,14 @@ export const {
     default_sorting_field: "testimonyCount"
   },
   convert: data => {
+    // Throw, don't return: the indexer's per-document catch counts and skips
+    // it. Log the id, not `data`, which is a whole bill body per failure.
     const validation = Bill.validateWithDefaults(data)
     if (!validation.success) {
-      console.error(data, validation.message, validation.details)
+      console.error(validation.message, validation.details)
+      throw Error(`Invalid bill ${data.court}-${data.id}`)
     }
-    const bill = Bill.checkWithDefaults(data)
+    const bill = validation.value
 
     const { categories, topics } = buildTopicsForSearch(bill.topics)
 

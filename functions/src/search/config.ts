@@ -2,6 +2,11 @@ import { Query } from "@google-cloud/firestore"
 import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections"
 import { DocumentData } from "../firebase"
 
+/** Page size for a collection whose config does not set one. Held at the
+ * historical value: the collections carrying no large free text page fine at
+ * this size, and only bills needed a smaller one. */
+export const DEFAULT_BATCH_SIZE = 250
+
 export type BaseRecord = { id: string }
 export type Schema = Omit<CollectionCreateSchema, "name">
 export type CollectionConfig<T extends BaseRecord = BaseRecord> = {
@@ -12,6 +17,14 @@ export type CollectionConfig<T extends BaseRecord = BaseRecord> = {
   readonly idField: string
   readonly convert: (data: DocumentData) => T
   readonly filter?: (data: DocumentData) => boolean
+  /** Source documents the BACKFILL reads per Firestore page, defaulting to
+   * `DEFAULT_BATCH_SIZE`. Lower it for a collection whose records carry large
+   * free text: the page is what sits in memory at once (see
+   * `MAX_BATCHES_PER_CHUNK` in ./backfillRun.ts for the rest of that story),
+   * and the per-chunk log line reports the largest page it saw. Governs
+   * `SearchIndexer` only, not the export scripts. Outside the collection-name
+   * hash (see ./collectionName.ts), so it forces no reindex. */
+  readonly batchSize?: number
   /** Bump to force a reindex when the indexed output changed but `convert`'s
    * own source did not — the collection name hashes `convert.toString()`, which
    * covers none of the helpers, validators or defaults `convert` imports from

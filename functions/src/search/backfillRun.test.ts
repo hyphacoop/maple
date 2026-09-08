@@ -1,6 +1,8 @@
 import {
   aliasForUpgradeId,
+  chunkBatchBudget,
   chunkPath,
+  MAX_BATCHES_PER_CHUNK,
   MAX_CHUNKS,
   nextChunk,
   upgradePath
@@ -37,6 +39,19 @@ describe("nextChunk", () => {
       type: "failed",
       error: expect.stringContaining("not advancing")
     })
+  })
+})
+
+describe("chunkBatchBudget", () => {
+  const cap = MAX_BATCHES_PER_CHUNK
+  it.each`
+    numBatches   | batchesSoFar | expected | why
+    ${undefined} | ${10_000}    | ${cap}   | ${"a full run is capped however far it has got"}
+    ${cap * 4}   | ${0}         | ${cap}   | ${"a budget larger than one chunk is capped"}
+    ${cap + 3}   | ${cap}       | ${3}     | ${"only what is left of the budget is handed over"}
+    ${4}         | ${9}         | ${0}     | ${"a spent budget floors at zero, so nextChunk ends the run"}
+  `("$why", ({ numBatches, batchesSoFar, expected }) => {
+    expect(chunkBatchBudget({ numBatches, batchesSoFar })).toBe(expected)
   })
 })
 

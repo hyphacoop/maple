@@ -12,7 +12,8 @@ import {
 import { BackfillConfig, upgradePath } from "./backfillRun"
 import { createClient } from "./client"
 import { searchCollectionName } from "./collectionName"
-import { CollectionConfig } from "./config"
+import { CollectionConfig, DEFAULT_BATCH_SIZE } from "./config"
+import { forceGc } from "./forceGc"
 import { Timestamp } from "../firebase"
 
 /** Ceiling on one `documents().import()` body, held far enough under the 10 MB
@@ -32,6 +33,21 @@ export type BackfillChunkResult = {
   batches: number
   documents: number
   convertFailures: number
+  /** Serialized size of everything this chunk imported, across every page. */
+  bytes: number
+  /** The largest single page in this chunk. The page is what sits in memory at
+   * once, so this — not the chunk total — is the number to read when choosing a
+   * config's `batchSize`. */
+  peakPageBytes: number
+  /** Highest resident memory seen after importing a page, before the forced
+   * collection. This is the figure the container kills on. */
+  peakRssBytes: number
+  /** Highest resident memory seen after a forced collection. Flat across
+   * pages means the collection reclaims what a page allocates; climbing means
+   * something is retained between pages. All four sizing figures are logged
+   * rather than persisted: the run's `Totals` are a checkpoint a replayed
+   * chunk must reproduce exactly. */
+  peakRssAfterGcBytes: number
 }
 
 /** The id of a failed import's `document`, which the server echoes back as the
@@ -48,8 +64,8 @@ const failedDocumentId = (document: unknown): string | undefined => {
 
 export class SearchIndexer {
   /** How many source documents to read per Firestore page. Independent of the
-   * import payload, which `importInSlices` sizes by bytes. */
-  private readonly batchSize = 250
+   * import payload, which `importPage` sizes by bytes. */
+  private readonly batchSize: number
   private readonly client = createClient()
   private readonly collectionName: string
 
@@ -57,6 +73,7 @@ export class SearchIndexer {
 
   constructor(private readonly config: CollectionConfig) {
     this.collectionName = searchCollectionName(config)
+    this.batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE
   }
 
   private passesFilter(data: DocumentData | undefined) {
@@ -174,12 +191,15 @@ export class SearchIndexer {
     maxBatches?: number
     budgetMs: number
   }): Promise<BackfillChunkResult> {
-    const { convert } = this.config
     const deadline = Date.now() + budgetMs
     let cursor: string | null = startAfter
     let batches = 0
     let documents = 0
     let convertFailures = 0
+    let bytes = 0
+    let peakPageBytes = 0
+    let peakRssBytes = 0
+    let peakRssAfterGcBytes = 0
 
     while (maxBatches === undefined || batches < maxBatches) {
       // Checked after the first page so a chunk always makes progress, however
@@ -191,42 +211,73 @@ export class SearchIndexer {
 
       if (page.docs.length) {
         batches++
-        const docs = page.docs.reduce((acc, d) => {
-          try {
-            const data = d.data()
-            if (!this.passesFilter(data)) return acc
-            acc.push(convert(data))
-          } catch (error: any) {
-            convertFailures++
-            console.error(`Failed to convert document: ${error.message}`)
-          }
-          return acc
-        }, [] as any[])
+        const imported = await this.importPage(page.docs)
+        documents += imported.documents
+        convertFailures += imported.convertFailures
+        bytes += imported.bytes
+        peakPageBytes = Math.max(peakPageBytes, imported.bytes)
 
-        await this.importInSlices(docs)
-        documents += docs.length
+        // Reclaim the page before fetching the next one — see ./forceGc.ts.
+        peakRssBytes = Math.max(peakRssBytes, process.memoryUsage.rss())
+        forceGc()
+        peakRssAfterGcBytes = Math.max(
+          peakRssAfterGcBytes,
+          process.memoryUsage.rss()
+        )
       }
 
       if (cursor === null) break
     }
 
-    return { cursor, batches, documents, convertFailures }
+    return {
+      cursor,
+      batches,
+      documents,
+      convertFailures,
+      bytes,
+      peakPageBytes,
+      peakRssBytes,
+      peakRssAfterGcBytes
+    }
   }
 
-  private async importInSlices(docs: any[]) {
-    if (!docs.length) return
+  /** Converts and imports one page of snapshots, splitting the import into
+   * request-sized slices. Each document is converted, serialized and dropped in
+   * the same iteration, so the converted page never exists as a whole: what is
+   * live at once is the snapshots plus at most one slice of lines. */
+  private async importPage(snapshots: QueryDocumentSnapshot[]) {
+    const { convert } = this.config
     const collection = await this.getCollection()
     let slice: string[] = []
+    let sliceBytes = 0
+    let documents = 0
+    let convertFailures = 0
     let bytes = 0
 
+    // Releases the line array before the round trip: the joined body is the
+    // copy that ships, and reassigning the captured `let` is what frees this one.
     const flush = async () => {
       if (!slice.length) return
-      await this.importDocuments(collection, slice)
+      const body = slice.join("\n")
+      bytes += sliceBytes
       slice = []
-      bytes = 0
+      sliceBytes = 0
+      await this.importDocuments(collection, body)
     }
 
-    for (const doc of docs) {
+    for (const snapshot of snapshots) {
+      let doc: any
+      try {
+        const data = snapshot.data()
+        if (!this.passesFilter(data)) continue
+        doc = convert(data)
+      } catch (error: any) {
+        convertFailures++
+        console.error(`Failed to convert document: ${error.message}`)
+        continue
+      }
+      documents++
+
       // Serialized once, here: the same line is measured against the budget
       // and shipped as the import body, rather than stringified a second time
       // inside the client. Bytes, not string length: the cap is on the encoded
@@ -234,25 +285,26 @@ export class SearchIndexer {
       // non-ASCII. +1 for the JSONL newline.
       const line = JSON.stringify(doc)
       const size = Buffer.byteLength(line) + 1
-      if (slice.length && bytes + size > IMPORT_BYTE_BUDGET) await flush()
+      if (slice.length && sliceBytes + size > IMPORT_BYTE_BUDGET) await flush()
       slice.push(line)
-      bytes += size
+      sliceBytes += size
     }
     await flush()
+    return { documents, convertFailures, bytes }
   }
 
   /** Imports pre-serialized JSONL lines. The client's string form returns the
    * raw per-line results WITHOUT throwing ImportError — only its array form
    * does — so failures are detected here, and must be: a silently rejected
    * batch would otherwise count as progress. */
-  private async importDocuments(collection: Collection, lines: string[]) {
+  private async importDocuments(collection: Collection, body: string) {
     const response = await collection
       .documents()
-      .import(lines.join("\n"), { action: "upsert" })
-    const failures = String(response)
+      .import(body, { action: "upsert" })
+    const results = String(response)
       .split("\n")
       .map(line => JSON.parse(line))
-      .filter(r => r.success === false)
+    const failures = results.filter(r => r.success === false)
     if (failures.length) {
       console.error(
         failures.map(r => ({
@@ -262,7 +314,7 @@ export class SearchIndexer {
         }))
       )
       throw Error(
-        `${failures.length} of ${lines.length} documents failed to import`
+        `${failures.length} of ${results.length} documents failed to import`
       )
     }
   }
