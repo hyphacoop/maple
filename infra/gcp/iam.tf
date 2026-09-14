@@ -41,6 +41,30 @@ resource "google_project_iam_member" "pds_metric_writer" {
   member  = "serviceAccount:${google_service_account.pds.email}"
 }
 
+# MAPLE's PLC ops key (kms.tf). Signing is granted to named PEOPLE, never to a
+# service account: a grant to the PDS VM would hand it the ability to move the
+# identity, which is the exact outcome ADR 0002 exists to prevent. The
+# variable's validation refuses serviceAccount: members. Assert after applying
+# — this must fail with PERMISSION_DENIED:
+#   gcloud kms asymmetric-sign --keyring=atproto --key=identity-ops --version=1 \
+#     --location=<region> --digest-algorithm=sha256 --input-file=/dev/null \
+#     --signature-file=/dev/null \
+#     --impersonate-service-account=atproto-pds@<project_id>.iam.gserviceaccount.com
+resource "google_kms_crypto_key_iam_member" "identity_ops_signer" {
+  for_each      = toset(var.identity_signers)
+  crypto_key_id = google_kms_crypto_key.identity_ops.id
+  role          = "roles/cloudkms.signerVerifier"
+  member        = each.value
+}
+
+# Reading the PUBLIC key is how the spec's did:key is derived (pubkey --kms).
+resource "google_kms_crypto_key_iam_member" "identity_ops_public_key" {
+  for_each      = toset(var.identity_signers)
+  crypto_key_id = google_kms_crypto_key.identity_ops.id
+  role          = "roles/cloudkms.publicKeyViewer"
+  member        = each.value
+}
+
 # CI plans (terraform-checks.yml) read this environment's state and the parent
 # DNS zone, nothing else: `plan -refresh=false -lock=false` needs the state
 # object, the workflow's bootstrap gate lists the bucket, and the data source

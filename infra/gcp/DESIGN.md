@@ -37,6 +37,19 @@ are never on the data disk and never in a snapshot of it.
 The hostname is apply-once. It lands in the DID document of every account the PDS creates, so
 changing it later does not rename the service, it orphans the identities.
 
+## MAPLE's identity key
+
+The ops key that signs PLC operations for MAPLE's `did:plc` is an HSM-backed Cloud KMS key in
+this root, and the only thing here that a service account is deliberately _not_ allowed to use.
+Signing is granted to named people through `identity_signers`; the PDS VM's own service account
+has no access, because a key the box can reach is a key a compromised box can move the identity
+with. That is the whole point of the split, and
+[ADR 0002](../../docs/adr/0002-atproto-identity-key-custody.md) is the decision.
+
+secp256k1 forces the HSM protection level — Cloud KMS offers that curve no other way — which is
+why this one key is the second-largest line in the cost table. The tool that uses it lives in
+`services/atproto-identity`; nothing in this root ever holds the private half.
+
 ## DNS
 
 The delegated zone (`pds.` or `pds-dev.`) is created here, and the NS record that delegates it

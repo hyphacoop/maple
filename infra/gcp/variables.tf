@@ -31,8 +31,22 @@ variable "network" {
   default     = "default"
 }
 
+variable "identity_signers" {
+  description = "IAM members (user:… / group:…) allowed to sign with MAPLE's PLC ops key in Cloud KMS — the people who run the identity tool's apply (services/atproto-identity). Never a serviceAccount: the VM must not be able to move the identity (ADR 0002)."
+  type        = list(string)
+  default     = []
+
+  # An allowlist, not a denylist: allUsers, allAuthenticatedUsers, domain:,
+  # principal(Set):// and deleted: members would all slip past "not a
+  # serviceAccount:" and hand signing to a workload or to the world.
+  validation {
+    condition     = alltrue([for m in var.identity_signers : can(regex("^(user|group):[^:]+$", m))])
+    error_message = "identity_signers must be user:… or group:… members only (ADR 0002)."
+  }
+}
+
 variable "pds_hostname" {
-  description = "Public hostname of the PDS, and the dns_name of the delegated Cloud DNS zone. APPLY-ONCE: it gets baked into the DID document at account creation and is effectively immutable afterwards. Enforced by prevent_destroy on the zone (dns.tf): a change plans as a replacement and the apply refuses it."
+  description = "Public hostname of the PDS, and the dns_name of the delegated Cloud DNS zone. APPLY-ONCE: it gets baked into the DID document at account creation (ADR 0002) and is effectively immutable afterwards. Enforced by prevent_destroy on the zone (dns.tf): a change plans as a replacement and the apply refuses it."
   type        = string
 }
 

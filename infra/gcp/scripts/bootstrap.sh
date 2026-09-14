@@ -12,7 +12,7 @@ region=$(tfvar "$env" region)
 bucket=$(sed -n 's/^bucket[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "envs/$env.gcs.tfbackend")
 
 echo "== APIs (Compute, Run, Artifact Registry, Secret Manager are on already)"
-gcloud services enable dns.googleapis.com monitoring.googleapis.com --project="$project"
+gcloud services enable dns.googleapis.com cloudkms.googleapis.com monitoring.googleapis.com --project="$project"
 
 echo "== state bucket gs://$bucket"
 if gcloud storage buckets describe "gs://$bucket" --project="$project" >/dev/null 2>&1; then

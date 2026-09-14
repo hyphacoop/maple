@@ -7,16 +7,15 @@ human-run; CI only plans. What is in here and why: [DESIGN.md](DESIGN.md). The d
 ## Permissions
 
 - **The environment's project**: `roles/editor` for every step, plus `roles/owner` for the grants
-  in `iam.tf` — an editor's apply ends red on those alone, and an owner's apply afterwards plans
-  exactly them (`iam.tf` says why).
+  in `iam.tf` — an editor's apply ends red on exactly those, and an owner's then plans them.
 - **`digital-testimony-prod`**: `roles/dns.admin` for the NS record in the parent zone, and at
   least `roles/dns.reader` or nothing here plans. `roles/owner` there only for CI ([CI.md](CI.md)).
 
 ## Apply
 
-`infra/gcp/dns` must be applied and live at the registrar first — this root looks its zone up, and
-until the delegation resolves Caddy cannot get a certificate however healthy `pds-startup` looks:
-[dns/README.md](dns/README.md). `pds_hostname` is apply-once (`variables.tf`).
+[dns/README.md](dns/README.md) first: this root looks that zone up, and until the delegation
+resolves at the registrar Caddy cannot get a certificate however healthy `pds-startup` looks.
+`pds_hostname` is apply-once (`variables.tf`); prod also needs `identity_signers`.
 
 ```sh
 infra/gcp/scripts/bootstrap.sh dev                              # 1. APIs and the state bucket
@@ -29,9 +28,10 @@ gcloud storage ls gs://digital-testimony-dev-atproto-pds-blobs/  # after one upl
 
 Then delete the record that blob belonged to: the object must leave the bucket. That is the one
 blobstore call the first apply has to prove; if it stays, `docker compose logs pds | grep 'could
-not delete blobs'` is the trail. If health never goes green, read the serial console with
-`gcloud compute instances get-serial-port-output atproto-pds --zone=us-central1-a`. Not applied
-here: secret versions and the HMAC key (step 3), the state bucket (step 1). Prod: same with `prod`.
+not delete blobs'` is the trail, and `gcloud compute instances get-serial-port-output atproto-pds`
+is the fallback when health never goes green. Not applied here: secret versions and the HMAC key
+(step 3), the state bucket (step 1), MAPLE's DID (the identity tool); prod is the same with
+`prod`.
 
 ## Rollback
 
@@ -43,7 +43,7 @@ here: secret versions and the HMAC key (step 3), the state bucket (step 1). Prod
 - **Data**: create a disk from a snapshot, attach it as `pds-data`; blobs are in the bucket. State:
   the bucket is versioned, restore the earlier object.
 - **Teardown**: `destroy` refuses by design — `prevent_destroy` on the durable resources, and the
-  VM is deletion-protected. Lifting those is its own reviewed change.
+  VM is deletion-protected. Lifting those is its own reviewed change; the key dies 30 days later.
 
 ## Monitoring
 
@@ -59,14 +59,14 @@ Expect one during bring-up; that page is the test.
 | `e2-small`, 730 h                       |     $12.23 |     $12.23 |
 | Balanced PD, 30 GiB (10 boot + 20 data) |      $3.00 |      $3.00 |
 | Static external IP, attached            |      $3.65 |      $3.65 |
+| Cloud KMS, HSM secp256k1 key version    |      $2.50 |      $2.50 |
 | Cloud DNS, one managed zone             |      $0.20 |      $0.20 |
-| **Total**                               | **$19.08** | **$19.08** |
+| **Total**                               | **$21.58** | **$21.58** |
 
-Excluded because they scale with use: snapshots ($0.05/GiB-month retained), blobs
-($0.020/GiB-month, 5 GiB free, nothing prunes them), DNS queries ($0.40/million), egress. Too
-small to table: Secret Manager, the uptime check, alert policies, firewall, service accounts, IAM.
-List prices, us-central1, read 2026-09-21 from the Cloud Billing Catalog API; E2 earns no
-sustained-use discount. Prod is a projection: unapplied, and `alert_channels` is unset there.
+Scales with use, excluded: snapshots ($0.05/GiB-month retained), blobs ($0.020/GiB-month, 5 GiB
+free, nothing prunes them), KMS signing, DNS queries, egress. Too small to table: Secret Manager,
+the uptime check, alert policies, firewall, IAM. List prices, us-central1, from the Cloud Billing
+Catalog API on 2026-09-21; prod is a projection, unapplied and with `alert_channels` unset.
 
 ## CI
 

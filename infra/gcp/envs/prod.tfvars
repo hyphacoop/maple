@@ -9,6 +9,10 @@ project_id = "digital-testimony-prod"
 # Confirm with the identity and handoff owners before the first prod apply.
 pds_hostname = "pds.mapletestimony.org"
 
+# The named upstream people who run services/atproto-identity apply (ADR
+# 0002), decided at handoff. People only.
+identity_signers = []
+
 # The public relay; without it MAPLE's records reach nobody.
 pds_crawlers = "https://bsky.network"
 

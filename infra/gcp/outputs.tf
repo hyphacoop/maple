@@ -13,6 +13,11 @@ output "pds_blob_bucket" {
   value       = google_storage_bucket.pds_blobs.name
 }
 
+output "identity_ops_key" {
+  description = "Cloud KMS key MAPLE's PLC ops key lives in. The identity tool (services/atproto-identity) signs with it via `gcloud kms asymmetric-sign`; signers are the people in identity_signers (iam.tf)."
+  value       = google_kms_crypto_key.identity_ops.id
+}
+
 output "pds_service_account" {
   description = "The PDS VM's service account; secrets.sh mints the blob HMAC key for it."
   value       = google_service_account.pds.email

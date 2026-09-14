@@ -7,8 +7,14 @@ project_id = "digital-testimony-dev"
 # other and the clean name stays reserved for production.
 pds_hostname = "pds-dev.mapletestimony.org"
 
-# Dev is announced to the public relay so what it emits is visible off the
-# box. Set to "" to run dark.
+# Who may sign PLC operations with MAPLE's dev ops key (Cloud KMS). People
+# only — the variable refuses service accounts.
+identity_signers = ["user:violet@hypha.coop"]
+
+# Dev is announced to the public relay on purpose: the consumer reads the
+# public jetstream, which sits downstream of the relay, so this is the only
+# way dev records reach the dev consumer outside the local harness. The dev
+# DID is already public in PLC for the same reason. Set to "" to run dark.
 pds_crawlers = "https://bsky.network"
 
 # The service account behind the terraform-plan GitHub environment's
