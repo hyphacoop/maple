@@ -63,7 +63,7 @@ variable "data_disk_size_gb" {
 }
 
 variable "pds_crawlers" {
-  description = "Comma-separated relay URLs the PDS asks to crawl it on boot (PDS_CRAWLERS). Empty = the PDS is not announced to any relay: nothing downstream of a relay ever sees its repos. Set per environment on purpose."
+  description = "Comma-separated relay URLs the PDS asks to crawl it on boot (PDS_CRAWLERS). Empty = the PDS is not announced to any relay: nothing downstream (relay, jetstream, the consumer) ever sees its repos. Set per environment on purpose."
   type        = string
   default     = "https://bsky.network"
 }

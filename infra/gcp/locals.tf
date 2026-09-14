@@ -17,7 +17,7 @@ locals {
   # PDS env var -> Secret Manager secret id. The one definition in this root:
   # drives the secret resources (secrets.tf), their accessor grants (iam.tf),
   # the boot-time fetch loop and the pds.env lines
-  # (templates/pds-startup.sh.tftpl), and the pds_secrets output.
+  # (templates/pds-startup.sh.tftpl), and the secret_ids output.
   pds_secrets = {
     PDS_ADMIN_PASSWORD                        = "atproto-pds-admin-password"
     PDS_JWT_SECRET                            = "atproto-pds-jwt-secret"

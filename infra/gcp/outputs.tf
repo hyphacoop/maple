@@ -35,3 +35,11 @@ output "pds_secrets" {
   description = "PDS env var -> Secret Manager secret id (locals.tf). secrets.sh reads this so the ids are typed in exactly one place."
   value       = local.pds_secrets
 }
+
+output "secret_ids" {
+  description = "Secret Manager secrets whose versions are added out of band (gcloud secrets versions add / firebase functions:secrets:set)."
+  value = concat(
+    values(local.pds_secrets),
+    [google_secret_manager_secret.atp_pds_password.secret_id],
+  )
+}

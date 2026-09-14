@@ -26,12 +26,12 @@ curl https://pds-dev.mapletestimony.org/xrpc/_health            # green within 3
 gcloud storage ls gs://digital-testimony-dev-atproto-pds-blobs/  # after one uploadBlob lands
 ```
 
-Then delete the record that blob belonged to: the object must leave the bucket. That is the one
-blobstore call the first apply has to prove; if it stays, `docker compose logs pds | grep 'could
-not delete blobs'` is the trail, and `gcloud compute instances get-serial-port-output atproto-pds`
-is the fallback when health never goes green. Not applied here: secret versions and the HMAC key
-(step 3), the state bucket (step 1), MAPLE's DID (the identity tool); prod is the same with
-`prod`.
+Then delete the record that blob belonged to: the object must leave the bucket — the one blobstore
+call a first apply has to prove, and `pds-startup.sh.tftpl` explains what it means if it stays.
+If health never goes green, `gcloud compute instances get-serial-port-output atproto-pds`. Not
+applied here: secret versions and the HMAC key (step 3), the state bucket (step 1), MAPLE's DID
+(the identity tool), and `ATP_PDS_PASSWORD` via `firebase functions:secrets:set` after step 2
+(`secrets.tf` says why that order). Prod is the same with `prod`.
 
 ## Rollback
 
@@ -50,7 +50,8 @@ is the fallback when health never goes green. Not applied here: secret versions 
 Alerts go to `alert_channels` in `envs/<env>.tfvars`, subjects prefixed `[<env>]`; thresholds are
 in `monitoring-pds.tf` and each page carries its own first step. Prove the channel once per
 environment: ssh in, `sudo systemctl stop pds.service`, wait for the page (≤ 6 min), `start` it.
-Expect one during bring-up; that page is the test.
+Expect one during bring-up; that page is the test. Not watched: the
+consumer, the publisher, cursor lag.
 
 ## Cost
 
@@ -63,10 +64,9 @@ Expect one during bring-up; that page is the test.
 | Cloud DNS, one managed zone             |      $0.20 |      $0.20 |
 | **Total**                               | **$21.58** | **$21.58** |
 
-Scales with use, excluded: snapshots ($0.05/GiB-month retained), blobs ($0.020/GiB-month, 5 GiB
-free, nothing prunes them), KMS signing, DNS queries, egress. Too small to table: Secret Manager,
-the uptime check, alert policies, firewall, IAM. List prices, us-central1, from the Cloud Billing
-Catalog API on 2026-09-21; prod is a projection, unapplied and with `alert_channels` unset.
+Scales with use, excluded: snapshots, blobs (nothing prunes them), KMS signing, DNS queries,
+egress. Too small to table: Secret Manager, uptime check, alert policies, firewall, IAM. List
+prices us-central1, Cloud Billing Catalog API, 2026-09-21; prod is a projection, unapplied.
 
 ## CI
 
