@@ -16,7 +16,7 @@ cited as evidence about one.
 
 ## Run it
 
-    infra/atproto/bootstrap.sh          # up from cold, register the PDS, create the account
+    infra/atproto/bootstrap.sh          # up from cold, register the PDS, mint the identity, create the account
 
 Then, from the repo root, in separate terminals:
 
@@ -58,13 +58,13 @@ image references and no ports:
 The consumer needs node >= 22.15; the repo root is pinned to node 20, so use a
 node 22 on PATH for that terminal only.
 
-|                    | port |                                           |
-| ------------------ | ---- | ----------------------------------------- |
-| PLC                | 2582 |                                           |
-| PDS                | 2583 | `PDS_HOSTNAME=localhost`                  |
-| relay              | 2470 | admin API + firehose; metrics on 2471     |
-| jetstream          | 6008 | `/healthz`, `/readyz`, `/metrics` on 6060 |
-| Firestore emulator | 8080 | on the host, not in the stack             |
+|                    | port |                                            |
+| ------------------ | ---- | ------------------------------------------ |
+| PLC                | 2582 |                                            |
+| PDS                | 2583 | `PDS_HOSTNAME=localhost`                   |
+| relay              | 2470 | admin API + firehose; metrics on 2471      |
+| jetstream          | 6008 | `/healthz`, `/readyz`, `/metrics` on 6060  |
+| Firestore emulator | 8080 | on the host, not in the stack              |
 | e2e emulators      | 8081 | `publish-check.sh` only; functions on 5011 |
 
 Ports come from `endpoints.env`; change one there and compose and all four
@@ -99,6 +99,62 @@ a Firestore emulator it started itself, so it cannot reuse the one
 `yarn --cwd services/atproto-consumer emulator` runs — which also means this
 script coexists with a stack you already have up. It does need the compose stack
 and an account, so `bootstrap.sh` first.
+
+## Identity
+
+`bootstrap.sh` does not let the PDS mint the DID. It mints one itself with
+`services/atproto-identity` and then creates the account _with_ it -- the same
+flow the network uses to migrate an account between PDSes. That is not local
+convenience: it is the only way `rotationKeys` ends up as exactly
+`[recovery, ops]`. A PDS that mints its own DID puts
+`PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX` into that list and can rewrite the
+identity for good afterwards (ADR 0002 §1). Running the production sequence here
+is what stops the runbook in `infra/gcp/README.md` describing something nobody
+tests.
+
+Per-run keys and the spec genesis writes a DID into live in
+`.harness-identity/`, gitignored and thrown away by `down -v` for the same
+reason the PDS volume is. The DID still lands in `.harness-state` exactly as
+before, so `test:smoke`, `recovery.sh` and `publish-check.sh` need no knowledge
+of any of this.
+
+    infra/atproto/identity-check.sh          # drift, recovery, pds-key-rejected
+
+**drift** -- the ops key changes the document out of band; `plan` must exit
+non-zero. This is the scheduled drift alarm, rehearsed.
+
+**recovery** -- the ops key signs a malicious endpoint change, then the recovery
+key nullifies it. ADR 0002 §5 asks for this to be done once for real before
+prod; running it on every CI run makes that a confirmation rather than a first
+attempt. The 72-hour dispute window and the priority ordering are the local
+PLC's, enforced identically to `plc.directory`.
+
+**pds-key-rejected** -- the PDS's rotation key is absent from `rotationKeys`,
+and an operation signed with it is refused.
+
+### Findings
+
+**`createAccount` with an existing DID lands the account deactivated, and a
+deactivated account emits nothing.** That is the migration path behaving
+normally -- create, import the old repo, then go live -- but it means the relay
+never learns the repo exists until `com.atproto.server.activateAccount`. The
+symptom is `EventsSeenSinceStartup: 0` on `/admin/pds/list` and an empty
+`com.atproto.sync.listRepos`, with every read-path assertion failing on "the
+relay does not know repo".
+
+**`activateAccount` insists the PDS's own rotation key is in the document.**
+`assertValidDocContents` (`api/com/atproto/server/util.js`) throws
+`Server rotation key not included in PLC DID data` otherwise. So `identity
+activate` borrows that key for the length of one call and removes it again,
+leaving `rotationKeys` as the spec states it. The assertion is on no hot path --
+its only callers are `activateAccount` and `checkAccountStatus`, which merely
+reports `validDid` -- so the document stays serviceable afterwards.
+`checkAccountStatus` reporting `validDid: false` from then on is expected.
+
+Both of these are pinned-version behaviour, and `PDS_IMAGE` is pinned in
+`images.env`. A bump that changes either fails this workflow before it reaches
+dev, which is the reason the whole sequence runs in CI rather than being
+written down.
 
 ## Destructive scenarios
 

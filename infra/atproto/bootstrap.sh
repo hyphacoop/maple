@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Bring the harness up from cold, attach the PDS to the relay, and create the
-# harness account.
+# Bring the harness up from cold, attach the PDS to the relay, mint the identity
+# and create the harness account with it.
 #
 #   ./bootstrap.sh
 #
@@ -76,22 +76,87 @@ case "$status" in
   *) fail "$status — $DC_CMD logs relay" ;;
 esac
 
-say "creating the harness account"
+say "minting the identity"
+# The DID is minted HERE, not by the PDS, and the account is then created *with*
+# it -- the same flow the network uses to migrate an account between PDSes
+# (ADR 0002 §6). This is not harness convenience: it is the only way
+# rotationKeys ends up as exactly [recovery, ops]. A PDS that mints its own DID
+# puts PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX in that list and can rewrite
+# the identity forever after, which is the outcome the whole custody model
+# exists to prevent. The harness runs the production sequence so the runbook in
+# infra/gcp/README.md cannot drift away from something that is actually tested.
+#
 # The account, NOT a record. Ordering forces the split: the consumer starts from
 # the live tip when it has no cursor, so it must be running BEFORE a record is
 # written -- and it cannot start without MAPLE_DIDS, which is this DID. So the
 # identity is set up here and the record is written afterwards, by
 # `yarn --cwd services/atproto-consumer test:smoke`.
-created=$(curl -sS -X POST "$PDS_URL/xrpc/com.atproto.server.createAccount" \
-  -H 'content-type: application/json' \
-  -d "{\"email\":\"$ACCOUNT_EMAIL\",\"handle\":\"$HANDLE\",\"password\":\"$ACCOUNT_PASSWORD\"}")
-DID=$(printf '%s' "$created" | jqp did)
-if [ -z "$DID" ]; then
-  # Already exists -- a PDS volume that survived a previous run.
-  echo "createAccount refused, reusing the account: $created" >&2
-  DID=$(curl -fsS -X POST "$PDS_URL/xrpc/com.atproto.server.createSession" \
+SPEC="$IDENTITY_STATE/spec.json"
+
+# Reuse across runs, the way the old createAccount/createSession pair did: a
+# surviving pds-data volume still holds the account, and re-minting would strand
+# it behind a handle that is already taken. A spec whose account the PDS no
+# longer has (someone ran `down -v`) is stale, so it is discarded rather than
+# trusted -- otherwise every later step fails against a DID nothing serves.
+if [ -f "$SPEC" ] && curl -fsS -X POST "$PDS_URL/xrpc/com.atproto.server.createSession" \
     -H 'content-type: application/json' \
-    -d "{\"identifier\":\"$HANDLE\",\"password\":\"$ACCOUNT_PASSWORD\"}" | jqp did)
+    -d "{\"identifier\":\"$HANDLE\",\"password\":\"$ACCOUNT_PASSWORD\"}" >/dev/null 2>&1; then
+  DID=$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["did"])' "$SPEC")
+  echo "reusing the existing identity: $DID"
+else
+  rm -rf "$IDENTITY_STATE"
+  mkdir -p "$IDENTITY_STATE"
+  chmod 700 "$IDENTITY_STATE"
+
+  # Two rotation keys in priority order, exactly as ADR 0002 §1 describes: the
+  # first can nullify anything the second does. In dev and prod the first is
+  # generated offline and never touches a server; here both are per-run scratch.
+  RECOVERY_KEY=$(identity keygen --out "$IDENTITY_STATE/recovery.key")
+  OPS_KEY=$(identity keygen --out "$IDENTITY_STATE/ops.key")
+  # A third key, ours only until the PDS has its own: genesis has to name some
+  # signing key, and createAccount for a DID the PDS did not mint has to be
+  # authorised by whatever key the document currently names. Discarded below.
+  SIGNING_KEY=$(identity keygen --out "$IDENTITY_STATE/initial-signing.key")
+
+  cat > "$SPEC" <<SPECJSON
+{
+  "did": "",
+  "handle": "$HANDLE",
+  "pdsEndpoint": "$PDS_URL",
+  "plcUrl": "$PLC_URL",
+  "rotationKeys": ["$RECOVERY_KEY", "$OPS_KEY"],
+  "verificationMethods": { "atproto": "$SIGNING_KEY" }
+}
+SPECJSON
+
+  DID=$(identity genesis --spec "$SPEC" --key-file "$IDENTITY_STATE/ops.key")
+  [ -n "$DID" ] || fail "genesis produced no DID"
+  echo "minted $DID on $PLC_URL"
+
+  identity create-account --spec "$SPEC" \
+    --signing-key-file "$IDENTITY_STATE/initial-signing.key" \
+    --email "$ACCOUNT_EMAIL" --password "$ACCOUNT_PASSWORD" >/dev/null
+
+  # The PDS generated its own signing key at createAccount; adopt it, and drop
+  # ours. From here the PDS holds a signing key and nothing else: it cannot move
+  # the identity, and its own updateHandle will fail because it would sign with
+  # a key that is not in rotationKeys. That failure is the design, not a bug.
+  identity rotate-signing-key --spec "$SPEC" \
+    --key-file "$IDENTITY_STATE/ops.key" --pds-password "$ACCOUNT_PASSWORD" >/dev/null
+  rm -f "$IDENTITY_STATE/initial-signing.key"
+
+  # createAccount carrying a `did` is the migration path, so the account lands
+  # DEACTIVATED -- the network's sequence is create, import the old repo, then
+  # go live. A deactivated account emits nothing to the firehose, so without
+  # this the relay never learns the repo exists and every read-path assertion
+  # downstream fails on "the relay does not know repo". Deliberately after the
+  # rotation: the first commits must be signed by the key the document names.
+  #
+  # Needs the ops key because activateAccount insists the PDS's own rotation key
+  # is in the document: `activate` borrows it for that one call and takes it back
+  # out, leaving rotationKeys as the spec states it (ADR 0002 §1).
+  identity activate --spec "$SPEC" \
+    --key-file "$IDENTITY_STATE/ops.key" --pds-password "$ACCOUNT_PASSWORD"
 fi
 [ -n "$DID" ] || fail "could not obtain a DID from $PDS_URL"
 
@@ -109,6 +174,13 @@ doc=json.load(sys.stdin)
 svc=[s for s in doc.get("service",[]) if s.get("id")=="#atproto_pds"]
 print("service endpoint:", svc[0]["serviceEndpoint"] if svc else "MISSING")
 '
+
+say "checking the document matches the spec"
+# `plan` is keyless and is the same command CI and the drift alarm run.
+# Passing here proves the custody property this whole flow exists for:
+# rotationKeys is EXACTLY what the spec lists, so the PDS's own rotation key --
+# which it would have inserted had it minted the DID -- is not in the document.
+identity plan --spec "$SPEC" || fail "the DID document does not match $SPEC"
 
 cat <<NEXT
 

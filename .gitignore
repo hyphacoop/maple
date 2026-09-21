@@ -111,3 +111,6 @@ tests/search-eval/labeling-sheet-*.md
 
 # local atproto harness state (DID/cid of the last seeded record)
 infra/atproto/.harness-state
+# per-run identity: the spec genesis writes a DID into, and the scratch rotation
+# keys it is signed with. Worth nothing off this machine, but never committed.
+infra/atproto/.harness-identity/

@@ -26,15 +26,6 @@ PIDFILE=${PIDFILE:-/tmp/maple-harness-consumer.pid}
 # than any process on the machine whose command line mentions src/index.ts.
 MARKER=MAPLE_HARNESS_CONSUMER=1
 
-node22() {
-  local n
-  for n in "$HOME/.nvm/versions/node"/v2[2-9]*/bin/node; do
-    [ -x "$n" ] && { echo "$n"; return; }
-  done
-  echo node
-}
-NODE=${NODE:-$(node22)}
-
 # Up front, so a missing state file says "run ./bootstrap.sh" instead of failing
 # obscurely later — and so the DID is known before the first consumer starts,
 # which is what lets it run with the same MAPLE_DIDS filter a deployment uses.

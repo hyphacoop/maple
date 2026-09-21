@@ -6,6 +6,12 @@
 HARNESS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd "$HARNESS_DIR/../.." && pwd)
 CONSUMER_DIR="$REPO_ROOT/services/atproto-consumer"
+IDENTITY_DIR="$REPO_ROOT/services/atproto-identity"
+# Per-run identity material: the spec genesis writes a DID back into, and the
+# rotation keys it is signed with. Gitignored, and scratch by design -- these
+# keys are worth nothing off this machine. Sits beside .harness-state and dies
+# with `down -v` for the same reason the PDS volume does.
+IDENTITY_STATE="$HARNESS_DIR/.harness-identity"
 STATE_FILE="$HARNESS_DIR/.harness-state"
 
 set -a
@@ -35,6 +41,23 @@ DC_CMD="docker compose --env-file infra/atproto/images.env --env-file infra/atpr
 say() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
 fail() { printf '\n\033[31mFAIL: %s\033[0m\n' "$*" >&2; exit 1; }
 pass() { printf '\n\033[32mPASS: %s\033[0m\n' "$*"; }
+
+# The repo root is pinned to node 20; the services are node >= 22.15. Find a 22+
+# without requiring the caller's shell to have one selected. Lives here rather
+# than in one script because bootstrap.sh, recovery.sh and identity-check.sh all
+# need it.
+node22() {
+  local n
+  for n in "$HOME/.nvm/versions/node"/v2[2-9]*/bin/node; do
+    [ -x "$n" ] && { echo "$n"; return; }
+  done
+  echo node
+}
+NODE=${NODE:-$(node22)}
+
+# services/atproto-identity's CLI. Run from the package directory so `--import
+# tsx` resolves out of its own node_modules.
+identity() { ( cd "$IDENTITY_DIR" && "$NODE" --import tsx src/cli.ts "$@" ); }
 
 # One top-level field out of a JSON object on stdin.
 jqp() { python3 -c 'import sys,json;d=json.load(sys.stdin);print(d.get(sys.argv[1],""))' "$1"; }

@@ -26,7 +26,9 @@ on:
     paths:
       - services/atproto-consumer/**
       - services/atproto-publisher/**
+      - services/atproto-identity/**
       - infra/atproto/**
+      - infra/identity/**
       - lexicons/**
       - firebase.atproto-e2e.json
       - .github/workflows/atproto-harness.yml
@@ -36,7 +38,9 @@ on:
     paths:
       - services/atproto-consumer/**
       - services/atproto-publisher/**
+      - services/atproto-identity/**
       - infra/atproto/**
+      - infra/identity/**
       - lexicons/**
       - firebase.atproto-e2e.json
       - .github/workflows/atproto-harness.yml
@@ -63,15 +67,20 @@ jobs:
         with:
           node-version: 22
           # Not .github/actions/setup-repo: that installs the ROOT lockfile.
-          # Both packages have their own, so the cache keys on both.
+          # Each package has its own, so the cache keys on all three.
           cache: yarn
           cache-dependency-path: |
             services/atproto-consumer/yarn.lock
             services/atproto-publisher/yarn.lock
+            services/atproto-identity/yarn.lock
       - run: yarn install --frozen-lockfile
         working-directory: services/atproto-consumer
       - run: yarn install --frozen-lockfile
         working-directory: services/atproto-publisher
+      # bootstrap.sh mints the DID before it creates the account, so the
+      # identity tooling has to be installed before the stack comes up.
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-identity
 
       - name: Cache Emulators
         uses: actions/cache@v4
@@ -103,6 +112,21 @@ jobs:
       # throughout, so a hang fails rather than idles.
       - name: Bootstrap The Stack
         run: infra/atproto/bootstrap.sh
+
+      # Genesis, createAccount with the pre-minted DID, the signing-key rotation
+      # and the activation borrow are all exercised by bootstrap.sh above -- it
+      # runs the production sequence, so the runbook in infra/gcp/README.md
+      # cannot drift from something that is actually tested. What is left is the
+      # custody behaviour that only a real PLC can demonstrate: drift detection,
+      # the recovery-key nullification ADR 0002 §5 asks to be rehearsed, and the
+      # proof that the PDS's own rotation key is neither in the document nor
+      # able to sign for it.
+      #
+      # Before the consumer starts: these scenarios rewrite the DID document
+      # several times and a consumer running alongside would be resolving an
+      # identity that moves under it.
+      - name: Identity Scenarios
+        run: infra/atproto/identity-check.sh
 
       # MUST be running before the record is written: with no stored cursor the
       # consumer starts from the live tip, so anything put before this point is
