@@ -1,0 +1,10 @@
+{
+  "did": "",
+  "handle": "maple.pds-dev.mapletestimony.org",
+  "pdsEndpoint": "https://pds-dev.mapletestimony.org",
+  "plcUrl": "https://plc.directory",
+  "rotationKeys": [],
+  "verificationMethods": {
+    "atproto": ""
+  }
+}

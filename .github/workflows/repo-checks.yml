@@ -42,6 +42,28 @@ jobs:
         if: always()
         run: yarn check-types
 
+  check_atproto_identity:
+    name: Identity Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # A standalone node-22 ESM package the root tsconfig excludes, so it
+      # installs and runs on its own rather than through setup-repo. No
+      # emulator here -- it talks to a PLC directory, not Firestore.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-identity
+      - run: yarn typecheck
+        working-directory: services/atproto-identity
+      # Operation construction, the plan diff and every safety rail, with no
+      # network.
+      - name: Identity Tests
+        run: yarn test
+        working-directory: services/atproto-identity
+
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest

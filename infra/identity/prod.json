@@ -1,0 +1,10 @@
+{
+  "did": "",
+  "handle": "PLACEHOLDER.mapletestimony.org",
+  "pdsEndpoint": "https://pds.mapletestimony.org",
+  "plcUrl": "https://plc.directory",
+  "rotationKeys": [],
+  "verificationMethods": {
+    "atproto": ""
+  }
+}

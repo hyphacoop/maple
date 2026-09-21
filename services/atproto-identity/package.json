@@ -1,0 +1,34 @@
+{
+  "name": "@maple/atproto-identity",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Declarative did:plc provisioning: plan/apply MAPLE's identity spec against a PLC directory",
+  "type": "module",
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "scripts": {
+    "identity": "tsx src/cli.ts",
+    "plan": "tsx src/cli.ts plan",
+    "apply": "tsx src/cli.ts apply",
+    "genesis": "tsx src/cli.ts genesis",
+    "keygen": "tsx src/cli.ts keygen",
+    "build": "tsc",
+    "test": "node --import tsx --test \"test/**/*.test.ts\"",
+    "typecheck": "tsc -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "@atcute/cbor": "2.3.6",
+    "@atcute/cid": "2.4.2",
+    "@atcute/crypto": "2.4.4",
+    "@atcute/did-plc": "1.0.1",
+    "@atcute/identity": "2.0.2",
+    "@atcute/lexicons": "2.1.0",
+    "@atcute/multibase": "1.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
