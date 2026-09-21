@@ -79,7 +79,7 @@ export async function genesisOperation(
  * Operations a given rotation key may still nullify. The 72-hour window and the
  * "earlier key in the list outranks later ones" rule are the library's
  * (DISPUTE_WINDOW, isAuthorizedForDispute), not ours -- the recovery rehearsal
- * in ADR 0002 §5 asserts against the same logic the directory enforces.
+ * rehearsed in test:live asserts against the same logic the directory enforces.
  */
 export function disputesFor(
   canonical: IndexedEntryWithSigner[],

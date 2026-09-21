@@ -71,7 +71,7 @@ say "minting a scratch identity"
 rm -rf "$STATE"
 mkdir -p "$STATE"
 
-# Two rotation keys in priority order, exactly as ADR 0002 1 describes: the
+# Two rotation keys in priority order, exactly as ADR 0002 describes: the
 # first can nullify anything the second does. In dev and prod the first is
 # generated offline and never touches a server; here both are per-run scratch.
 RECOVERY_DIDKEY=$(identity keygen --out "$RECOVERY_KEY")

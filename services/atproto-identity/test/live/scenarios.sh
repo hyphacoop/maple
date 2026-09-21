@@ -73,7 +73,7 @@ scenario_drift() {
 
 scenario_recovery() {
   say "recovery: the recovery key nullifies an operation the ops key signed"
-  # ADR 0002 5 asks for this to be rehearsed once against plc.directory before
+  # ADR 0002 asks for this to be rehearsed once against plc.directory before
   # prod. Running it continuously here is what makes that a confirmation rather
   # than a first attempt.
   cp "$SPEC" "$SPEC.orig"
