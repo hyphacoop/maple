@@ -218,8 +218,8 @@ services:
     # No healthcheck: the image is distroless, so there is no shell or wget for
     # a CMD probe to run. bootstrap.sh waits on /healthz from outside instead.
 
-  # Escape hatch, not part of `up` — see the requestCrawl note in bootstrap.sh
-  # and README.md. Registers the PDS by writing the row requestCrawl would have
+  # Escape hatch, not part of `up` — see the requestCrawl note in bootstrap.sh.
+  # Registers the PDS by writing the row requestCrawl would have
   # written. A compose service rather than a bare `docker run` so that compose
   # owns the volume name: hardcoding it means a project rename silently creates
   # a NEW empty volume and the insert appears to succeed.

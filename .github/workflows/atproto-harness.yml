@@ -115,8 +115,9 @@ jobs:
 
       # Genesis, createAccount with the pre-minted DID, the signing-key rotation
       # and the activation borrow are all exercised by bootstrap.sh above -- it
-      # runs the production sequence, so the runbook in infra/gcp/README.md
-      # cannot drift from something that is actually tested. What is left is the
+      # runs the production sequence, so the runbook in
+      # services/atproto-identity/README.md cannot drift from something that is
+      # actually tested. What is left is the
       # custody behaviour that only a real PLC can demonstrate: drift detection,
       # the recovery-key nullification ADR 0002 §5 asks to be rehearsed, and the
       # proof that the PDS's own rotation key is neither in the document nor

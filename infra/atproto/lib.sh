@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Shared by bootstrap.sh, recovery.sh, publish-check.sh and the CI job. Source
 # it, don't run it. Every value the scripts and compose both need lives in the
 # two env files rather than being re-typed per script.

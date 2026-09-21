@@ -179,6 +179,10 @@ consumer_restart() {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Replays events the consumer has already applied, by rewinding its stored
+# cursor by hand. The end state must be byte-identical (ignoring indexedAt),
+# which is what catches a non-idempotent write -- the failure mode a single
+# clean run can never show.
 cursor_rewind() {
   say "cursor-rewind: rewind the stored cursor, replay, end state must be identical"
   baseline
@@ -216,9 +220,11 @@ cursor_rewind() {
 # block is durably flushed, so a restart resumes from the last flushed block
 # rather than the last event it saw. Cold, that means it resubscribes at the
 # live tail and the outage records are gone; after a flush, the relay replays
-# the gap. Both were observed. See README.md, "A healthy consumer cursor is not
-# evidence that nothing was missed" — including why this makes the parity
-# checker load-bearing.
+# the gap. Both were observed, as start_cursor:0 with the relay logging
+# cursor:null, and as start_cursor:20. The flush happens in jetstream's
+# onDurableBatch (internal/ingest/live/consumer.go), which is why the cadence
+# is not ours to control. DESIGN.md draws the consequence: gap detection has to
+# compare against the PDS, never against jetstream's own stream.
 #
 # What this scenario ASSERTS is the part that holds either way: the consumer
 # survives, and lands on a coherent record — never a torn or invented one.

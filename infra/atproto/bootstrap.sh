@@ -32,9 +32,13 @@ say "registering the PDS with the relay"
 # through ssrf.PublicOnlyTransport, which rejects loopback and RFC1918 and every
 # port that isn't 80/443, so it fails before the handler's localhost allowance
 # matters. The relay's slurper has no such problem — it skips the SSRF dialer
-# for NoSSL hosts — so once the row exists, subscribing works normally.
-# Full write-up in README.md, "requestCrawl cannot work against any local
-# address".
+# for NoSSL hosts — so once the row exists, subscribing works normally, and a
+# relay restart picks it up through ResubscribeAllHosts.
+#
+# cmd/relay/HACKING.md will send you the wrong way here: it describes a
+# localhost exemption, and one does exist — in the slurper's websocket dialer
+# (`if !host.NoSSL`), not in the requestCrawl pre-flight. Hours live in that
+# gap.
 #
 # Try the real call first, so that upstream relaxing the pre-flight retires the
 # escape hatch with no edit here.
@@ -84,7 +88,8 @@ say "minting the identity"
 # puts PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX in that list and can rewrite
 # the identity forever after, which is the outcome the whole custody model
 # exists to prevent. The harness runs the production sequence so the runbook in
-# infra/gcp/README.md cannot drift away from something that is actually tested.
+# services/atproto-identity/README.md cannot drift away from something that is
+# actually tested.
 #
 # The account, NOT a record. Ordering forces the split: the consumer starts from
 # the live tip when it has no cursor, so it must be running BEFORE a record is
@@ -155,6 +160,10 @@ SPECJSON
   # Needs the ops key because activateAccount insists the PDS's own rotation key
   # is in the document: `activate` borrows it for that one call and takes it back
   # out, leaving rotationKeys as the spec states it (ADR 0002 §1).
+  # Without this the relay never learns the repo exists, and it shows up as
+  # EventsSeenSinceStartup: 0 on the relay's admin API with an empty
+  # com.atproto.sync.listRepos -- every read-path assertion then fails on "the
+  # relay does not know repo", pointing at the consumer rather than at here.
   identity activate --spec "$SPEC" \
     --key-file "$IDENTITY_STATE/ops.key" --pds-password "$ACCOUNT_PASSWORD"
 fi
