@@ -1,8 +1,9 @@
 locals {
-  # Pinned here so this root applies standalone. The local harness
-  # (infra/atproto/images.env, on the atproto-core branch) pins the same PDS
-  # tag; bump both together once that branch lands. Caddy fronts only the
-  # deployed VM and has no harness counterpart.
+  # Pinned here so this root applies standalone: a file() read of the harness's
+  # images.env would tie this root's validate to a directory a Terraform-only
+  # checkout need not have. The local harness (infra/atproto/images.env) pins
+  # the same PDS tag — bump both together. Caddy fronts only the deployed VM
+  # and has no harness counterpart.
   pds_image   = "ghcr.io/bluesky-social/pds:0.4.5027"
   caddy_image = "caddy:2.10"
 

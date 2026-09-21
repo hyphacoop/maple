@@ -238,10 +238,9 @@ from a pinned upstream commit. First `up` pays for that build once.
 Two env files, read by `compose.yml` and by every script (through `lib.sh`), so
 no boundary value is written down twice:
 
-- `images.env` — image pins only. This is the file `infra/gcp/`'s Terraform is
-  meant to read as well, so that local and dev cannot drift apart silently
-  (`infra/gcp/` does not exist yet, so treat that as the intent rather
-  than something already enforced).
+- `images.env` — image pins only. `infra/gcp/locals.tf` pins the same PDS tag
+  for the deployed VM; the two are kept in lockstep by hand rather than by a
+  `file()` read, which would tie that root's `validate` to this directory.
 - `endpoints.env` — ports, project id, handle, and the local-only credentials.
   Those passwords are deliberately literal and in the repository; nothing here
   is used off this machine.
