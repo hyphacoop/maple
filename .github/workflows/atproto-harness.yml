@@ -125,6 +125,12 @@ jobs:
       # Before the consumer starts: these scenarios rewrite the DID document
       # several times and a consumer running alongside would be resolving an
       # identity that moves under it.
+      #
+      # Two of the three are the same assertions atproto-identity.yml makes on
+      # a PLC-only stack -- they are sourced from the identity package, not
+      # restated here. What this run adds is that they hold against an identity
+      # a PDS holds an account for, plus the scenario about the PDS's own
+      # rotation key, which needs a PDS to be meaningful at all.
       - name: Identity Scenarios
         run: infra/atproto/identity-check.sh
 
