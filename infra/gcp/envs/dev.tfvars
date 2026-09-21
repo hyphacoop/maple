@@ -27,3 +27,10 @@ ci_planner = null
 alert_channels = {
   email = { type = "email", labels = { email_address = "violet@hypha.coop" } }
 }
+
+# Consumer gate: closed until the consumer image is built and pushed to the
+# atproto Artifact Registry repo. maple_dids is MAPLE's DID for this
+# environment; empty = unfiltered, which is safe on the public network
+# (nothing else emits org.mapletestimony.*) but is not the deployed intent.
+consumer_image = ""
+maple_dids     = ""

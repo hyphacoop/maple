@@ -43,3 +43,7 @@ output "secret_ids" {
     [google_secret_manager_secret.atp_pds_password.secret_id],
   )
 }
+
+output "consumer_service_account" {
+  value = google_service_account.consumer.email
+}

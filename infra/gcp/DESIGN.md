@@ -61,6 +61,20 @@ The parent zone itself is a **separate root**, `infra/gcp/dns`, with its own sta
 and it was cut over from another registrar on its own schedule; folding it in here would have
 coupled that cutover to this service's applies.
 
+## The firehose consumer
+
+A Cloud Run service reading the public jetstream and writing the shadow collections
+`atpBills`/`atpHearings`. It is gated on `consumer_image` being set, so this root applies cleanly
+before any image exists — and the Artifact Registry repo it pulls from is created unconditionally,
+because the image has to land somewhere before the variable can point at it.
+
+Its shape is forced by what it is: exactly one instance, always on. The jetstream subscription has
+to stay live, and there must be exactly one cursor writer, so `min` and `max` are both 1 and CPU
+stays allocated between requests rather than throttling to zero. That makes it the most expensive
+thing this root can create, by a wide margin, and the reason the cost table shows it separately.
+
+It never touches the live collections. What reads from the shadow ones is a separate decision.
+
 ## Monitoring
 
 Three alerts, and a deliberate view of what an alert can carry. Each policy's `documentation`

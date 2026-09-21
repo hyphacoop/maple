@@ -85,3 +85,10 @@ resource "google_project_iam_member" "ci_planner_parent_zone_reader" {
   role    = "roles/dns.reader"
   member  = var.ci_planner
 }
+
+# Firestore index writes plus the jetstream cursor doc (atpJetstreamMeta/*).
+resource "google_project_iam_member" "consumer_datastore_user" {
+  project = var.project_id
+  role    = "roles/datastore.user"
+  member  = "serviceAccount:${google_service_account.consumer.email}"
+}

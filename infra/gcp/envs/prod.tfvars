@@ -24,3 +24,10 @@ ci_planner = null
 # Email, or a pager's email-integration address, needs nothing else:
 #   alert_channels = { pager = { type = "email", labels = { email_address = "..." } } }
 # A pager that needs a token: see alert_channels in variables.tf first.
+
+# Consumer gate: closed until the consumer image is built and pushed to the
+# atproto Artifact Registry repo. maple_dids is MAPLE's DID for this
+# environment; empty = unfiltered, which is safe on the public network
+# (nothing else emits org.mapletestimony.*) but is not the deployed intent.
+consumer_image = ""
+maple_dids     = ""

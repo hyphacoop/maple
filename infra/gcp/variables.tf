@@ -102,3 +102,21 @@ variable "alert_channels" {
     error_message = "alert_channels types are email, pubsub or sms: the ones whose labels hold no secret (ADR 0001). A token-bearing type needs the write-only path described above the variable."
   }
 }
+
+variable "consumer_image" {
+  description = "Full image ref for the firehose consumer. Empty = the Cloud Run service is not created; the image is built, pushed to the atproto Artifact Registry repo, and set here."
+  type        = string
+  default     = ""
+}
+
+variable "jetstream_url" {
+  description = "Jetstream host override for the consumer. Empty = no JETSTREAM_URL env is set and the consumer's own default applies (the single definition, services/atproto-consumer/src/index.ts). If set, it must be a v2 host — the numbered jetstream1/jetstream2 hosts speak legacy v1 and cursors are not portable."
+  type        = string
+  default     = ""
+}
+
+variable "maple_dids" {
+  description = "Comma-separated DIDs the consumer accepts records from. Empty = unfiltered (safe on the public network, but deployments pin MAPLE's DID)."
+  type        = string
+  default     = ""
+}
