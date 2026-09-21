@@ -1,0 +1,65 @@
+name: ATProto Identity
+
+# The live half of services/atproto-identity: the ADR 0002 custody scenarios
+# against a real did-plc server.
+#
+# `yarn test` in repo-checks.yml proves how operations are built and how the
+# plan diff reads, with no network. It cannot prove what a directory does with
+# those operations -- that a document changed out of band makes `plan` fail, or
+# that the recovery key really can nullify what the ops key signed. Those are
+# the two properties the whole custody split rests on, and only a PLC can
+# answer them.
+#
+# Its own workflow rather than a job in repo-checks.yml because that workflow
+# is ungated (`on: ["push", "pull_request"]`) and GitHub has no per-job path
+# filter: a cold run builds the PLC image from a pinned git ref, which is far
+# too expensive to pay on every frontend change.
+on:
+  pull_request:
+    paths:
+      - services/atproto-identity/**
+      - infra/identity/**
+      - .github/workflows/atproto-identity.yml
+  push:
+    branches:
+      - main
+    paths:
+      - services/atproto-identity/**
+      - infra/identity/**
+      - .github/workflows/atproto-identity.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  identity_live:
+    name: Custody Scenarios (real PLC)
+    runs-on: ubuntu-latest
+    # Almost all of this is the cold PLC build; the scenarios themselves are a
+    # handful of signed operations.
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v2
+      # A standalone node-22 ESM package with its own lockfile, excluded from
+      # the root tsconfig -- not .github/actions/setup-repo, which installs the
+      # ROOT lockfile.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: services/atproto-identity/yarn.lock
+      - run: yarn install --frozen-lockfile
+        working-directory: services/atproto-identity
+
+      - name: Custody Scenarios
+        run: yarn test:live
+        working-directory: services/atproto-identity
+
+      # The stack is torn down by the script's own trap; this catches the case
+      # where the job was cancelled before it ran.
+      - name: Tear down
+        if: always()
+        run: docker compose -f test/live/compose.yml down -v
+        working-directory: services/atproto-identity

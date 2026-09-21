@@ -1,2 +1,5 @@
 dist/
 node_modules/
+# per-run scratch identity for test:live: a throwaway DID and both rotation
+# keys. Worth nothing off this machine, and never committed.
+test/live/.live-state/

@@ -15,6 +15,7 @@
     "keygen": "tsx src/cli.ts keygen",
     "build": "tsc",
     "test": "node --import tsx --test \"test/**/*.test.ts\"",
+    "test:live": "test/live/run.sh",
     "typecheck": "tsc -p tsconfig.test.json"
   },
   "dependencies": {

@@ -101,10 +101,24 @@ sequence, so the PDS image the tool is exercised against is pinned.
 ## Tests
 
     yarn test        # unit: op construction, the plan diff, every safety rail. no network
+    yarn test:live   # the custody scenarios against a real PLC. needs docker
 
-The live half — drift, the recovery-key rehearsal and the PDS-key rejection
-against a real did-plc server — runs against the local harness. Nothing in the
-test suite touches `plc.directory`.
+`yarn test` cannot prove what a directory does with an operation, only how one
+is built. `test:live` brings up a did-plc server — the same code
+`plc.directory` runs, built from a pinned commit — mints a throwaway identity
+on it, and asserts the two properties the custody split rests on:
+
+- **drift**: the document is moved out of band, and `plan` exits non-zero.
+- **recovery**: the ops key signs a malicious endpoint change, and the recovery
+  key nullifies it. This is ADR 0002 5's rehearsal, run continuously rather
+  than once before prod.
+
+Both rotation keys are generated per run into `test/live/.live-state` and die
+with the stack. Nothing in the test suite touches `plc.directory`.
+
+The scenarios live in `test/live/scenarios.sh`, which is sourced rather than
+run: a rig that has a PDS as well as a PLC can drive the same two assertions
+against its own stack, and add the ones that need a PDS.
 
 ## Safety rails
 

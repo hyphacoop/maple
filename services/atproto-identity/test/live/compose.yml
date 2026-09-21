@@ -1,0 +1,68 @@
+# A PLC directory and nothing else.
+#
+# The custody scenarios in scenarios.sh cannot be made against a mock: the 72
+# hour dispute window, the rotation-key priority order and the signature checks
+# are the PLC server's behaviour, not ours. This is the did-method-plc server
+# built from a pinned commit -- the same code plc.directory runs -- so an
+# assertion that holds here holds there. Nothing in this directory touches
+# plc.directory.
+#
+# Deliberately not a PDS, a relay or a jetstream: the scenarios that need those
+# are about the PDS's key, not about custody, and belong wherever a PDS exists.
+#
+# Ports are offset from the usual PLC 2582 so this can run beside a fuller
+# stack without either noticing.
+
+name: atproto-identity-live
+
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres:16-alpine}
+    environment:
+      POSTGRES_USER: plc
+      POSTGRES_PASSWORD: plc
+      POSTGRES_DB: plc
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plc -d plc"]
+      interval: 15s
+      start_period: 45s
+      start_interval: 1s
+      timeout: 3s
+      retries: 5
+
+  plc:
+    # The official ghcr images stop at 2023-09: the repo moved to the
+    # did-method-plc org, which publishes nothing public. So this is built from
+    # a pinned upstream commit rather than pulled, and a cold run pays for that
+    # build once.
+    build:
+      context: "${PLC_GIT_REPO:-https://github.com/did-method-plc/did-method-plc.git}#${PLC_GIT_REF:-45a14801609e182afcd6907f95013cfb10381f73}"
+      dockerfile: packages/server/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${PLC_PORT:-2592}:${PLC_PORT:-2592}"
+    environment:
+      PORT: ${PLC_PORT:-2592}
+      # The service entrypoint reads DB_CREDS_JSON, not DATABASE_URL.
+      DB_CREDS_JSON: '{"username":"plc","password":"plc","host":"postgres","port":"5432","database":"plc"}'
+      DB_MIGRATE_CREDS_JSON: '{"username":"plc","password":"plc","host":"postgres","port":"5432","database":"plc"}'
+      ENABLE_MIGRATIONS: "true"
+      LOG_ENABLED: "true"
+      LOG_LEVEL: info
+      NODE_ENV: development
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:${PLC_PORT:-2592}/_health"
+        ]
+      interval: 15s
+      start_period: 60s
+      start_interval: 1s
+      timeout: 3s
+      retries: 5
