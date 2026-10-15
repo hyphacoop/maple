@@ -12,6 +12,10 @@ export const formatBillId = (id: string) => {
   }
 }
 
+/** How a testimony card names the committee of conference it addresses. */
+export const formatConferenceLabel = (billId: string) =>
+  `Conference Committee, ${formatBillId(billId)}`
+
 export const truncateText = (s: string | undefined, maxLength: number) =>
   !!s && s.length > maxLength ? s.substring(0, maxLength) + "..." : s
 

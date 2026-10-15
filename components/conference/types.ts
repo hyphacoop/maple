@@ -1,5 +1,6 @@
 import type { Branch } from "../../functions/src/common"
 import type { ConferenceStatus } from "../../functions/src/conferences/types"
+import type { ConferencePosition } from "../db/testimony/types"
 import type { EventSummary } from "../db/events"
 
 /** The chambers in the order every view shows them: Senate first. */
@@ -36,11 +37,20 @@ export const personKey = (c: ConfereeView) => c.seat ?? c.memberCode
 /** A linked hearing, without its videos. */
 export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
 
+/** What the testimony section needs: the bill testimony is filed against and
+ * the counts the testimony triggers keep on the conference. */
+export type ConferenceTestimonyView = {
+  canonicalBillId: string
+  testimonyCount: number
+  counts: Record<ConferencePosition, number>
+}
+
 export type ConferencePageProps = {
   conference: ConferenceSummary
   conferences: ConferenceSummary[]
   conferees: ConfereeView[]
   hearings: HearingView[]
+  testimony: ConferenceTestimonyView
 }
 
 /** The index: every conference, active first, with its conferees by

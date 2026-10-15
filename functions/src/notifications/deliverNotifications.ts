@@ -17,7 +17,31 @@ import {
   UserDigest
 } from "./emailTypes"
 import { prepareHandlebars } from "../email/handlebarsHelpers"
+import type { ConferencePosition } from "../testimony/types"
 import { Frequency } from "../auth/types"
+
+const conferencePositionLabels: Record<ConferencePosition, string> = {
+  passNothing: "Pass nothing",
+  passSomething: "Pass something",
+  passSenateVersion: "Pass the Senate version",
+  passHouseVersion: "Pass the House version"
+}
+
+/** Where a digest entry links and, for conference testimony, the label it
+ * shows in place of a position image. */
+const testimonyLink = ({
+  billId,
+  court,
+  conferenceId,
+  position
+}: TestimonySubmissionNotificationFields["notification"]) =>
+  conferenceId
+    ? {
+        url: `https://mapletestimony.org/conferences/${court}/${conferenceId}`,
+        positionLabel:
+          conferencePositionLabels[position as ConferencePosition] ?? position
+      }
+    : { url: `https://mapletestimony.org/bills/${court}/${billId}` }
 
 const PROFILE_BATCH_SIZE = 50
 const NUM_BILLS_TO_DISPLAY = 4
@@ -210,7 +234,8 @@ export const buildDigestData = async (
       const billResult = {
         billId: notification.billId,
         court: notification.court,
-        position: notification.position as Position
+        position: notification.position as Position,
+        ...testimonyLink(notification)
       }
       if (usersById[notification.authorUid]) {
         const user = usersById[notification.authorUid]

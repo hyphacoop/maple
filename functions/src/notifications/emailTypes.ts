@@ -1,4 +1,5 @@
 import { Frequency } from "../auth/types"
+import type { Position } from "../testimony/types"
 
 export type BillDigest = {
   billId: string
@@ -8,11 +9,15 @@ export type BillDigest = {
   neutralCount: number
   opposeCount: number
 }
-export type Position = "endorse" | "neutral" | "oppose"
+export type { Position }
 export type BillResult = {
   billId: string
   court: string
   position: Position
+  /** The bill page, or the conference page for conference testimony. */
+  url: string
+  /** Set for positions that have no image yet. */
+  positionLabel?: string
 }
 export type UserDigest = {
   userId: string

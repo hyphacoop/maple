@@ -86,7 +86,8 @@ export function useEditTestimony(
   uid: string,
   court: number,
   billId: string,
-  ballotQuestionId?: string
+  ballotQuestionId?: string,
+  conferenceId?: string
 ): UseEditTestimony {
   const [state, dispatch] = useReducer(reducer, {
     draftLoading: true,
@@ -94,7 +95,8 @@ export function useEditTestimony(
     uid,
     court,
     billId,
-    ballotQuestionId
+    ballotQuestionId,
+    conferenceId
   })
 
   useTestimony(state, dispatch)
@@ -132,17 +134,25 @@ export function useEditTestimony(
 }
 
 function useTestimony(
-  { uid, billId, draftRef, publicationRef, court, ballotQuestionId }: State,
+  {
+    uid,
+    billId,
+    draftRef,
+    publicationRef,
+    court,
+    ballotQuestionId,
+    conferenceId
+  }: State,
   dispatch: Dispatch<Action>
 ) {
   useEffect(() => {
-    resolveBillTestimony(uid, court, billId, ballotQuestionId)
+    resolveBillTestimony(uid, court, billId, { ballotQuestionId, conferenceId })
       .then(({ draft, publication }) => {
         dispatch({ type: "resolveDraft", id: draft?.id })
         dispatch({ type: "resolvePublication", id: publication?.id })
       })
       .catch(error => dispatch({ type: "error", error }))
-  }, [ballotQuestionId, billId, court, dispatch, uid])
+  }, [ballotQuestionId, billId, conferenceId, court, dispatch, uid])
 
   useEffect(() => {
     if (draftRef)
@@ -228,6 +238,7 @@ function useSaveDraft(
     draftLoading,
     billId,
     ballotQuestionId,
+    conferenceId,
     uid,
     court,
     publication,
@@ -257,7 +268,8 @@ function useSaveDraft(
             recipientMemberCodes: recipientMemberCodes ?? null,
             attachmentId: attachmentId ?? null,
             ballotQuestionId:
-              requestBallotQuestionId ?? ballotQuestionId ?? null
+              requestBallotQuestionId ?? ballotQuestionId ?? null,
+            conferenceId: conferenceId ?? null
           }
           const result = await addDoc(
             collection(firestore, `/users/${uid}/draftTestimony`),
@@ -275,6 +287,7 @@ function useSaveDraft(
             editReason: editReason ?? null,
             ballotQuestionId:
               requestBallotQuestionId ?? ballotQuestionId ?? null,
+            conferenceId: conferenceId ?? null,
             publishedVersion: hasChanges ? deleteField() : undefined
           })
         }
@@ -282,6 +295,7 @@ function useSaveDraft(
       [
         ballotQuestionId,
         billId,
+        conferenceId,
         dispatch,
         draftLoading,
         draftRef,
@@ -300,6 +314,7 @@ type State = {
   uid: string
   billId: string
   ballotQuestionId?: string
+  conferenceId?: string
   error?: Error
 
   draft?: WorkingDraft

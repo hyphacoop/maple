@@ -1,10 +1,12 @@
 import Link from "next/link"
+import { pickBy } from "lodash"
 import { AnchorHTMLAttributes, forwardRef, PropsWithChildren } from "react"
 import { BillTopic, CurrentCommittee } from "../functions/src/bills/types"
 import { Testimony } from "components/db/testimony"
 import { Bill, MemberContent } from "./db"
 import { formatBillId } from "./formatting"
 import { TFunction } from "next-i18next"
+import type { TestimonyScope } from "../functions/src/testimony/scope"
 
 type LinkProps = PropsWithChildren<
   AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
@@ -87,18 +89,33 @@ export const maple = {
     authorUid,
     billId,
     court,
-    ballotQuestionId
+    ballotQuestionId,
+    conferenceId
   }: {
     authorUid: string
     billId: string
     court: number
     ballotQuestionId?: string
+    conferenceId?: string
   }) =>
-    `/testimony/${authorUid}/${court}/${billId}${
-      ballotQuestionId
-        ? `?${new URLSearchParams({ ballotQuestionId }).toString()}`
-        : ""
-    }`
+    `/testimony/${authorUid}/${court}/${billId}${scopeSearch({
+      ballotQuestionId,
+      conferenceId
+    })}`
+}
+
+/** The query parameters that scope testimony to a ballot question or a
+ * conference; none for bill testimony. */
+export const scopeParams = ({
+  ballotQuestionId,
+  conferenceId
+}: TestimonyScope = {}) =>
+  pickBy({ ballotQuestionId, conferenceId }, Boolean) as Record<string, string>
+
+/** `scopeParams` as a search string, empty for bill testimony. */
+export const scopeSearch = (scope?: TestimonyScope) => {
+  const query = new URLSearchParams(scopeParams(scope)).toString()
+  return query ? `?${query}` : ""
 }
 
 export function billSiteURL(billNumber: string, court: number) {

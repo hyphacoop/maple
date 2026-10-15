@@ -119,37 +119,44 @@ const billResults: BillResult[] = [
   {
     billId: "H868",
     court: "194",
-    position: "endorse"
+    position: "endorse",
+    url: "https://mapletestimony.org/bills/194/H868"
   },
   {
     billId: "H1436",
     court: "194",
-    position: "neutral"
+    position: "neutral",
+    url: "https://mapletestimony.org/bills/194/H1436"
   },
   {
     billId: "H533",
     court: "194",
-    position: "oppose"
+    position: "oppose",
+    url: "https://mapletestimony.org/bills/194/H533"
   },
   {
     billId: "H841",
     court: "194",
-    position: "endorse"
+    position: "endorse",
+    url: "https://mapletestimony.org/bills/194/H841"
   },
   {
     billId: "H54",
     court: "194",
-    position: "oppose"
+    position: "oppose",
+    url: "https://mapletestimony.org/bills/194/H54"
   },
   {
     billId: "H66",
     court: "194",
-    position: "neutral"
+    position: "neutral",
+    url: "https://mapletestimony.org/bills/194/H66"
   },
   {
     billId: "H30",
     court: "194",
-    position: "endorse"
+    position: "endorse",
+    url: "https://mapletestimony.org/bills/194/H30"
   }
 ]
 

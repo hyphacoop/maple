@@ -9,7 +9,7 @@ import { useTranslation } from "next-i18next"
 export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
   const { t } = useTranslation("testimony")
   const { copy } = usePublishCopy()
-  const { ballotQuestionId } = usePublishState()
+  const { ballotQuestionId, conferenceId } = usePublishState()
   const isBallotQuestion = Boolean(ballotQuestionId)
   const {
       content: { Title },
@@ -34,6 +34,8 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
                 ballotQuestionId
               })})`
             : ""
+          : conferenceId
+          ? ` (${t("conference.quickInfo.reference", { billId: bill.id })})`
           : ` (${t("quickInfo.bill")} ${bill.id})`}
       </Chip>
       {city && (
@@ -45,7 +47,7 @@ export function QuickInfo({ bill, profile }: { bill: Bill; profile: Profile }) {
         </>
       )}
       {!isBallotQuestion && <Sponsors bill={bill} />}
-      {!isBallotQuestion && committee && (
+      {!isBallotQuestion && !conferenceId && committee && (
         <>
           <Label>{t("quickInfo.committeeIs")}</Label>
           <Chip>{committee.name}</Chip>

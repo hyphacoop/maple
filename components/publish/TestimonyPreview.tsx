@@ -10,8 +10,10 @@ import {
   getDraftTestimonyAttachmentInfo,
   Position,
   getPublishedTestimonyAttachmentInfo,
-  AttachmentInfo
+  AttachmentInfo,
+  ConferencePosition
 } from "../db"
+import { conferenceActions, conferencePositions } from "./content"
 import {
   usePublishCopy,
   usePublishMode,
@@ -19,6 +21,16 @@ import {
   useTestimonyEmail
 } from "./hooks"
 import { useTranslation, Trans } from "next-i18next"
+
+/** "You want the conference committee to …", per conference position. */
+const conferencePreviews = Object.fromEntries(
+  conferencePositions.map(position => [
+    position,
+    <Trans key={position} i18nKey={`testimony:conference.preview.${position}`}>
+      You want the conference committee to <b>{conferenceActions[position]}</b>
+    </Trans>
+  ])
+) as Record<ConferencePosition, ReactNode>
 
 export const positionActions = (
   isBallotQuestion: boolean
@@ -80,7 +92,8 @@ export const positionActions = (
         </>
       )}
     </Trans>
-  )
+  ),
+  ...conferencePreviews
 })
 
 export const CopyTestimony = styled(props => {

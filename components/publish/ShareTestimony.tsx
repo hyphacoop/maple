@@ -53,7 +53,7 @@ export const ShareButtons = ({
   initialSent?: boolean
 }) => {
   const { t } = useTranslation("testimony")
-  const { share, bill, ballotQuestionId } = usePublishState()
+  const { share, bill, ballotQuestionId, conferenceId } = usePublishState()
   const router = useRouter()
   const dispatch = useAppDispatch()
   const redirectToPolicy = useCallback(() => {
@@ -61,9 +61,11 @@ export const ShareButtons = ({
     router.push(
       ballotQuestionId
         ? maple.ballotQuestion({ id: ballotQuestionId })
+        : conferenceId
+        ? maple.conference({ court: bill!.court, id: conferenceId })
         : maple.bill(bill!)
     )
-  }, [ballotQuestionId, bill, dispatch, router])
+  }, [ballotQuestionId, bill, conferenceId, dispatch, router])
   const [sent, setSent] = useState(initialSent)
 
   const buttons = []
@@ -94,6 +96,8 @@ export const ShareButtons = ({
       >
         {ballotQuestionId
           ? t("publish.finishedBackToBallotQuestion")
+          : conferenceId
+          ? t("conference.publish.finishedBackToConference")
           : t("publish.finishedBackToBill")}
       </Button>
     )

@@ -1,9 +1,9 @@
 import { ToggleButton, ToggleButtonProps } from "react-bootstrap"
 import styled from "styled-components"
 import { Image, Row, Col } from "../bootstrap"
-import { Position } from "../db"
+import { BillPosition, Position } from "../db"
 import { useAppDispatch } from "../hooks"
-import { positionLabels } from "./content"
+import { conferencePositions, positionLabels } from "./content"
 import { usePublishState } from "./hooks"
 import { FormNavigation, Next } from "./NavigationButtons"
 import { setPosition } from "./redux"
@@ -12,8 +12,8 @@ import { useMediaQuery } from "usehooks-ts"
 import { usePublishCopy } from "./hooks"
 
 export const ChooseStance = styled(({ ...rest }) => {
-  const { copy } = usePublishCopy()
-  const { position: currentPosition } = usePublishState()
+  const { copy, t } = usePublishCopy()
+  const { position: currentPosition, conferenceId } = usePublishState()
   const dispatch = useAppDispatch()
   const isMobile = useMediaQuery("(max-width: 768px)")
   const props = (position: Position) => ({
@@ -25,21 +25,24 @@ export const ChooseStance = styled(({ ...rest }) => {
   return (
     <div {...rest}>
       <StepHeader step={1}>
-        {copy(
-          "submitTestimonyForm.chooseStance",
-          "ballotQuestion.submitTestimonyForm.chooseStance"
-        )}
+        {conferenceId
+          ? t("conference.submitTestimonyForm.chooseStance")
+          : copy(
+              "submitTestimonyForm.chooseStance",
+              "ballotQuestion.submitTestimonyForm.chooseStance"
+            )}
       </StepHeader>
       <Row className="d-flex gap-3 justify-content-center mt-4">
-        <Col md={3} xs={12} className="d-flex justify-content-center">
-          <PositionButton {...props("endorse")} isMobile={isMobile} />
-        </Col>
-        <Col md={3} xs={12} className="d-flex justify-content-center">
-          <PositionButton {...props("neutral")} isMobile={isMobile} />
-        </Col>
-        <Col md={3} xs={12} className="d-flex justify-content-center">
-          <PositionButton {...props("oppose")} isMobile={isMobile} />
-        </Col>
+        {(conferenceId ? conferencePositions : billPositions).map(position => (
+          <Col
+            key={position}
+            md={conferenceId ? 2 : 3}
+            xs={12}
+            className="d-flex justify-content-center"
+          >
+            <PositionButton {...props(position)} isMobile={isMobile} />
+          </Col>
+        ))}
       </Row>
 
       <FormNavigation status right={<Next disabled={!hasPosition} />} />
@@ -47,13 +50,16 @@ export const ChooseStance = styled(({ ...rest }) => {
   )
 })``
 
+const billPositions: readonly BillPosition[] = ["endorse", "neutral", "oppose"]
+
 const PositionButton = styled<
   { position: Position; isMobile: boolean } & Pick<
     ToggleButtonProps,
     "onClick" | "checked"
   >
 >(({ position, isMobile, ...rest }) => {
-  const icons: Record<Position, React.ReactNode> = {
+  // Conference positions have no icons yet; their buttons are labels alone.
+  const icons: Record<BillPosition, React.ReactNode> = {
     neutral: (
       <Image
         alt=""
@@ -66,6 +72,7 @@ const PositionButton = styled<
       <Image alt="" src="/thumbs-up.svg" style={{ transform: "scaleY(-1)" }} />
     )
   }
+  const icon = icons[position as BillPosition]
   return (
     <ToggleButton
       id={`${position}-btn`}
@@ -74,8 +81,8 @@ const PositionButton = styled<
       {...rest}
       variant="outline-secondary"
     >
-      {icons[position]}
-      <div className="mt-3">{positionLabels[position]}</div>
+      {icon}
+      <div className={icon ? "mt-3" : ""}>{positionLabels[position]}</div>
     </ToggleButton>
   )
 })`

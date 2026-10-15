@@ -1,7 +1,7 @@
 import { Card, ListItem, ListItemProps } from "components/Card"
 import { dbService } from "components/db/api"
 import { useFlags } from "components/featureFlags"
-import { formatBillId } from "components/formatting"
+import { formatBillId, formatConferenceLabel } from "components/formatting"
 import { formUrl } from "components/publish"
 import { FC, ReactElement, useContext, useEffect, useState } from "react"
 import { useCurrentTestimonyDetails } from "./testimonyDetailSlice"
@@ -61,6 +61,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   const router = useRouter()
 
   const ballotQuestionId = revision.ballotQuestionId ?? undefined
+  const conferenceId = revision.conferenceId ?? undefined
   const ballotQuestionTopic = ballotQuestionId
     ? { court: bill.court, id: ballotQuestionId }
     : null
@@ -174,12 +175,20 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
         billName={
           isUnverified
             ? t("panel.unverifiedEmail.title")
-            : `${isUser ? "Edit" : "Add"} Testimony for ${policyLabel}`
+            : `${isUser ? "Edit" : "Add"} Testimony for ${
+                conferenceId ? formatConferenceLabel(bill.id) : policyLabel
+              }`
         }
         href={
           isUnverified
             ? `/profile?id=${uid}`
-            : formUrl(bill.id, bill.court, "position", ballotQuestionId)
+            : formUrl(
+                bill.id,
+                bill.court,
+                "position",
+                ballotQuestionId,
+                conferenceId
+              )
         }
       />
     )

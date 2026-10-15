@@ -19,8 +19,36 @@ import type * as report from "functions/src/testimony/resolveReport"
 
 export const maxTestimonyLength = 10_000
 
-export const Position = Union(L("endorse"), L("oppose"), L("neutral"))
+/** Whether a bill should pass. */
+export const BillPosition = Union(L("endorse"), L("oppose"), L("neutral"))
+export type BillPosition = Static<typeof BillPosition>
+/** Which version a committee of conference should report, if any. */
+export const ConferencePosition = Union(
+  L("passNothing"),
+  L("passSomething"),
+  L("passSenateVersion"),
+  L("passHouseVersion")
+)
+export type ConferencePosition = Static<typeof ConferencePosition>
+export const Position = Union(BillPosition, ConferencePosition)
 export type Position = Static<typeof Position>
+
+/** The positions a testimony may take: conference testimony takes a
+ * conference position, all other testimony a bill position. */
+export const positionsFor = (conferenceId?: string | null) =>
+  conferenceId ? ConferencePosition : BillPosition
+
+export const positionMatchesTarget = ({
+  position,
+  conferenceId
+}: {
+  position: Position
+  conferenceId?: string | null
+}) =>
+  positionsFor(conferenceId).guard(position) ||
+  (conferenceId
+    ? "Conference testimony takes a conference position"
+    : "Bill testimony takes a bill position")
 
 export const Content = String.withConstraint(
   s => s.length > 0 || "Content is empty"
@@ -34,7 +62,8 @@ export const BaseTestimony = R({
   content: Content,
   attachmentId: Maybe(String),
   editReason: Maybe(String),
-  ballotQuestionId: Maybe(String)
+  ballotQuestionId: Maybe(String),
+  conferenceId: Maybe(String)
 })
 export type BaseTestimony = Static<typeof BaseTestimony>
 
@@ -63,7 +92,7 @@ export const DraftTestimony = BaseTestimony.extend({
   publishedVersion: Optional(Number),
   /** If present, array of legislator member codes */
   recipientMemberCodes: Maybe(Array(String))
-})
+}).withConstraint(positionMatchesTarget)
 
 /** Returns true if both values are either falsy or strictly equal. */
 const eqish = (a: any, b: any) => (a || undefined) === (b || undefined)

@@ -3,6 +3,7 @@ import { ConferenceByline } from "./ConferenceByline"
 import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
+import { ConferenceTestimony } from "./ConferenceTestimony"
 import { PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps } from "./types"
 
@@ -27,6 +28,10 @@ const Header = styled.header`
   margin-bottom: 1.5rem;
 `
 
+const Testimony = styled.div`
+  margin-top: 1.5rem;
+`
+
 /**
  * One conference: who is deciding, and the two texts they are deciding
  * between. The list of every conference runs down the left from md up; below
@@ -36,7 +41,8 @@ export function ConferenceDetails({
   conference,
   conferences,
   conferees,
-  hearings
+  hearings,
+  testimony
 }: ConferencePageProps) {
   return (
     <Page>
@@ -62,6 +68,13 @@ export function ConferenceDetails({
           conferees={conferees}
           hearings={hearings}
         />
+        <Testimony>
+          <ConferenceTestimony
+            court={conference.court}
+            conferenceId={conference.id}
+            testimony={testimony}
+          />
+        </Testimony>
       </Main>
     </Page>
   )

@@ -10,6 +10,7 @@ import {
 } from "../components/publish/hooks"
 import { SubmitTestimonyForm } from "../components/publish/SubmitTestimonyForm"
 import { createGetStaticTranslationProps } from "components/translations"
+import { useFlags } from "components/featureFlags"
 
 export default createPage({
   titleI18nKey: "titles.submit_testimony",
@@ -19,6 +20,7 @@ export default createPage({
 function SubmitTestimonyPage() {
   const router = useRouter()
   const { user } = useAuth()
+  const { conferences } = useFlags()
   const [isAllowed, setIsAllowed] = useState(false)
 
   useEffect(() => {
@@ -33,6 +35,12 @@ function SubmitTestimonyPage() {
       typeof router.query.ballotQuestionId === "string"
         ? router.query.ballotQuestionId
         : undefined
+
+    // Conference testimony is only offered while conferences are flagged on.
+    if (typeof router.query.conferenceId === "string" && !conferences) {
+      void router.replace("/")
+      return
+    }
 
     if (!ballotQuestionId) {
       setIsAllowed(true)
@@ -68,7 +76,7 @@ function SubmitTestimonyPage() {
     return () => {
       active = false
     }
-  }, [router, user])
+  }, [conferences, router, user])
 
   if (!isAllowed) return null
 

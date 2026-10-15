@@ -19,7 +19,7 @@ import { first } from "lodash"
 import { Bill } from "./bills"
 import { Profile } from "./profile"
 import { Testimony } from "./testimony"
-import { matchesBallotQuestionScope } from "./testimony/ballotQuestionScope"
+import { matchesTestimonyScope } from "functions/src/testimony/scope"
 import type { BallotQuestion } from "functions/src/ballotQuestions/types"
 
 export type { BallotQuestion }
@@ -29,6 +29,7 @@ export type TestimonyQuery = {
   billId: string
   court: number
   ballotQuestionId?: string
+  conferenceId?: string
 }
 
 export type BillQuery = {
@@ -72,7 +73,8 @@ export class DbService {
     authorUid,
     billId,
     court,
-    ballotQuestionId
+    ballotQuestionId,
+    conferenceId
   }: TestimonyQuery): Promise<Testimony[]> => {
     const result = await this.getDocs(
       query(
@@ -85,7 +87,9 @@ export class DbService {
     )
     const archive = result.docs
       .map(snap => snap.data())
-      .filter(isNotNull) as Testimony[]
+      .filter(
+        t => t && matchesTestimonyScope(t, { ballotQuestionId, conferenceId })
+      ) as Testimony[]
     return archive
   }
 

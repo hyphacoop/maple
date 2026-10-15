@@ -35,5 +35,10 @@
   "office": "Office",
   "office_senate": "State Senator, {{district}}",
   "office_house": "State Representative, {{district}}",
-  "conference": "Conference"
+  "conference": "Conference",
+  "testimony_title": "What people want from this committee",
+  "testimony_total_one": "{{count}} testimony",
+  "testimony_total_other": "{{count}} testimonies",
+  "testimony_add": "Add your testimony",
+  "testimony_none": "No testimony yet."
 }

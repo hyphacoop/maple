@@ -1,5 +1,6 @@
 import { Testimony } from "components/db"
 import { dbService } from "components/db/api"
+import { scopeParams, scopeSearch } from "components/links"
 import { wrapper } from "components/store"
 import {
   pageDataLoaded,
@@ -35,9 +36,7 @@ const useSyncQueryParameters = () => {
       Router.push(
         {
           pathname: `/testimony/${parts.join("/")}`,
-          query: query.ballotQuestionId
-            ? { ballotQuestionId: query.ballotQuestionId }
-            : undefined
+          query: scopeParams(query)
         },
         undefined,
         { shallow: true }
@@ -56,6 +55,7 @@ const PublishedId = z.string().min(1),
   Version = z.coerce.number().positive(),
   Query = z.object({
     ballotQuestionId: z.string().min(1).optional(),
+    conferenceId: z.string().min(1).optional(),
     testimonyDetail: z.union([
       z.tuple([PublishedId]),
       z.tuple([PublishedId, Version]),
@@ -75,14 +75,16 @@ const parseQuery = (query: ParsedUrlQuery) => {
       return {
         params,
         publishedId: params[0],
-        ballotQuestionId: q.data.ballotQuestionId
+        ballotQuestionId: q.data.ballotQuestionId,
+        conferenceId: q.data.conferenceId
       }
     case 2:
       return {
         params,
         publishedId: params[0],
         version: params[1],
-        ballotQuestionId: q.data.ballotQuestionId
+        ballotQuestionId: q.data.ballotQuestionId,
+        conferenceId: q.data.conferenceId
       }
     case 3:
       return {
@@ -90,7 +92,8 @@ const parseQuery = (query: ParsedUrlQuery) => {
         authorUid: params[0],
         court: params[1],
         billId: params[2],
-        ballotQuestionId: q.data.ballotQuestionId
+        ballotQuestionId: q.data.ballotQuestionId,
+        conferenceId: q.data.conferenceId
       }
     case 4:
       return {
@@ -99,7 +102,8 @@ const parseQuery = (query: ParsedUrlQuery) => {
         court: params[1],
         billId: params[2],
         version: params[3],
-        ballotQuestionId: q.data.ballotQuestionId
+        ballotQuestionId: q.data.ballotQuestionId,
+        conferenceId: q.data.conferenceId
       }
   }
 }
@@ -113,6 +117,7 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
     court: number,
     authorUid: string,
     ballotQuestionId: string | undefined,
+    conferenceId: string | undefined,
     archive: Testimony[],
     testimony: Testimony
 
@@ -123,19 +128,22 @@ const fetchDocs = async (q: NonNullable<ReturnType<typeof parseQuery>>) => {
     testimony = doc
     ;({ billId, court, authorUid } = testimony)
     ballotQuestionId = testimony.ballotQuestionId ?? undefined
+    conferenceId = testimony.conferenceId ?? undefined
     archive = await db.getArchivedTestimony({
       authorUid,
       billId,
       court,
-      ballotQuestionId
+      ballotQuestionId,
+      conferenceId
     })
   } else if (q.authorUid) {
-    ;({ authorUid, billId, court, ballotQuestionId } = q)
+    ;({ authorUid, billId, court, ballotQuestionId, conferenceId } = q)
     archive = await db.getArchivedTestimony({
       authorUid,
       billId,
       court,
-      ballotQuestionId
+      ballotQuestionId,
+      conferenceId
     })
 
     const latest = first(archive)
@@ -179,11 +187,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       ].join("/")
       return {
         redirect: {
-          destination: q.ballotQuestionId
-            ? `${destination}?ballotQuestionId=${encodeURIComponent(
-                q.ballotQuestionId
-              )}`
-            : destination,
+          destination: destination + scopeSearch(q),
           permanent: false
         }
       }

@@ -48,7 +48,8 @@
     "what": "What",
     "says": "says",
     "thisPolicy": "this policy",
-    "edited": "Edited"
+    "edited": "Edited",
+    "wantsConferenceTo": "wants the conference committee to"
   },
   "revisionHistory": {
     "version": "version",
@@ -300,5 +301,23 @@
     "addMyLegislators": "Add My Legislators",
     "removeMyLegislators": "Remove My Legislators",
     "sendEmail": "Send Email"
+  },
+  "conference": {
+    "submitTestimonyForm": {
+      "chooseStance": "Which Version Should Pass?",
+      "backToConference": "Back to the Conference Committee"
+    },
+    "quickInfo": {
+      "reference": "Conference Committee, Bill {{billId}}"
+    },
+    "preview": {
+      "passNothing": "You want the conference committee to <1>pass nothing</1>",
+      "passSomething": "You want the conference committee to <1>pass something</1>",
+      "passSenateVersion": "You want the conference committee to <1>pass the Senate version</1>",
+      "passHouseVersion": "You want the conference committee to <1>pass the House version</1>"
+    },
+    "publish": {
+      "finishedBackToConference": "Finished! Back to Conference Committee"
+    }
   }
 }

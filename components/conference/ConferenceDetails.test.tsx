@@ -42,6 +42,11 @@ jest.mock("../featureFlags", () => ({
 const profile = { representative: { id: "AHP1" } }
 jest.mock("../db", () => ({ useProfile: () => ({ profile }) }))
 
+const mockListing = jest.fn()
+jest.mock("../db/testimony/usePublishedTestimonyListing", () => ({
+  usePublishedTestimonyListing: (r: unknown) => mockListing(r)
+}))
+
 const conference: ConferencePageProps["conference"] = {
   id: "student-learning-and-mental-health",
   name: "Phone-Free Schools",
@@ -128,8 +133,39 @@ const props: ConferencePageProps = {
       eventId: 5710,
       startsAt: Date.UTC(2026, 5, 4, 17)
     }
-  ]
+  ],
+  testimony: {
+    canonicalBillId: "S2581",
+    testimonyCount: 3,
+    counts: {
+      passNothing: 0,
+      passSomething: 1,
+      passSenateVersion: 2,
+      passHouseVersion: 0
+    }
+  }
 }
+
+const published = (id: string, position: string, fullName: string) => ({
+  id,
+  position,
+  fullName,
+  content: `${fullName} wants ${position}`
+})
+
+beforeEach(() => {
+  mockListing.mockReturnValue({
+    items: {
+      status: "success",
+      result: [
+        published("t1", "passSenateVersion", "Ada"),
+        published("t2", "passSomething", "Grace"),
+        published("t3", "passSenateVersion", "Edsger")
+      ]
+    },
+    pagination: { hasNextPage: false, hasPreviousPage: false }
+  })
+})
 
 describe("ConferenceDetails", () => {
   it("names the six, the chairs, the bills and the hearing", () => {
@@ -227,5 +263,31 @@ describe("ConferenceDetails", () => {
       expect(name.getAttribute("href")).toMatch(/^\/legislators\/194\//)
       expect(name).not.toHaveAttribute("target")
     })
+  })
+
+  it("lists testimony under its stance, with the stored counts", () => {
+    render(<ConferenceDetails {...props} />)
+
+    expect(mockListing).toHaveBeenCalledWith({
+      court: 194,
+      conferenceId: "student-learning-and-mental-health"
+    })
+    const senate = screen.getByRole("region", {
+      name: "Pass the Senate version"
+    })
+    expect(senate).toHaveTextContent("2")
+    expect(senate).toHaveTextContent("Ada")
+    expect(senate).toHaveTextContent("Edsger")
+    expect(senate).not.toHaveTextContent("Grace")
+    expect(
+      screen.getByRole("region", { name: "Pass something" })
+    ).toHaveTextContent("Grace")
+    expect(
+      screen.getByRole("region", { name: "Pass nothing" })
+    ).toHaveTextContent("testimony_none")
+    expect(screen.getByText("testimony_add")).toHaveAttribute(
+      "href",
+      "/submit-testimony?billId=S2581&court=194&step=position&conferenceId=student-learning-and-mental-health"
+    )
   })
 })

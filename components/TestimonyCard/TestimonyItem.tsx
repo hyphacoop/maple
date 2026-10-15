@@ -116,7 +116,8 @@ export const TestimonyItem = ({
                 testimony.billId,
                 testimony.court,
                 "position",
-                testimony.ballotQuestionId ?? undefined
+                testimony.ballotQuestionId ?? undefined,
+                testimony.conferenceId ?? undefined
               )}
             >
               <Image
@@ -202,7 +203,8 @@ export const TestimonyItem = ({
                     testimony.billId,
                     testimony.court,
                     "position",
-                    testimony.ballotQuestionId ?? undefined
+                    testimony.ballotQuestionId ?? undefined,
+                    testimony.conferenceId ?? undefined
                   )}
                 >
                   {editLabel}

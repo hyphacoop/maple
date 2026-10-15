@@ -1,4 +1,5 @@
-import { Position } from "components/db"
+import { BillPosition, ConferencePosition, Position } from "components/db"
+import { conferenceActions } from "components/publish/content"
 import { ViewAttachment } from "components/ViewAttachment"
 import { FC, ImgHTMLAttributes } from "react"
 import styled from "styled-components"
@@ -30,7 +31,10 @@ const Testimony = styled(props => {
   )
 })``
 
-export const positionInfo = {
+export const positionInfo: Record<
+  BillPosition,
+  { action: string; src: string; alt: string }
+> = {
   neutral: {
     action: "is neutral on",
     src: "/thumbs-neutral.svg",
@@ -45,6 +49,8 @@ const PositionIcon: FC<
     ImgHTMLAttributes<HTMLImageElement> & { position: Position }
   >
 > = ({ position, ...props }) => {
+  // The header sentence names a conference stance, and it has no icon yet.
+  if (ConferencePosition.guard(position)) return null
   const { action, ...positionProps } = positionInfo[position]
   return <img aria-label={action} {...props} {...positionProps} />
 }
@@ -67,8 +73,14 @@ const Header = styled(props => {
       <PositionIcon className="positionIcon" position={position} />
       <div className="author ms-2 me-auto">
         <div className="fs-4">
-          {authorInfo} {positionInfo[position].action}{" "}
-          {t("testimonyDetail.thisPolicy")}
+          {authorInfo}{" "}
+          {ConferencePosition.guard(position)
+            ? `${t("testimonyDetail.wantsConferenceTo")} ${
+                conferenceActions[position]
+              }`
+            : `${positionInfo[position].action} ${t(
+                "testimonyDetail.thisPolicy"
+              )}`}
         </div>
         <div>{revision.publishedAt.toDate().toLocaleDateString()}</div>
       </div>

@@ -35,15 +35,19 @@
         {{#if this.bills.0.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              <a href="https://mapletestimony.org/bills/{{this.bills.0.court}}/{{this.bills.0.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
+              <a href="{{this.bills.0.url}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
                 {{this.bills.0.billId}}
               </a>
             </div>
           </td>
           <td style="width: 50px">
-            <img
-              src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.0.position}}.jpg"
-            />
+            {{#if this.bills.0.positionLabel}}
+              <span style="font-size: 12px">{{this.bills.0.positionLabel}}</span>
+            {{else}}
+              <img
+                src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.0.position}}.jpg"
+              />
+            {{/if}}
           </td>
         {{/if}}
 
@@ -52,15 +56,19 @@
         {{#if this.bills.1.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              <a href="https://mapletestimony.org/bills/{{this.bills.1.court}}/{{this.bills.1.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
+              <a href="{{this.bills.1.url}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
                 {{this.bills.1.billId}}
               </a>
             </div>
           </td>
           <td style="width: 50px">
-            <img
-              src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.1.position}}.jpg"
-            />
+            {{#if this.bills.1.positionLabel}}
+              <span style="font-size: 12px">{{this.bills.1.positionLabel}}</span>
+            {{else}}
+              <img
+                src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.1.position}}.jpg"
+              />
+            {{/if}}
           </td>
         {{/if}}
       </tr>
@@ -70,15 +78,19 @@
         {{#if this.bills.2.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              <a href="https://mapletestimony.org/bills/{{this.bills.2.court}}/{{this.bills.2.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
+              <a href="{{this.bills.2.url}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
                 {{this.bills.2.billId}}
               </a>
             </div>
           </td>
           <td style="width: 50px">
-            <img
-              src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.2.position}}.jpg"
-            />
+            {{#if this.bills.2.positionLabel}}
+              <span style="font-size: 12px">{{this.bills.2.positionLabel}}</span>
+            {{else}}
+              <img
+                src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.2.position}}.jpg"
+              />
+            {{/if}}
           </td>
         {{/if}}
 
@@ -87,15 +99,19 @@
         {{#if this.bills.3.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              <a href="https://mapletestimony.org/bills/{{this.bills.3.court}}/{{this.bills.3.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
+              <a href="{{this.bills.3.url}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
                 {{this.bills.3.billId}}
               </a>
             </div>
           </td>
           <td style="width: 50px">
-            <img
-              src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.3.position}}.jpg"
-            />
+            {{#if this.bills.3.positionLabel}}
+              <span style="font-size: 12px">{{this.bills.3.positionLabel}}</span>
+            {{else}}
+              <img
+                src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.3.position}}.jpg"
+              />
+            {{/if}}
           </td>
         {{/if}}
 
@@ -106,15 +122,19 @@
         {{#if this.bills.4.billId}}
           <td style="width: 100px">
             <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-              <a href="https://mapletestimony.org/bills/{{this.bills.4.court}}/{{this.bills.4.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
+              <a href="{{this.bills.4.url}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
                 {{this.bills.4.billId}}
               </a>
             </div>
           </td>
           <td style="width: 50px">
-            <img
-              src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.4.position}}.jpg"
-            />
+            {{#if this.bills.4.positionLabel}}
+              <span style="font-size: 12px">{{this.bills.4.positionLabel}}</span>
+            {{else}}
+              <img
+                src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.4.position}}.jpg"
+              />
+            {{/if}}
           </td>
         {{/if}}
 
@@ -135,15 +155,19 @@
           {{else}}
             <td style="width: 100px">
               <div style="text-decoration-line: underline; display: inline-block; margin-right: 15px">
-                <a href="https://mapletestimony.org/bills/{{this.bills.5.court}}/{{this.bills.5.billId}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
+                <a href="{{this.bills.5.url}}" target="_blank" rel="noopener noreferrer" style="color: inherit">
                   {{this.bills.5.billId}}
                 </a>
               </div>
             </td>
             <td style="width: 50px">
-              <img
-                src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.5.position}}.jpg"
-              />
+              {{#if this.bills.5.positionLabel}}
+                <span style="font-size: 12px">{{this.bills.5.positionLabel}}</span>
+              {{else}}
+                <img
+                  src="https://mapletestimony.org/email/images_no-svgs/{{this.bills.5.position}}.jpg"
+                />
+              {{/if}}
             </td>
           {{/if}}
         {{/if}}

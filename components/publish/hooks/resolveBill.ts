@@ -1,6 +1,6 @@
 import { Bill, getBill } from "../../db"
 import { createAppThunk } from "../../hooks"
-import { setBill, setBallotQuestionId } from "../redux"
+import { setBill, setBallotQuestionId, setConferenceId } from "../redux"
 
 /** Configure the bill for which to provide testimony. */
 export const resolveBill = createAppThunk(
@@ -11,10 +11,12 @@ export const resolveBill = createAppThunk(
       court?: number
       bill?: Bill
       ballotQuestionId?: string
+      conferenceId?: string
     },
     { dispatch }
   ) => {
     dispatch(setBallotQuestionId(info.ballotQuestionId))
+    dispatch(setConferenceId(info.conferenceId))
 
     let bill = info.bill
     if (!bill) {

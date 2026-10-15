@@ -3,7 +3,10 @@ import CardBootstrap from "react-bootstrap/Card"
 import { useMediaQuery } from "usehooks-ts"
 import { Col, Row } from "../bootstrap"
 import { Internal } from "components/links"
+import { capitalize } from "lodash"
 import { truncateText } from "components/formatting"
+import { ConferencePosition } from "components/db"
+import { StancePill } from "components/TestimonyCard/StancePill"
 
 export const NewsfeedBallotQuestionCardBody = ({
   ballotQuestionId,
@@ -102,13 +105,28 @@ export const NewsfeedBillCardBody = (props: NewsfeedCardBodyProps) => {
   )
 }
 
+/** A bill position's thumb and label, or a conference position's pill. */
+const PositionMark = ({
+  position,
+  size,
+  labelClassName
+}: {
+  position: string
+  size: { height: string; width: string }
+  labelClassName: string
+}) =>
+  ConferencePosition.guard(position) ? (
+    <StancePill position={position} />
+  ) : (
+    <>
+      <img src={`/thumbs-${position}.svg`} {...size} alt={position} />
+      <div className={labelClassName}>{capitalize(position)}</div>
+    </>
+  )
+
 export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
   const { billText, position, text, testimonyId, timestamp } = props
   const isMobile = useMediaQuery("(max-width: 576px)")
-
-  function capitalizeFirstLetter(x: String | undefined) {
-    return String(x).charAt(0).toUpperCase() + String(x).slice(1)
-  }
 
   let endorsementColor = ""
 
@@ -135,17 +153,11 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
             <Col className={`d-flex flex-column m-2 w-100`} xs="2">
               <div className={`align-self-center justify-content-center my-3`}>
                 {position && (
-                  <>
-                    <img
-                      src={`/thumbs-${position}.svg`}
-                      height="108"
-                      width="106.5"
-                      alt={position}
-                    />
-                    <div className={`${endorsementColor} fs-5`}>
-                      {capitalizeFirstLetter(props.position)}
-                    </div>
-                  </>
+                  <PositionMark
+                    position={position}
+                    size={{ height: "108", width: "106.5" }}
+                    labelClassName={`${endorsementColor} fs-5`}
+                  />
                 )}
               </div>
               <strong className={`mb-4`}>{`"${truncateText(
@@ -160,18 +172,11 @@ export const NewsfeedTestimonyCardBody = (props: NewsfeedCardBodyProps) => {
                   className={`d-flex align-self-center flex-column m-2`}
                   xs="2"
                 >
-                  <>
-                    <img
-                      src={`/thumbs-${position}.svg`}
-                      height="72"
-                      width="72"
-                      alt={position}
-                    />
-
-                    <div className={`${endorsementColor}`}>
-                      {capitalizeFirstLetter(props.position)}
-                    </div>
-                  </>
+                  <PositionMark
+                    position={position}
+                    size={{ height: "72", width: "72" }}
+                    labelClassName={endorsementColor}
+                  />
                 </Col>
               )}
               <Col

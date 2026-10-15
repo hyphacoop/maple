@@ -21,6 +21,7 @@ import {
   ConferenceIndexProps,
   ConferencePageProps,
   ConferenceSummary,
+  ConferenceTestimonyView,
   HearingView
 } from "./types"
 
@@ -32,6 +33,18 @@ const summarize = (c: Conference): ConferenceSummary => ({
   senateBillId: c.senateBillId,
   houseBillId: c.houseBillId,
   status: c.status
+})
+
+/** Counts are absent until the first testimony, so read them as zero. */
+const testimonyOf = (c: Conference): ConferenceTestimonyView => ({
+  canonicalBillId: c.canonicalBillId,
+  testimonyCount: c.testimonyCount ?? 0,
+  counts: {
+    passNothing: c.passNothingCount ?? 0,
+    passSomething: c.passSomethingCount ?? 0,
+    passSenateVersion: c.passSenateVersionCount ?? 0,
+    passHouseVersion: c.passHouseVersionCount ?? 0
+  }
 })
 
 /** The member's cell on the map: their district id, or null where the map has
@@ -128,7 +141,8 @@ export async function loadConferencePage(
           ? [{ id: h.id, eventId: h.eventId, startsAt: h.startsAt }]
           : []
       )
-      .sort((a, b) => a.startsAt - b.startsAt)
+      .sort((a, b) => a.startsAt - b.startsAt),
+    testimony: testimonyOf(conference)
   }
 }
 

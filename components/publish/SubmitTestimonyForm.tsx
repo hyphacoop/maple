@@ -120,7 +120,7 @@ export const Form = ({
   synced: boolean
 }) => {
   const { t } = useTranslation("testimony")
-  const { ballotQuestionId } = usePublishState()
+  const { ballotQuestionId, conferenceId } = usePublishState()
   const content: Record<Step, React.ReactNode> = {
     position: <ChooseStance />,
     selectLegislators: <SelectLegislatorsCta />,
@@ -131,9 +131,13 @@ export const Form = ({
   const isMobile = useMediaQuery("(max-width: 768px)")
   const backHref = ballotQuestionId
     ? links.maple.ballotQuestion({ id: ballotQuestionId })
+    : conferenceId
+    ? links.maple.conference({ court: bill.court, id: conferenceId })
     : links.maple.bill(bill)
   const backLabel = ballotQuestionId
     ? t("submitTestimonyForm.backToBallotQuestion", { ballotQuestionId })
+    : conferenceId
+    ? t("conference.submitTestimonyForm.backToConference")
     : t("submitTestimonyForm.backToBill", { billId: bill.id })
 
   return (

@@ -10,6 +10,7 @@ import {
   maxTestimonyLength,
   MemberSearchIndexItem,
   Position,
+  positionsFor,
   Testimony,
   UseEditTestimony,
   WorkingDraft
@@ -73,6 +74,9 @@ export type State = {
 
   /** Current ballot question ID (for ballot question testimony) */
   ballotQuestionId?: string
+
+  /** Current conference ID (for testimony on a committee of conference) */
+  conferenceId?: string
 
   /** Current step in the testimony form */
   step: Step
@@ -157,7 +161,8 @@ export const {
     setSyncState,
     bindService,
     setBill,
-    setBallotQuestionId
+    setBallotQuestionId,
+    setConferenceId
   }
 } = createSlice({
   name: "publish",
@@ -213,6 +218,10 @@ export const {
     },
     setBallotQuestionId(state, action: PayloadAction<string | undefined>) {
       state.ballotQuestionId = action.payload
+    },
+    setConferenceId(state, action: PayloadAction<string | undefined>) {
+      state.conferenceId = action.payload
+      validateForm(state)
     },
     setPublicationInfo(
       state,
@@ -340,12 +349,13 @@ const validateForm = ({
   publication,
   draft,
   errors,
-  ballotQuestionId
+  ballotQuestionId,
+  conferenceId
 }: State) => {
   const isBallotQuestion = Boolean(ballotQuestionId)
   const contentNoun = isBallotQuestion ? "Perspective" : "Testimony"
   const editNoun = isBallotQuestion ? "perspective" : "testimony"
-  const validated = Position.validate(position)
+  const validated = positionsFor(conferenceId).validate(position)
   if (!validated.success) errors.position = "Invalid position"
   else errors.position = undefined
 
@@ -367,6 +377,7 @@ const resetForm = (state: State) => ({
   ...initialState,
   bill: state.bill,
   ballotQuestionId: state.ballotQuestionId,
+  conferenceId: state.conferenceId,
   authorUid: state.authorUid,
   service: state.service
 })

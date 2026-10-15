@@ -3,18 +3,11 @@ import Router, { useRouter } from "next/router"
 import { useEffect } from "react"
 import { PublishState, resolveBill, usePublishState } from "."
 import { createAppThunk, useAppDispatch } from "../../hooks"
+import { scopeParams } from "../../links"
 import { getPublishMode } from "../mode"
 import { setStep, Step } from "../redux"
 
-export const formUrl = (
-  billId: string,
-  court: number,
-  step: Step = "position",
-  ballotQuestionId?: string
-) =>
-  `/submit-testimony?billId=${billId}&court=${court}&step=${step}${
-    ballotQuestionId ? `&ballotQuestionId=${ballotQuestionId}` : ""
-  }`
+export { formUrl } from "../formUrl"
 
 /** Changes to the appropriate form step if users access a step that is
  * currently invalid (i.e. entering content before position, trying to share
@@ -81,13 +74,20 @@ export const useSyncRouterAndStore = () => {
   }, [
     router.query.billId,
     router.query.ballotQuestionId,
+    router.query.conferenceId,
     dispatch,
     router.query.step
   ])
 
   useEffect(() => {
     dispatch(storeChanged())
-  }, [state.bill?.id, state.ballotQuestionId, state.step, dispatch])
+  }, [
+    state.bill?.id,
+    state.ballotQuestionId,
+    state.conferenceId,
+    state.step,
+    dispatch
+  ])
 }
 
 const routeChanged = createAppThunk(
@@ -98,15 +98,19 @@ const routeChanged = createAppThunk(
     const state = getState().publish
     const billId = state.bill?.id
     const ballotQuestionId = state.ballotQuestionId
+    const conferenceId = state.conferenceId
     if (
       route.billId &&
-      (route.billId !== billId || route.ballotQuestionId !== ballotQuestionId)
+      (route.billId !== billId ||
+        route.ballotQuestionId !== ballotQuestionId ||
+        route.conferenceId !== conferenceId)
     ) {
       await dispatch(
         resolveBill({
           court: route.court,
           billId: route.billId,
-          ballotQuestionId: route.ballotQuestionId
+          ballotQuestionId: route.ballotQuestionId,
+          conferenceId: route.conferenceId
         })
       )
     }
@@ -126,13 +130,20 @@ const storeChanged = createAppThunk(
       step = state.publish.step,
       court = state.publish.bill?.court,
       ballotQuestionId = state.publish.ballotQuestionId,
+      conferenceId = state.publish.conferenceId,
       route = currentRoute()
 
-    if (billId && !isEqual(route, { billId, court, step, ballotQuestionId })) {
+    if (
+      billId &&
+      !isEqual(route, { billId, court, step, ballotQuestionId, conferenceId })
+    ) {
       Router.push(
-        `?billId=${billId}&court=${court}&step=${step}${
-          ballotQuestionId ? `&ballotQuestionId=${ballotQuestionId}` : ""
-        }`,
+        `?${new URLSearchParams({
+          billId,
+          court: String(court),
+          step,
+          ...scopeParams({ ballotQuestionId, conferenceId })
+        })}`,
         undefined,
         {
           shallow: true
@@ -146,5 +157,6 @@ const currentRoute = () => ({
   court: numberOrUndefined(Router.query.court),
   billId: stringOrUndefined(Router.query.billId),
   step: stringOrUndefined(Router.query.step),
-  ballotQuestionId: stringOrUndefined(Router.query.ballotQuestionId)
+  ballotQuestionId: stringOrUndefined(Router.query.ballotQuestionId),
+  conferenceId: stringOrUndefined(Router.query.conferenceId)
 })

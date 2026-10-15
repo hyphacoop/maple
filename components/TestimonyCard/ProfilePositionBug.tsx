@@ -2,8 +2,8 @@ import { capitalize } from "lodash"
 import { Image } from "react-bootstrap"
 import styled from "styled-components"
 import { useTranslation } from "next-i18next"
-
-export type Position = "endorse" | "neutral" | "oppose"
+import { ConferencePosition, Position } from "../db"
+import { StancePill } from "./StancePill"
 
 export function ProfilePositionLabel({
   position,
@@ -19,11 +19,15 @@ export function ProfilePositionLabel({
       <ImageContainer>
         <StyledImage alt="profile image" src={avatar} />
       </ImageContainer>
-      <Image
-        alt={t(`position.${position}`)}
-        className="position"
-        src={`/thumbs-${position}.svg`}
-      />
+      {ConferencePosition.guard(position) ? (
+        <StancePill className="position" position={position} />
+      ) : (
+        <Image
+          alt={t(`position.${position}`)}
+          className="position"
+          src={`/thumbs-${position}.svg`}
+        />
+      )}
     </Container>
   )
 }
@@ -49,6 +53,8 @@ const Container = styled.div<{ pos: Position }>`
         return "black"
       case "oppose":
         return "orange"
+      default:
+        return "var(--maple-color-gray-subtle-border)"
     }
   }};
   border-radius: 50%;

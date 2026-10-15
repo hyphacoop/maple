@@ -1,13 +1,13 @@
 import { Image } from "react-bootstrap"
 import styled from "styled-components"
-import { Testimony } from "../db"
+import { BillPosition, Testimony } from "../db"
 import { formatBillId } from "../formatting"
 import * as links from "../links"
 import { useTranslation } from "next-i18next"
 import { CSSProperties } from "react"
 
 export const voteHandPositionStyles: {
-  [position in Testimony["position"]]: CSSProperties
+  [position in BillPosition]: CSSProperties
 } = {
   endorse: {
     transformOrigin: "center",
@@ -20,7 +20,7 @@ export const voteHandPositionStyles: {
   oppose: {}
 }
 
-export const VoteHand = ({ position }: { position: Testimony["position"] }) => {
+export const VoteHand = ({ position }: { position: BillPosition }) => {
   const { t } = useTranslation("testimony")
 
   return (
@@ -138,7 +138,7 @@ export const Callout = ({
   authorDisplayName
 }: {
   content: string
-  position: Testimony["position"]
+  position: BillPosition
   billId: string
   authorDisplayName: string
 }) => {
@@ -180,7 +180,9 @@ export function trimContent(content: string, length: number) {
   return content
 }
 
-export default function TestimonyCallout(props: Testimony) {
+export default function TestimonyCallout(
+  props: Testimony & { position: BillPosition }
+) {
   const { billId, court } = props
 
   return (

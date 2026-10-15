@@ -1,7 +1,7 @@
 import { Col, Row } from "react-bootstrap"
-import { Internal } from "components/links"
+import { Internal, maple } from "components/links"
 import { Testimony } from "components/db"
-import { formatBillId } from "components/formatting"
+import { formatBillId, formatConferenceLabel } from "components/formatting"
 import { PositionLabel } from "./PositionBug"
 
 function formatBallotQuestionLabel(ballotQuestionId: string) {
@@ -18,11 +18,16 @@ export const BillInfoHeader = ({
   publishedDate: string
 }) => {
   const ballotQuestionId = testimony.ballotQuestionId ?? undefined
+  const conferenceId = testimony.conferenceId ?? undefined
   const policyLink = ballotQuestionId
     ? `/ballotQuestions/${ballotQuestionId}`
+    : conferenceId
+    ? maple.conference({ court: testimony.court, id: conferenceId })
     : billLink
   const policyLabel = ballotQuestionId
     ? formatBallotQuestionLabel(ballotQuestionId)
+    : conferenceId
+    ? formatConferenceLabel(testimony.billId)
     : formatBillId(testimony.billId)
   const policyTitle =
     testimony.billTitle ||
