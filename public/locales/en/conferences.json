@@ -41,5 +41,13 @@
   "testimony_total_other": "{{count}} testimonies",
   "testimony_add": "Add your testimony",
   "testimony_none": "No testimony yet.",
-  "testimony_closed": "This committee is no longer taking testimony."
+  "testimony_closed": "This committee is no longer taking testimony.",
+  "bill_text": "Bill Text",
+  "version": "Version",
+  "version_senate": "Senate Version",
+  "version_house": "House Version",
+  "version_both": "Senate and House",
+  "text_loading": "Loading the bill text",
+  "text_missing": "The text of {{bill}} isn’t on MAPLE yet.",
+  "text_pdf": "Read the PDF"
 }

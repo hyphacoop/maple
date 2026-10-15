@@ -4,6 +4,7 @@ import { ConferenceCommittee } from "./ConferenceCommittee"
 import { ConferencePicker } from "./ConferencePicker"
 import { ConferenceRail } from "./ConferenceRail"
 import { ConferenceTestimony } from "./ConferenceTestimony"
+import { ConferenceText } from "./ConferenceText"
 import { PageColumn, Title } from "./styles"
 import { conferenceName, ConferencePageProps } from "./types"
 
@@ -18,18 +19,14 @@ const Page = styled(PageColumn)`
   }
 `
 
+/** The header and the sections under it, a gap apart. */
 const Main = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   min-width: 0;
   flex: 1 1 auto;
   padding-top: 1.625rem;
-`
-
-const Header = styled.header`
-  margin-bottom: 1.5rem;
-`
-
-const Testimony = styled.div`
-  margin-top: 1.5rem;
 `
 
 /**
@@ -52,7 +49,7 @@ export function ConferenceDetails({
         current={conference.id}
       />
       <Main>
-        <Header>
+        <header>
           <div className="d-md-none">
             <ConferencePicker conferences={conferences} current={conference} />
           </div>
@@ -60,7 +57,7 @@ export function ConferenceDetails({
             {conferenceName(conference)}
           </Title>
           <ConferenceByline conference={conference} />
-        </Header>
+        </header>
         {/* Keyed so a pinned seat does not outlive its conference. */}
         <ConferenceCommittee
           key={conference.id}
@@ -68,13 +65,13 @@ export function ConferenceDetails({
           conferees={conferees}
           hearings={hearings}
         />
-        <Testimony>
-          <ConferenceTestimony
-            court={conference.court}
-            conferenceId={conference.id}
-            testimony={testimony}
-          />
-        </Testimony>
+        <ConferenceTestimony
+          court={conference.court}
+          conferenceId={conference.id}
+          testimony={testimony}
+        />
+        {/* Keyed so a picked version does not outlive its conference. */}
+        <ConferenceText key={conference.id} conference={conference} />
       </Main>
     </Page>
   )
