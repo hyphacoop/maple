@@ -41,6 +41,7 @@ export type HearingView = Pick<EventSummary, "id" | "eventId" | "startsAt">
  * the counts the testimony triggers keep on the conference. */
 export type ConferenceTestimonyView = {
   canonicalBillId: string
+  status: ConferenceSummary["status"]
   testimonyCount: number
   counts: Record<ConferencePosition, number>
 }

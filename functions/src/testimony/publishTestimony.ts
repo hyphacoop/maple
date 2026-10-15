@@ -260,6 +260,12 @@ class PublishTestimonyTransaction {
         `Conference ${conferenceId} takes testimony on ${conference.canonicalBillId}, not ${draft.billId}`
       )
     }
+    if (conference && conference.status !== "appointed") {
+      throw fail(
+        "failed-precondition",
+        `Conference ${conferenceId} is not accepting testimony (status ${conference.status})`
+      )
+    }
 
     this.draft = draft
     this.bqId = bqId

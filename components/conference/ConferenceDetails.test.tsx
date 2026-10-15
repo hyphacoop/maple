@@ -136,6 +136,7 @@ const props: ConferencePageProps = {
   ],
   testimony: {
     canonicalBillId: "S2581",
+    status: "appointed",
     testimonyCount: 3,
     counts: {
       passNothing: 0,
@@ -289,5 +290,20 @@ describe("ConferenceDetails", () => {
       "href",
       "/submit-testimony?billId=S2581&court=194&step=position&conferenceId=student-learning-and-mental-health"
     )
+  })
+
+  it("keeps the testimony but stops asking for more once the committee is done", () => {
+    render(
+      <ConferenceDetails
+        {...props}
+        testimony={{ ...props.testimony, status: "reportFiled" }}
+      />
+    )
+
+    expect(screen.queryByText("testimony_add")).not.toBeInTheDocument()
+    expect(screen.getByText("testimony_closed")).toBeInTheDocument()
+    expect(
+      screen.getByRole("region", { name: "Pass the Senate version" })
+    ).toHaveTextContent("Ada")
   })
 })

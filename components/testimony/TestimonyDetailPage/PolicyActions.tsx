@@ -1,5 +1,7 @@
 import { Card, ListItem, ListItemProps } from "components/Card"
+import { isConferenceOpen } from "components/conference/status"
 import { dbService } from "components/db/api"
+import { getConference } from "components/db/conferences"
 import { useFlags } from "components/featureFlags"
 import { formatBillId, formatConferenceLabel } from "components/formatting"
 import { formUrl } from "components/publish"
@@ -73,8 +75,9 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
     : billTopicName(bill.court, bill.id)
 
   const { followStatus, setFollowStatus } = useContext(FollowContext)
-  const [canEditBallotQuestionTestimony, setCanEditBallotQuestionTestimony] =
-    useState(!ballotQuestionId)
+  const [canEditTestimony, setCanEditTestimony] = useState(
+    !ballotQuestionId && !conferenceId
+  )
 
   useEffect(() => {
     uid
@@ -85,13 +88,30 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
   }, [uid, topicName, setFollowStatus])
 
   useEffect(() => {
+    if (conferenceId) {
+      let active = true
+      getConference(bill.court, conferenceId)
+        .then(conference => {
+          if (!active) return
+          setCanEditTestimony(
+            !!conference && isConferenceOpen(conference.status)
+          )
+        })
+        .catch(() => {
+          if (active) setCanEditTestimony(false)
+        })
+      return () => {
+        active = false
+      }
+    }
+
     if (!ballotQuestionId) {
-      setCanEditBallotQuestionTestimony(true)
+      setCanEditTestimony(true)
       return
     }
 
     if (ballotQuestion) {
-      setCanEditBallotQuestionTestimony(
+      setCanEditTestimony(
         isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
       )
       return
@@ -102,19 +122,19 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       .getBallotQuestion({ id: ballotQuestionId })
       .then(ballotQuestion => {
         if (!active) return
-        setCanEditBallotQuestionTestimony(
+        setCanEditTestimony(
           !!ballotQuestion &&
             isActiveBallotQuestionPhase(ballotQuestion.ballotStatus)
         )
       })
       .catch(() => {
-        if (active) setCanEditBallotQuestionTestimony(false)
+        if (active) setCanEditTestimony(false)
       })
 
     return () => {
       active = false
     }
-  }, [ballotQuestion, ballotQuestionId])
+  }, [ballotQuestion, ballotQuestionId, conferenceId, bill.court])
 
   const FollowClick = async () => {
     if (ballotQuestionTopic) {
@@ -168,7 +188,7 @@ export const PolicyActions: FC<React.PropsWithChildren<PolicyActionsProps>> = ({
       onClick={() => setReporting(!isReporting)}
     />
   )
-  if (canEditBallotQuestionTestimony)
+  if (canEditTestimony)
     items.push(
       <PolicyActionItem
         key="add-testimony"

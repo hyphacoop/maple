@@ -40,5 +40,6 @@
   "testimony_total_one": "{{count}} testimony",
   "testimony_total_other": "{{count}} testimonies",
   "testimony_add": "Add your testimony",
-  "testimony_none": "No testimony yet."
+  "testimony_none": "No testimony yet.",
+  "testimony_closed": "This committee is no longer taking testimony."
 }

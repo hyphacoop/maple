@@ -38,6 +38,7 @@ const summarize = (c: Conference): ConferenceSummary => ({
 /** Counts are absent until the first testimony, so read them as zero. */
 const testimonyOf = (c: Conference): ConferenceTestimonyView => ({
   canonicalBillId: c.canonicalBillId,
+  status: c.status,
   testimonyCount: c.testimonyCount ?? 0,
   counts: {
     passNothing: c.passNothingCount ?? 0,

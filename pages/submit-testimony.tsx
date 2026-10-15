@@ -2,7 +2,9 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { requireAuth, useAuth } from "../components/auth"
 import { isActiveBallotQuestionPhase } from "../components/ballotquestions/status"
+import { isConferenceOpen } from "../components/conference/status"
 import { dbService } from "../components/db"
+import { getConference } from "../components/db/conferences"
 import { createPage } from "../components/page"
 import {
   usePublishService,
@@ -42,12 +44,40 @@ function SubmitTestimonyPage() {
       return
     }
 
+    const conferenceId =
+      typeof router.query.conferenceId === "string"
+        ? router.query.conferenceId
+        : undefined
+    const court = Number(router.query.court)
+
+    let active = true
+
+    if (conferenceId && Number.isInteger(court)) {
+      setIsAllowed(false)
+      getConference(court, conferenceId)
+        .then(conference => {
+          if (!active) return
+          if (conference && isConferenceOpen(conference.status)) {
+            setIsAllowed(true)
+            return
+          }
+          void router.replace(
+            conference ? `/conferences/${court}/${conferenceId}` : "/"
+          )
+        })
+        .catch(() => {
+          if (active) void router.replace("/")
+        })
+      return () => {
+        active = false
+      }
+    }
+
     if (!ballotQuestionId) {
       setIsAllowed(true)
       return
     }
 
-    let active = true
     setIsAllowed(false)
 
     dbService()

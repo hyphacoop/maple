@@ -7,6 +7,7 @@ import { conferencePositions, positionLabels } from "../publish/content"
 import { formUrl } from "../publish/formUrl"
 import { PaginationButtons } from "../table/PaginationButtons"
 import { trimContent } from "../TestimonyCallout/TestimonyCallout"
+import { isConferenceOpen } from "./status"
 import { Card, CardTitle, DottedInternal, Eyebrow } from "./styles"
 import { ConferenceTestimonyView } from "./types"
 
@@ -80,7 +81,7 @@ const Empty = styled.p`
 export function ConferenceTestimony({
   court,
   conferenceId,
-  testimony: { canonicalBillId, testimonyCount, counts }
+  testimony: { canonicalBillId, status, testimonyCount, counts }
 }: {
   court: number
   conferenceId: string
@@ -103,17 +104,21 @@ export function ConferenceTestimony({
           {t("testimony_title")}
           <Count>{t("testimony_total", { count: testimonyCount })}</Count>
         </CardTitle>
-        <Add
-          href={formUrl(
-            canonicalBillId,
-            court,
-            "position",
-            undefined,
-            conferenceId
-          )}
-        >
-          {t("testimony_add")}
-        </Add>
+        {isConferenceOpen(status) ? (
+          <Add
+            href={formUrl(
+              canonicalBillId,
+              court,
+              "position",
+              undefined,
+              conferenceId
+            )}
+          >
+            {t("testimony_add")}
+          </Add>
+        ) : (
+          <Empty>{t("testimony_closed")}</Empty>
+        )}
       </Head>
       <Stances>
         {conferencePositions.map(stance => (
