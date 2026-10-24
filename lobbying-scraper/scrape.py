@@ -51,12 +51,18 @@ from writer import (
     SCRAPER_DOC,
     SUMMARY_CACHE_COLLECTION,
     compute_stats,
+    remove_superseded_filings,
     write_filings,
     write_registrant,
     write_registration,
 )
 
 _DEFAULT_BACKFILL_WORKERS = 20
+
+
+def _ts() -> str:
+    """UTC time for progress lines, so a slow run shows when it slowed down."""
+    return datetime.now(tz=timezone.utc).strftime("%H:%M:%SZ")
 
 
 # ── Cursor helpers ────────────────────────────────────────────────────────────
@@ -180,7 +186,7 @@ def run_weekly(
     new_count = 0
 
     for year in years:
-        print(f"\n── {year} ──")
+        print(f"\n── {year} ── {_ts()}")
         try:
             summary_urls = fetch_summary_links(session, year)
         except Exception as e:
@@ -190,12 +196,13 @@ def run_weekly(
         if limit:
             summary_urls = summary_urls[:limit]
 
-        print(f"  {len(summary_urls)} registrants on portal")
+        print(f"  {_ts()} {len(summary_urls)} registrants on portal")
 
         for summary_url in summary_urls:
             # Prior years: trust the cache if we have one. Current year:
             # always refetch live, since its disclosures can still change.
             disc_urls = None
+            superseded: list[str] = []
             if year != current_year and use_cursor:
                 disc_urls = _get_cached_disc_urls(db, summary_url)
 
@@ -203,6 +210,7 @@ def run_weekly(
                 try:
                     meta, registration = fetch_summary(session, summary_url)
                     disc_urls = meta.disclosure_urls
+                    superseded = list(meta.superseded_urls)
                     if use_cursor:
                         _cache_disc_urls(db, summary_url, disc_urls)
                         if registration is not None:
@@ -211,6 +219,7 @@ def run_weekly(
                     print(f"  failed to fetch summary {summary_url}: {e}", file=sys.stderr)
                     continue
 
+            failed = False
             for disc_url in disc_urls:
                 if use_cursor and _is_processed(db, disc_url):
                     continue
@@ -219,11 +228,16 @@ def run_weekly(
                         db, session, summary_url, disc_url, year, dry_run=dry_run
                     )
                     new_count += 1
-                    print(f"  processed: {comp_n} clients, {filing_n} filings")
+                    print(f"  {_ts()} processed: {comp_n} clients, {filing_n} filings")
                     if use_cursor:
                         _mark_processed(db, disc_url)
                 except Exception as e:
+                    failed = True
                     print(f"  failed to process {disc_url}: {e}", file=sys.stderr)
+            if use_cursor and superseded and not failed:
+                removed = remove_superseded_filings(db, superseded)
+                if removed:
+                    print(f"  {_ts()} removed {removed} filings of superseded versions")
 
     return new_count
 
@@ -289,6 +303,8 @@ def _backfill_one_summary_url(
             processed += 1
         except Exception as e:
             errors.append(f"failed to process {disc_url}: {e}")
+    if db is not None and not dry_run and meta.superseded_urls and not errors:
+        remove_superseded_filings(db, list(meta.superseded_urls))
     return processed, errors
 
 
@@ -322,7 +338,7 @@ def run_backfill(
     total_new = 0
 
     for year in years:
-        print(f"\n── {year} ──")
+        print(f"\n── {year} ── {_ts()}")
         try:
             summary_urls = fetch_summary_links(session, year)
         except Exception as e:
@@ -332,7 +348,7 @@ def run_backfill(
         if limit:
             summary_urls = summary_urls[:limit]
 
-        print(f"  {len(summary_urls)} registrants on portal")
+        print(f"  {_ts()} {len(summary_urls)} registrants on portal")
         year_new = 0
         done = 0
 
@@ -351,9 +367,9 @@ def run_backfill(
                     print(f"  {msg}", file=sys.stderr)
                 done += 1
                 if done % 50 == 0 or done == len(summary_urls):
-                    print(f"  [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
+                    print(f"  {_ts()} [{done}/{len(summary_urls)}] {year_new} new disclosures so far")
 
-        print(f"  {year} complete: {year_new} new disclosures")
+        print(f"  {_ts()} {year} complete: {year_new} new disclosures")
 
     return total_new
 
